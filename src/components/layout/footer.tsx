@@ -8,7 +8,7 @@ export function Footer() {
         <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
           <Logo />
           <p className="text-center text-sm leading-loose md:text-left">
-            &copy; {new Date().getFullYear()} Alpine Comfort Solutions. All rights reserved.
+            &copy; {new Date().getFullYear()} Alpine Tech. All rights reserved.
           </p>
         </div>
         <div className="flex items-center gap-4">
