@@ -17,7 +17,7 @@ export function Hero() {
             </div>
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
               <Button size="lg" asChild className="bg-accent text-accent-foreground hover:bg-accent/90">
-                <a href="#estimator">Get a Free Estimate</a>
+                <a href="#contact">Request a Quote</a>
               </Button>
               <Button size="lg" variant="outline" asChild>
                 <a href="#services">Our Services</a>
