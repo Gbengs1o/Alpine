@@ -10,10 +10,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ["'Eras Medium ITC'", 'sans-serif'],
-        headline: ["'Eras Medium ITC'", 'sans-serif'],
+        headline: ['sans-serif'],
         code: ['monospace'],
-        eras: ["'Eras Medium ITC'", 'sans-serif'],
+        sans: ['sans-serif'],
       },
       colors: {
         background: 'hsl(var(--background))',

@@ -79,13 +79,6 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-body;
-  }
-  @font-face {
-    font-family: 'Eras Medium ITC';
-    src: url('/fonts/Eras-Medium-ITC.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
+    @apply bg-background text-foreground;
   }
 }
