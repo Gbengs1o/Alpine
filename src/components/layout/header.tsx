@@ -11,7 +11,6 @@ const navLinks = [
   { href: '#about', label: 'About' },
   { href: '#services', label: 'Services' },
   { href: '#portfolio', label: 'Portfolio' },
-  { href: '#contact', label: 'Contact' },
 ];
 
 export function Header() {
@@ -19,7 +18,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 max-w-7xl items-center justify-between">
+      <div className="container flex h-16 max-w-screen-2xl items-center justify-between">
         <Link href="/" className="mr-6 flex items-center space-x-2">
           <Logo />
         </Link>
@@ -37,8 +36,12 @@ export function Header() {
         </nav>
 
         <div className="hidden md:flex items-center gap-4">
-          <Button variant="outline">Request a Quote</Button>
-          <Button>Call Us</Button>
+          <Button asChild>
+            <Link href="tel:+1-555-123-4567">Call Us</Link>
+          </Button>
+          <Button variant="outline" asChild>
+             <Link href="#contact">Request a Quote</Link>
+          </Button>
         </div>
 
         <div className="md:hidden">
@@ -59,7 +62,7 @@ export function Header() {
                     </Button>
                 </div>
                 <nav className="flex flex-col gap-4 mb-6">
-                  {navLinks.map((link) => (
+                  {[...navLinks, { href: '#contact', label: 'Contact' }].map((link) => (
                     <Link
                       key={link.href}
                       href={link.href}
@@ -71,8 +74,12 @@ export function Header() {
                   ))}
                 </nav>
                 <div className="flex flex-col gap-4">
-                    <Button variant="outline" size="lg">Request a Quote</Button>
-                    <Button size="lg">Call Us</Button>
+                    <Button size="lg" asChild>
+                      <Link href="tel:+1-555-123-4567">Call Us</Link>
+                    </Button>
+                    <Button variant="outline" size="lg" asChild>
+                       <Link href="#contact">Request a Quote</Link>
+                    </Button>
                 </div>
               </div>
             </SheetContent>
