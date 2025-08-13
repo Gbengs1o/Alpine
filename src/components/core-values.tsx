@@ -1,8 +1,7 @@
 "use client";
 
 // --- COMBINED IMPORTS ---
-import { useEffect, useRef, useState, useCallback, ReactNode } from 'react';
-import Link from 'next/link';
+import { useEffect, useRef, useState } from 'react';
 
 // Helper for class names
 const cn = (...classes: (string | boolean | undefined)[]) => classes.filter(Boolean).join(' ');
@@ -143,3 +142,5 @@ export default function CoreValues() {
         </>
     );
 }
+
+    
