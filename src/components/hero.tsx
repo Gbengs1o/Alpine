@@ -2,7 +2,6 @@
 
 import { useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
 
 export function Hero() {
   const pinContainerRef = useRef<HTMLDivElement>(null);
@@ -15,7 +14,14 @@ export function Hero() {
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // This effect hook translates the user's provided vanilla JS directly into a React hook.
     if (typeof window === 'undefined') return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        // For users who prefer reduced motion, make all content visible immediately.
+        panelContentsRef.current.forEach(content => content?.classList.add('is-visible'));
+        return;
+    }
     
     const elements = {
         pinContainer: pinContainerRef.current,
@@ -23,19 +29,13 @@ export function Hero() {
         track: trackRef.current,
         video: videoRef.current,
         panels: panelsRef.current.filter(p => p !== null) as HTMLElement[],
-        panelContents: panelContentsRef.current.filter(p => p !== null),
+        panelContents: panelContentsRef.current.filter(p => p !== null) as HTMLDivElement[],
         lastPanel: lastPanelRef.current,
         scrollIndicator: scrollIndicatorRef.current,
     };
 
     if (Object.values(elements).some(el => !el || (Array.isArray(el) && el.length === 0))) {
-        console.warn('Hero elements missing.');
-        return;
-    }
-
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        elements.panels.forEach(panel => panel?.classList.add('is-visible'));
-        elements.panelContents.forEach(content => content?.classList.add('is-visible'));
+        console.warn('Hero elements missing, animation will not run.');
         return;
     }
 
@@ -74,11 +74,6 @@ export function Hero() {
             elements.panelContents.forEach((content, index) => {
               content.classList.toggle('is-visible', index === currentPanelIndex)
             });
-
-            elements.panels.forEach((panel, index) => {
-              // Add this class to remove blur from the last panel when it's active
-              panel.classList.toggle('panel-no-blur', index === lastPanelIndex && index === currentPanelIndex);
-            });
             
             elements.heroViewport.style.opacity = '1';
             elements.lastPanel.style.opacity = '1';
@@ -86,8 +81,6 @@ export function Hero() {
         } else {
             elements.track.style.transform = `translateX(-${elements.track.offsetWidth - window.innerWidth}px)`;
             elements.panelContents.forEach((content, index) => content.classList.toggle('is-visible', index === lastPanelIndex));
-            elements.panels.forEach((panel, index) => panel.classList.toggle('panel-no-blur', index === lastPanelIndex));
-
 
             const exitSequenceDuration = totalPinDuration - horizontalPhaseEnd;
             if (exitSequenceDuration <= 0) return;
@@ -152,8 +145,9 @@ export function Hero() {
         }
         
         #pin-container-wrapper {
-             background-color: #020408;
-             color: #eef2f9;
+             font-family: 'Inter', sans-serif;
+             background-color: var(--background-color);
+             color: var(--text-color);
         }
 
         #pin-container {
@@ -207,11 +201,6 @@ export function Hero() {
             transition: backdrop-filter 0.5s ease;
         }
 
-        .panel-no-blur {
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-        }
-
         .panel:first-child { border-left: none; }
 
         .panel-content {
@@ -220,7 +209,7 @@ export function Hero() {
             transform: translateY(30px);
             transition: opacity 0.8s ease-out 0.3s, transform 0.8s ease-out 0.3s;
             will-change: opacity;
-            color: #eef2f9;
+            color: #eef2f9; /* Set text color explicitly for hero */
         }
         
         .panel-content.is-visible {
@@ -305,19 +294,19 @@ export function Hero() {
               ></iframe>
             </div>
             <div id="horizontal-track" ref={trackRef}>
-              <section className="panel panel-1" ref={el => panelsRef.current[0] = el}>
-                <div className="panel-content" ref={el => panelContentsRef.current[0] = el}>
+              <section className="panel panel-1" ref={el => { panelsRef.current[0] = el; }}>
+                <div className="panel-content" ref={el => { panelContentsRef.current[0] = el; }}>
                   <h1 className="panel-title">The Cool Alpine Experience—Anywhere</h1>
                 </div>
               </section>
-              <section className="panel panel-2" ref={el => panelsRef.current[1] = el}>
-                <div className="panel-content" ref={el => panelContentsRef.current[1] = el}>
+              <section className="panel panel-2" ref={el => { panelsRef.current[1] = el; }}>
+                <div className="panel-content" ref={el => { panelContentsRef.current[1] = el; }}>
                   <h2 className="panel-title">Experience You Can Trust</h2>
                   <p className="panel-subtitle">With over 13 years in the industry, our team of certified technicians delivers reliable installation, maintenance, and repair for residential and commercial spaces.</p>
                 </div>
               </section>
               <section className="panel panel-3" ref={el => { panelsRef.current[2] = el; lastPanelRef.current = el; }}>
-                <div className="panel-content" ref={el => panelContentsRef.current[2] = el}>
+                <div className="panel-content" ref={el => { panelContentsRef.current[2] = el; }}>
                   <h2 className="panel-title">EXPERIENCE COOLING AT ITS PEAK</h2>
                   <p className="panel-subtitle">Premium HVAC Solutions for Every Space – Powered by Alpine Tech.</p>
                    <Link href="#contact">
