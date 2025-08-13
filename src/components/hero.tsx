@@ -194,8 +194,8 @@ export function Hero() {
             display: flex; align-items: center; justify-content: center;
             padding: 4vw; box-sizing: border-box; position: relative;
             background-color: var(--panel-bg-color);
-            backdrop-filter: blur(12px) brightness(90%);
-            -webkit-backdrop-filter: blur(12px) brightness(90%);
+            backdrop-filter: blur(20px) brightness(90%);
+            -webkit-backdrop-filter: blur(20px) brightness(90%);
             border-left: 1px solid rgba(255, 255, 255, 0.05);
             will-change: opacity;
             transition: backdrop-filter 0.5s ease;
