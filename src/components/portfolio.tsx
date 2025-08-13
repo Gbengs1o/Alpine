@@ -126,7 +126,8 @@ export function Portfolio() {
 
     return (
         <section
-            className="w-full h-full flex flex-col justify-center"
+            id="portfolio"
+            className="w-full bg-[#0d1117] py-20 relative overflow-hidden"
             style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/blueprint.png')" }}
         >
             <div className="w-[90%] max-w-7xl mx-auto">
