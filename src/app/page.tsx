@@ -19,7 +19,7 @@ export default function Page() {
         <Advantages />
         <Services />
 
-        <div className="sticky-container">
+        <div className="relative h-[200vh]">
           <div className="sticky-panel">
             <CoreValues />
           </div>

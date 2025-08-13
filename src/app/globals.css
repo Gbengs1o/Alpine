@@ -128,18 +128,11 @@
   }
 }
 
-.sticky-container {
-  position: relative;
-  height: 200vh;
-  scroll-snap-type: y mandatory;
-}
-
 .sticky-panel,
 .scroll-over-panel {
   height: 100vh;
   width: 100%;
   background-color: #f8f9fa;
-  scroll-snap-align: start;
 }
 
 .dark .sticky-panel,
