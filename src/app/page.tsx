@@ -6,16 +6,18 @@ import { Advantages } from '@/components/advantages';
 import { Services } from '@/components/services';
 import { Portfolio } from '@/components/portfolio';
 import { Contact } from '@/components/contact';
+import { HvacEstimator } from '@/components/hvac-estimator';
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
         <Hero />
         <About />
         <Advantages />
         <Services />
+        <HvacEstimator />
         <Portfolio />
         <Contact />
       </main>

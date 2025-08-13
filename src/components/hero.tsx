@@ -14,38 +14,16 @@ export function Hero() {
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Ensure this only runs on the client
     if (typeof window === 'undefined') return;
-
-    const isMotionReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     
-    // For mobile, we use a simpler fade-in-on-scroll animation
-    if (window.innerWidth < 768) {
-      if (isMotionReduced) return;
-
-      const mobilePanels = panelsRef.current.filter(p => p !== null) as HTMLElement[];
-      
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-          }
-        });
-      }, { threshold: 0.2 });
-
-      mobilePanels.forEach(panel => {
-        if(panel) observer.observe(panel);
-      });
-
-      return () => {
-        mobilePanels.forEach(panel => {
-          if(panel) observer.unobserve(panel);
-        });
-      };
+    // Skip animations if the user prefers reduced motion
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        // Make all content visible immediately
+        panelContentsRef.current.forEach(content => content?.classList.add('is-visible'));
+        return;
     }
     
-    // Desktop scroll animation logic
-    if (isMotionReduced) return;
-
     const elements = {
         pinContainer: pinContainerRef.current,
         heroViewport: heroViewportRef.current,
@@ -75,104 +53,104 @@ export function Hero() {
     const fadeEnd = zoomEnd + exitTimings.fadeDuration;
 
     const animateHero = () => {
+        if(!elements.pinContainer || !elements.heroViewport || !elements.track || !elements.video || !elements.lastPanel || !elements.scrollIndicator) return;
+        
         const scrollTop = window.scrollY;
-        const pinContainer = elements.pinContainer!;
-        const heroViewport = elements.heroViewport!;
-        const track = elements.track!;
-        const video = elements.video!;
-        const lastPanel = elements.lastPanel!;
-        const scrollIndicator = elements.scrollIndicator!;
-
-        const totalPinDuration = pinContainer.offsetHeight - window.innerHeight;
+        
+        const totalPinDuration = elements.pinContainer.offsetHeight - window.innerHeight;
         const horizontalPhaseEnd = (window.innerWidth / 100) * 300; 
 
-        if (scrollTop > 50) {
-            scrollIndicator.style.opacity = '0';
-        } else {
-            scrollIndicator.style.opacity = '1';
+        if (scrollTop > 50) { 
+            elements.scrollIndicator.style.opacity = '0'; 
+        } else { 
+            elements.scrollIndicator.style.opacity = '1'; 
         }
-
+        
         if (scrollTop <= horizontalPhaseEnd) {
             const progress = scrollTop / horizontalPhaseEnd;
-            track.style.transform = `translateX(-${progress * (track.offsetWidth - window.innerWidth)}px)`;
+            elements.track.style.transform = `translateX(-${progress * (elements.track.offsetWidth - window.innerWidth)}px)`;
             const currentPanelIndex = Math.min(numPanels - 1, Math.floor(progress * numPanels));
-
-            elements.panelContents.forEach((content, index) => {
-                if (content) {
-                    content.classList.toggle('is-visible', index === currentPanelIndex);
-                }
-            });
-
-            heroViewport.style.opacity = '1';
-            lastPanel.style.opacity = '1';
-            video.style.transform = 'scale(1)';
+            elements.panelContents.forEach((content, index) => content.classList.toggle('is-visible', index === currentPanelIndex));
+            
+            elements.heroViewport.style.opacity = '1';
+            elements.lastPanel.style.opacity = '1';
+            elements.video.style.transform = 'scale(1)';
         } else {
-            track.style.transform = `translateX(-${track.offsetWidth - window.innerWidth}px)`;
-            elements.panelContents.forEach((content, index) => {
-                 if (content) {
-                    content.classList.toggle('is-visible', index === numPanels - 1);
-                }
-            });
+            elements.track.style.transform = `translateX(-${elements.track.offsetWidth - window.innerWidth}px)`;
+            elements.panelContents.forEach((content, index) => content.classList.toggle('is-visible', index === numPanels - 1));
 
             const exitSequenceDuration = totalPinDuration - horizontalPhaseEnd;
             if (exitSequenceDuration <= 0) return;
-            
+
             const exitProgress = (scrollTop - horizontalPhaseEnd) / exitSequenceDuration;
 
             if (exitProgress <= revealEnd) {
                 const revealProgress = exitProgress / revealEnd;
-                lastPanel.style.opacity = (1 - revealProgress).toString();
+                elements.lastPanel.style.opacity = (1 - revealProgress).toString();
             } else {
-                lastPanel.style.opacity = '0';
+                elements.lastPanel.style.opacity = '0';
             }
 
             if (exitProgress > revealEnd && exitProgress <= zoomEnd) {
                 const zoomProgress = (exitProgress - revealEnd) / (zoomEnd - revealEnd);
                 const scale = 1 + zoomProgress * 0.5;
-                video.style.transform = `scale(${scale})`;
+                elements.video.style.transform = `scale(${scale})`;
             } else if (exitProgress > zoomEnd) {
-                video.style.transform = 'scale(1.5)';
+                elements.video.style.transform = 'scale(1.5)';
             } else {
-                video.style.transform = 'scale(1)';
+                 elements.video.style.transform = 'scale(1)';
             }
 
             if (exitProgress > zoomEnd && exitProgress <= fadeEnd) {
                 const fadeProgress = (exitProgress - zoomEnd) / (fadeEnd - zoomEnd);
-                heroViewport.style.opacity = (1 - fadeProgress).toString();
+                elements.heroViewport.style.opacity = (1 - fadeProgress).toString();
             } else if (exitProgress > fadeEnd) {
-                heroViewport.style.opacity = '0';
+                elements.heroViewport.style.opacity = '0';
             } else {
-                heroViewport.style.opacity = '1';
+                elements.heroViewport.style.opacity = '1';
             }
         }
     };
-
+    
     let isTicking = false;
     const onScroll = () => {
-        if (!isTicking) {
-            window.requestAnimationFrame(() => {
-                animateHero();
-                isTicking = false;
-            });
-            isTicking = true;
+        if (!isTicking) { 
+            window.requestAnimationFrame(() => { 
+                animateHero(); 
+                isTicking = false; 
+            }); 
+            isTicking = true; 
         }
     };
-
+    
     window.addEventListener('scroll', onScroll, { passive: true });
-    animateHero(); // Initial call
+    animateHero(); // Initial call to set state
 
-    return () => window.removeEventListener('scroll', onScroll);
+    return () => {
+        window.removeEventListener('scroll', onScroll);
+    };
   }, []);
 
   return (
     <>
       <style jsx>{`
-        /* --- DESKTOP FIRST STYLES --- */
+        :root {
+            --background-color: #020408;
+            --text-color: #eef2f9;
+            --highlight-color: #63a4ff;
+            --panel-bg-color: rgba(10, 20, 35, 0.25); 
+        }
+        
+        #pin-container-wrapper {
+             background-color: #020408;
+             color: #eef2f9;
+        }
+
         #pin-container {
             height: calc(300vw + 250vh); 
             position: relative;
-            background-color: #ffffff;
         }
+
         #hero-viewport {
             height: 100vh;
             width: 100%;
@@ -181,85 +159,62 @@ export function Hero() {
             overflow: hidden;
             will-change: opacity;
         }
+
         #hero-video-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
             will-change: transform;
             overflow: hidden;
         }
+        
         #hero-video-background iframe {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 177.77vh; /* 100vh * 16/9 */
+            width: 177.77vh; 
             min-width: 100vw;
-            height: 56.25vw; /* 100vw * 9/16 */
+            height: 56.25vw;
             min-height: 100vh;
             pointer-events: none;
         }
+
         #horizontal-track {
-            display: flex;
-            height: 100%;
-            width: 300%; /* 3 panels * 100% width */
+            display: flex; height: 100%; width: 300%;
             will-change: transform;
-            z-index: 1;
         }
+        
         .panel {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 4vw;
-            box-sizing: border-box;
-            position: relative;
-            background-color: rgba(10, 20, 35, 0.25);
+            width: 100vw; height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            padding: 4vw; box-sizing: border-box; position: relative;
+            background-color: var(--panel-bg-color);
             backdrop-filter: blur(12px) brightness(90%);
             -webkit-backdrop-filter: blur(12px) brightness(90%);
             border-left: 1px solid rgba(255, 255, 255, 0.05);
-            color: #eef2f9;
+            will-change: opacity;
         }
+
         .panel:first-child { border-left: none; }
 
         .panel-content {
-            z-index: 1;
-            max-width: 800px;
-            text-align: center;
+            z-index: 1; max-width: 800px; text-align: center;
             opacity: 0;
             transform: translateY(30px);
             transition: opacity 0.8s ease-out 0.3s, transform 0.8s ease-out 0.3s;
-            will-change: opacity, transform;
+            will-change: opacity;
+            color: #eef2f9;
         }
-        /* JS toggles this class for both desktop and mobile logic */
+        
         .panel-content.is-visible {
             opacity: 1;
             transform: translateY(0);
         }
-        .panel-title {
-            font-size: clamp(3rem, 7vw, 6rem);
-            font-weight: 900;
-            text-transform: uppercase;
-            line-height: 1.1;
-            margin: 0 0 1rem;
-            text-shadow: 0 4px 25px rgba(0,0,0,0.6);
-            color: inherit;
-        }
-        .panel-subtitle {
-            font-size: clamp(1.1rem, 2vw, 1.4rem);
-            font-weight: 400;
-            line-height: 1.6;
-            margin: 0 0 2rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.7);
-            color: inherit;
-        }
+        
+        .panel-title { font-size: clamp(3rem, 7vw, 6rem); font-weight: 900; text-transform: uppercase; line-height: 1.1; margin: 0 0 1rem; text-shadow: 0 4px 25px rgba(0,0,0,0.6); }
+        .panel-subtitle { font-size: clamp(1.1rem, 2vw, 1.4rem); font-weight: 400; line-height: 1.6; margin: 0 0 2rem; max-width: 600px; margin-left: auto; margin-right: auto; text-shadow: 0 2px 10px rgba(0,0,0,0.7); }
+        
         .cta-button {
             position: relative;
             overflow: hidden;
@@ -275,9 +230,12 @@ export function Hero() {
             background-color: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.2), 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            box-shadow: 
+                inset 0 0 0 1.5px rgba(255, 255, 255, 0.2),
+                0 8px 32px 0 rgba(0, 0, 0, 0.2);
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
+
         .cta-button::after {
             content: "";
             position: absolute;
@@ -288,6 +246,7 @@ export function Hero() {
             opacity: 0.8;
             pointer-events: none;
         }
+
         .cta-button::before {
             content: '';
             position: absolute;
@@ -299,132 +258,68 @@ export function Hero() {
             transform: skewX(-25deg);
             transition: left 0.8s cubic-bezier(0.23, 1, 0.32, 1);
         }
+
         .cta-button:hover {
             background-color: rgba(255, 255, 255, 0.15);
-            box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.4), 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            box-shadow: 
+                inset 0 0 0 1.5px rgba(255, 255, 255, 0.4),
+                0 8px 32px 0 rgba(0, 0, 0, 0.2);
             transform: translateY(-2px);
         }
+
         .cta-button:hover::before {
             left: 150%;
         }
-        #scroll-indicator {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 100;
-            transition: opacity 0.5s ease;
-            text-align: center;
-            color: rgba(0,0,0,0.7);
-        }
-        .mouse-icon {
-            width: 24px;
-            height: 40px;
-            border: 2px solid rgba(0,0,0,0.7);
-            border-radius: 12px;
-            position: relative;
-            margin: 0 auto;
-        }
-        .mouse-wheel {
-            width: 4px;
-            height: 8px;
-            background: rgba(0,0,0,0.7);
-            border-radius: 2px;
-            position: absolute;
-            top: 8px;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: scroll-wheel 2s infinite;
-        }
-        @keyframes scroll-wheel {
-            0% { top: 8px; opacity: 1; }
-            50% { top: 20px; opacity: 0; }
-            100% { top: 8px; opacity: 1; }
-        }
-
-        /* --- MOBILE STYLES & FIXES --- */
-        @media (max-width: 767px) {
-            #pin-container {
-                height: auto; 
-            }
-            #hero-viewport {
-                position: relative;
-                height: auto; 
-            }
-            #horizontal-track {
-                width: 100%;
-                flex-direction: column;
-                height: auto;
-            }
-            .panel {
-                width: 100%;
-                height: 100vh;
-                min-height: 650px;
-                border-left: none;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-                opacity: 0;
-                transform: translateY(2rem) scale(0.95);
-                transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            }
-            .panel.is-visible {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-            .panel:last-child {
-              border-bottom: none;
-            }
-            .panel-content {
-                opacity: 1; /* Override desktop opacity for mobile animation */
-                transform: translateY(0); /* Override desktop transform for mobile animation */
-            }
-            .panel-title {
-                font-size: clamp(2.5rem, 10vw, 3.5rem);
-            }
-            .panel-subtitle {
-                font-size: clamp(1rem, 4vw, 1.2rem);
-            }
-            #scroll-indicator {
-                display: none;
-            }
-        }
+        
+        #scroll-indicator { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 100; transition: opacity 0.5s ease; text-align: center; color: rgba(255,255,255,0.7); }
+        #scroll-indicator span { display: block; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+        .mouse-icon { width: 24px; height: 40px; border: 2px solid rgba(255,255,255,0.7); border-radius: 12px; position: relative; margin: 0 auto; }
+        .mouse-wheel { width: 4px; height: 8px; background: rgba(255,255,255,0.7); border-radius: 2px; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); animation: scroll-wheel 2s infinite; }
+        @keyframes scroll-wheel { 0% { top: 8px; opacity: 1; } 50% { top: 20px; opacity: 0; } 100% { top: 8px; opacity: 1; } }
       `}</style>
-      <div id="pin-container" ref={pinContainerRef}>
-        <div id="hero-viewport" ref={heroViewportRef}>
-          <div id="hero-video-background" ref={videoRef}>
-            <iframe
-              src="https://www.youtube.com/embed/gCRNEJxDJKM?autoplay=1&mute=1&loop=1&playlist=gCRNEJxDJKM&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
-          </div>
-          <div id="horizontal-track" ref={trackRef}>
-            <section className="panel panel-1" ref={el => panelsRef.current[0] = el}>
-              <div className="panel-content" ref={el => panelContentsRef.current[0] = el}>
-                <h1 className="panel-title">The Cool Alpine Experience—Anywhere</h1>
-              </div>
-            </section>
-            <section className="panel panel-2" ref={el => panelsRef.current[1] = el}>
-              <div className="panel-content" ref={el => panelContentsRef.current[1] = el}>
-                <h2 className="panel-title">Experience You Can Trust</h2>
-                <p className="panel-subtitle">With over 13 years in the industry, our team of certified technicians delivers reliable installation, maintenance, and repair for residential and commercial spaces.</p>
-              </div>
-            </section>
-            <section className="panel panel-3" ref={el => { panelsRef.current[2] = el; lastPanelRef.current = el; }}>
-              <div className="panel-content" ref={el => panelContentsRef.current[2] = el}>
-                <h2 className="panel-title">EXPERIENCE COOLING AT ITS PEAK</h2>
-                <p className="panel-subtitle">Premium HVAC Solutions for Every Space – Powered by Alpine Tech.</p>
-                 <Link href="#contact">
+      <div id="pin-container-wrapper">
+        <div id="pin-container" ref={pinContainerRef}>
+          <div id="hero-viewport" ref={heroViewportRef}>
+            <div id="hero-video-background" ref={videoRef}>
+              <iframe
+                src="https://www.youtube.com/embed/gCRNEJxDJKM?autoplay=1&mute=1&loop=1&playlist=gCRNEJxDJKM&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </div>
+            <div id="horizontal-track" ref={trackRef}>
+              <section className="panel panel-1" ref={el => panelsRef.current[0] = el}>
+                <div className="panel-content" ref={el => panelContentsRef.current[0] = el}>
+                  <h1 className="panel-title">The Cool Alpine Experience—Anywhere</h1>
+                </div>
+              </section>
+              <section className="panel panel-2" ref={el => panelsRef.current[1] = el}>
+                <div className="panel-content" ref={el => panelContentsRef.current[1] = el}>
+                  <h2 className="panel-title">Experience You Can Trust</h2>
+                  <p className="panel-subtitle">With over 13 years in the industry, our team of certified technicians delivers reliable installation, maintenance, and repair for residential and commercial spaces.</p>
+                </div>
+              </section>
+              <section className="panel panel-3" ref={el => { panelsRef.current[2] = el; lastPanelRef.current = el; }}>
+                <div className="panel-content" ref={el => panelContentsRef.current[2] = el}>
+                  <h2 className="panel-title">EXPERIENCE COOLING AT ITS PEAK</h2>
+                  <p className="panel-subtitle">Premium HVAC Solutions for Every Space – Powered by Alpine Tech.</p>
+                   <Link href="#contact">
                     <button className="cta-button">Request a Consultation</button>
-                 </Link>
-              </div>
-            </section>
+                   </Link>
+                </div>
+              </section>
+            </div>
           </div>
         </div>
+
+        <div id="scroll-indicator" ref={scrollIndicatorRef}>
+          <span>Scroll to explore</span>
+          <div className="mouse-icon"><div className="mouse-wheel"></div></div>
+        </div>
       </div>
-      <div id="scroll-indicator" ref={scrollIndicatorRef}>
-        <span>Scroll to explore</span>
-        <div className="mouse-icon"><div className="mouse-wheel"></div></div>
+      <div style={{ height: '100vh', background: '#020408', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '1rem' }}>
+        <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', color: '#eef2f9' }}>The Next Section is Now Revealed.</h2>
       </div>
     </>
   );
