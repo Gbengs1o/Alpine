@@ -2,6 +2,7 @@
 
 import { useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 export function Hero() {
   const pinContainerRef = useRef<HTMLDivElement>(null);
@@ -14,15 +15,7 @@ export function Hero() {
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Ensure this only runs on the client
     if (typeof window === 'undefined') return;
-    
-    // Skip animations if the user prefers reduced motion
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        // Make all content visible immediately
-        panelContentsRef.current.forEach(content => content?.classList.add('is-visible'));
-        return;
-    }
     
     const elements = {
         pinContainer: pinContainerRef.current,
@@ -40,7 +33,14 @@ export function Hero() {
         return;
     }
 
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        elements.panels.forEach(panel => panel?.classList.add('is-visible'));
+        elements.panelContents.forEach(content => content?.classList.add('is-visible'));
+        return;
+    }
+
     const numPanels = elements.panels.length;
+    const lastPanelIndex = numPanels - 1;
 
     const exitTimings = {
         revealDuration: 0.20,
@@ -69,15 +69,25 @@ export function Hero() {
         if (scrollTop <= horizontalPhaseEnd) {
             const progress = scrollTop / horizontalPhaseEnd;
             elements.track.style.transform = `translateX(-${progress * (elements.track.offsetWidth - window.innerWidth)}px)`;
-            const currentPanelIndex = Math.min(numPanels - 1, Math.floor(progress * numPanels));
-            elements.panelContents.forEach((content, index) => content.classList.toggle('is-visible', index === currentPanelIndex));
+            const currentPanelIndex = Math.min(lastPanelIndex, Math.floor(progress * numPanels));
+            
+            elements.panelContents.forEach((content, index) => {
+              content.classList.toggle('is-visible', index === currentPanelIndex)
+            });
+
+            elements.panels.forEach((panel, index) => {
+              // Add this class to remove blur from the last panel when it's active
+              panel.classList.toggle('panel-no-blur', index === lastPanelIndex && index === currentPanelIndex);
+            });
             
             elements.heroViewport.style.opacity = '1';
             elements.lastPanel.style.opacity = '1';
             elements.video.style.transform = 'scale(1)';
         } else {
             elements.track.style.transform = `translateX(-${elements.track.offsetWidth - window.innerWidth}px)`;
-            elements.panelContents.forEach((content, index) => content.classList.toggle('is-visible', index === numPanels - 1));
+            elements.panelContents.forEach((content, index) => content.classList.toggle('is-visible', index === lastPanelIndex));
+            elements.panels.forEach((panel, index) => panel.classList.toggle('panel-no-blur', index === lastPanelIndex));
+
 
             const exitSequenceDuration = totalPinDuration - horizontalPhaseEnd;
             if (exitSequenceDuration <= 0) return;
@@ -194,6 +204,12 @@ export function Hero() {
             -webkit-backdrop-filter: blur(12px) brightness(90%);
             border-left: 1px solid rgba(255, 255, 255, 0.05);
             will-change: opacity;
+            transition: backdrop-filter 0.5s ease;
+        }
+
+        .panel-no-blur {
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
         }
 
         .panel:first-child { border-left: none; }
