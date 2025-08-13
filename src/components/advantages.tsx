@@ -28,7 +28,6 @@ const stats = [
 
 export function Advantages() {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const [isStickySectionVisible, setIsStickySectionVisible] = useState(false);
     
     const stickyWrapperRef = useRef<HTMLDivElement>(null);
     const filmStripRef = useRef<HTMLDivElement>(null);
@@ -49,7 +48,6 @@ export function Advantages() {
             const wrapperRect = stickyWrapper.getBoundingClientRect();
             
             const isVisible = wrapperRect.top <= 0 && wrapperRect.bottom >= window.innerHeight;
-            setIsStickySectionVisible(isVisible);
             statsHeader.classList.toggle('visible', isVisible);
             progressIndicator.classList.toggle('visible', isVisible);
             if (!isVisible) return;
@@ -236,38 +234,36 @@ export function Advantages() {
             )}
 
             {/* Stats Section */}
-            <section className="stats-section relative">
-                <div ref={stickyWrapperRef} className="sticky-wrapper h-[400vh] relative">
-                    <div className="sticky-container sticky top-0 h-screen w-full overflow-hidden bg-white/85 backdrop-blur-xl border-y border-white/80">
-                        <div ref={statsHeaderRef} className="stats-header absolute top-10 left-10 z-50 transition-all duration-500 opacity-0 -translate-y-5">
-                            <p className="stats-pre-title flex items-center text-xs font-bold text-[#5B9DFF] tracking-[2px] uppercase"><span className="w-8 h-0.5 bg-[#5B9DFF] mr-3"></span>Our Track Record</p>
-                            <h3 className="stats-title text-2xl font-bold text-gray-800 mt-2">Proven Excellence</h3>
-                        </div>
-                        
-                        <div ref={filmStripRef} className="film-strip flex h-full w-[400%]">
-                            {stats.map((stat, index) => (
-                                <div key={stat.id} id={stat.id} ref={el => statCardsRef.current[index] = el} className="stat-card w-1/4 h-full flex flex-col justify-center items-center p-10 text-center relative">
-                                    <div className="stat-bg absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(91,157,255,0.05)_0%,transparent_70%)] opacity-0 transition-opacity duration-500"></div>
-                                    <span className="stat-number text-[clamp(64px,12vw,128px)] text-[#5B9DFF] font-bold leading-none z-10">{`0${stat.suffix}`}</span>
-                                    <p className="stat-description text-gray-800 font-semibold text-base tracking-wider uppercase max-w-sm mt-6 opacity-0 translate-y-8 transition-all duration-700 z-10">
-                                        {stat.description}
-                                        <span className="stat-highlight block text-[#5B9DFF] font-bold mt-2.5 text-sm tracking-normal normal-case">{stat.highlight}</span>
-                                    </p>
-                                </div>
-                            ))}
-                        </div>
-                        
-                        <div ref={progressIndicatorRef} className="progress-indicator absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-50 transition-opacity duration-300 opacity-0">
-                            {stats.map((_, index) => (
-                                <button
-                                    key={`dot-${index}`}
-                                    aria-label={`Go to slide ${index + 1}`}
-                                    onClick={() => handleDotClick(index)}
-                                    ref={el => progressDotsRef.current[index] = el}
-                                    className="progress-dot w-2.5 h-2.5 rounded-full bg-blue-500/30 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B9DFF] focus-visible:ring-offset-2"
-                                ></button>
-                            ))}
-                        </div>
+            <section className="stats-section relative h-[400vh]">
+                <div ref={stickyWrapperRef} className="sticky-container sticky top-0 h-screen w-full overflow-hidden bg-white/85 backdrop-blur-xl border-y border-white/80">
+                    <div ref={statsHeaderRef} className="stats-header absolute top-10 left-10 z-50 transition-all duration-500 opacity-0 -translate-y-5">
+                        <p className="stats-pre-title flex items-center text-xs font-bold text-[#5B9DFF] tracking-[2px] uppercase"><span className="w-8 h-0.5 bg-[#5B9DFF] mr-3"></span>Our Track Record</p>
+                        <h3 className="stats-title text-2xl font-bold text-gray-800 mt-2">Proven Excellence</h3>
+                    </div>
+                    
+                    <div ref={filmStripRef} className="film-strip flex h-full w-[400%]">
+                        {stats.map((stat, index) => (
+                            <div key={stat.id} id={stat.id} ref={el => statCardsRef.current[index] = el} className="stat-card w-1/4 h-full flex flex-col justify-center items-center p-10 text-center relative">
+                                <div className="stat-bg absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(91,157,255,0.05)_0%,transparent_70%)] opacity-0 transition-opacity duration-500"></div>
+                                <span className="stat-number text-[clamp(64px,12vw,128px)] text-[#5B9DFF] font-bold leading-none z-10">{`0${stat.suffix}`}</span>
+                                <p className="stat-description text-gray-800 font-semibold text-base tracking-wider uppercase max-w-sm mt-6 opacity-0 translate-y-8 transition-all duration-700 z-10">
+                                    {stat.description}
+                                    <span className="stat-highlight block text-[#5B9DFF] font-bold mt-2.5 text-sm tracking-normal normal-case">{stat.highlight}</span>
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                    
+                    <div ref={progressIndicatorRef} className="progress-indicator absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-50 transition-opacity duration-300 opacity-0">
+                        {stats.map((_, index) => (
+                            <button
+                                key={`dot-${index}`}
+                                aria-label={`Go to slide ${index + 1}`}
+                                onClick={() => handleDotClick(index)}
+                                ref={el => progressDotsRef.current[index] = el}
+                                className="progress-dot w-2.5 h-2.5 rounded-full bg-blue-500/30 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B9DFF] focus-visible:ring-offset-2"
+                            ></button>
+                        ))}
                     </div>
                 </div>
             </section>
