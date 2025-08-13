@@ -55,7 +55,7 @@ export function CoreValues() {
             --animation-step-active-until: 22%;
         }
 
-        .core-values-body {
+        .core-values-section {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: var(--light-bg);
             color: var(--dark-text);
@@ -70,6 +70,7 @@ export function CoreValues() {
             background-repeat: no-repeat;
             background-position: bottom center;
             background-size: cover;
+            width: 100%;
         }
 
         .main-container {
@@ -168,12 +169,14 @@ export function CoreValues() {
             font-size: 22px;
             margin: 0 0 10px 0;
             font-weight: 700;
+            color: var(--dark-text);
         }
 
         .panel-content p {
             font-size: 15px;
             line-height: 1.5;
             margin: 0;
+            color: var(--dark-text);
         }
 
         .panel-icon-container {
@@ -195,12 +198,10 @@ export function CoreValues() {
             0%, var(--animation-step-active-until) {
                 background-color: var(--brand-blue);
                 border-color: var(--brand-blue);
-                color: white;
             }
             var(--animation-step-duration), 100% {
                 background-color: white;
                 border-color: var(--border-color);
-                color: var(--dark-text);
             }
         }
 
@@ -209,61 +210,68 @@ export function CoreValues() {
             var(--animation-step-duration), 100% { opacity: 0; transform: translateY(10px); }
         }
 
-        @keyframes header-intro-fade {
+        @keyframes header-intro-color {
              0%, var(--animation-step-active-until) { color: white; }
              var(--animation-step-duration), 100% { color: var(--dark-text); }
         }
 
-        @keyframes icon-intro-fade {
+        @keyframes icon-intro-stroke {
             0%, var(--animation-step-active-until) { stroke: white; }
             var(--animation-step-duration), 100% { stroke: var(--light-text); }
         }
         
-        .intro-animation .step-panel { animation: panel-intro-activation var(--animation-total-duration) 1; }
-        .intro-animation .panel-content { animation: content-intro-fade var(--animation-total-duration) 1; }
-        .intro-animation .panel-header { animation: header-intro-fade var(--animation-total-duration) 1; }
-        .intro-animation .panel-icon-container svg { animation: icon-intro-fade var(--animation-total-duration) 1; }
+        .intro-animation .step-panel { 
+            animation: panel-intro-activation var(--animation-total-duration) 1; 
+        }
+        .intro-animation .panel-content { 
+            animation: content-intro-fade var(--animation-total-duration) 1; 
+        }
+        .intro-animation .panel-header {
+             animation: header-intro-color var(--animation-total-duration) 1;
+        }
+        .intro-animation .panel-icon-container svg {
+            animation: icon-intro-stroke var(--animation-total-duration) 1;
+        }
+        .intro-animation .panel-content h3,
+        .intro-animation .panel-content p {
+            animation: header-intro-color var(--animation-total-duration) 1;
+        }
         
-        #panel-1, #panel-1 .panel-content, #panel-1 .panel-header, #panel-1 .panel-icon-container svg { animation-delay: calc(var(--animation-total-duration) * -0.75); } /* starts at 0s */
-        #panel-2, #panel-2 .panel-content, #panel-2 .panel-header, #panel-2 .panel-icon-container svg { animation-delay: calc(var(--animation-total-duration) * -0.50); } /* starts at 3s */
-        #panel-3, #panel-3 .panel-content, #panel-3 .panel-header, #panel-3 .panel-icon-container svg { animation-delay: calc(var(--animation-total-duration) * -0.25); } /* starts at 6s */
-        #panel-4, #panel-4 .panel-content, #panel-4 .panel-header, #panel-4 .panel-icon-container svg { animation-delay: calc(var(--animation-total-duration) * 0);   }   /* starts at 9s */
+        #panel-1, #panel-1 .panel-content, #panel-1 .panel-header, #panel-1 .panel-icon-container svg, #panel-1 .panel-content h3, #panel-1 .panel-content p { animation-delay: calc(var(--animation-total-duration) * -0.75); } /* starts at 0s */
+        #panel-2, #panel-2 .panel-content, #panel-2 .panel-header, #panel-2 .panel-icon-container svg, #panel-2 .panel-content h3, #panel-2 .panel-content p { animation-delay: calc(var(--animation-total-duration) * -0.50); } /* starts at 3s */
+        #panel-3, #panel-3 .panel-content, #panel-3 .panel-header, #panel-3 .panel-icon-container svg, #panel-3 .panel-content h3, #panel-3 .panel-content p { animation-delay: calc(var(--animation-total-duration) * -0.25); } /* starts at 6s */
+        #panel-4, #panel-4 .panel-content, #panel-4 .panel-header, #panel-4 .panel-icon-container svg, #panel-4 .panel-content h3, #panel-4 .panel-content p { animation-delay: calc(var(--animation-total-duration) * 0);   }   /* starts at 9s */
 
         .intro-finished .step-panel:hover {
             background-color: var(--brand-blue);
             border-color: var(--brand-blue);
-            color: white;
             flex-grow: 4; /* Expand horizontally */
         }
-        .intro-finished .step-panel:hover .panel-header {
+        .intro-finished .step-panel:hover .panel-header,
+        .intro-finished .step-panel:hover .panel-content h3,
+        .intro-finished .step-panel:hover .panel-content p {
             color: white;
         }
         .intro-finished .step-panel:hover .panel-content {
             opacity: 1;
             transform: translateY(0);
         }
-        .intro-finished .step-panel:hover .panel-content p,
-        .intro-finished .step-panel:hover .panel-content h3 {
-             color: white;
+        .intro-finished .step-panel:hover .panel-content h3,
+        .intro-finished .step-panel:hover .panel-content p {
              font-weight: 600; 
         }
         .intro-finished .step-panel:hover .panel-icon-container svg {
             stroke: white;
         }
-
-        .intro-finished .panel-content h3, .intro-finished .panel-content p {
-            color: var(--dark-text);
-        }
-
+        
         @media (prefers-reduced-motion: reduce) {
-            .step-panel, .panel-content, .panel-header, .panel-icon-container svg {
+            .step-panel, .panel-content, .panel-header, .panel-icon-container svg, .panel-content h3, .panel-content p {
                 animation: none !important;
                 transition: none !important;
             }
             #panel-1 {
                 background-color: var(--brand-blue);
                 border-color: var(--brand-blue);
-                color: white;
             }
             #panel-1 .panel-header { color: white; }
             #panel-1 .panel-content { opacity: 1; transform: translateY(0); }
@@ -271,7 +279,7 @@ export function CoreValues() {
             #panel-1 .panel-icon-container svg { stroke: white; }
         }
       `}</style>
-      <div id="core-values" className="core-values-body">
+      <section id="core-values" className="core-values-section">
         <main className="main-container">
             <a href="#values-section" className="how-it-works-link">
                 <span className="dot"></span>
@@ -291,7 +299,7 @@ export function CoreValues() {
                         <p>You can depend on us to provide a lasting solution, even when it's tough. We focus on building long-term relationships.</p>
                     </div>
                     <div className="panel-icon-container">
-                        <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M12 2L4 5v6c0 5.55 3.58 10.42 8 12 4.42-1.58 8-6.45 8-12V5l-8-3z"></path></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M12 2L4 5v6c0 5.55 3.58 10.42 8 12 4.42-1.58 8-6.45 8-12V5l-8-3z"></path></svg>
                     </div>
                 </article>
 
@@ -305,7 +313,7 @@ export function CoreValues() {
                         <p>From our appearance to our workmanship, we hold ourselves to the highest standards to ensure our work always stands out.</p>
                     </div>
                     <div className="panel-icon-container">
-                         <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                     </div>
                 </article>
 
@@ -319,7 +327,7 @@ export function CoreValues() {
                         <p>We work in your private home or office with the utmost respect for your privacy, convenience, and comfort.</p>
                     </div>
                     <div className="panel-icon-container">
-                        <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                     </div>
                 </article>
 
@@ -333,12 +341,12 @@ export function CoreValues() {
                         <p>We will not take advantage of our clients. Our services and products will always match our promises, guaranteed.</p>
                     </div>
                     <div className="panel-icon-container">
-                        <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 22 12 17 17 22 15.79 13.88"></polyline></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 22 12 17 17 22 15.79 13.88"></polyline></svg>
                     </div>
                 </article>
             </section>
         </main>
-      </div>
+      </section>
     </>
   );
 }
