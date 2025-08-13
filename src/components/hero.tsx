@@ -17,7 +17,34 @@ export function Hero() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce) or (max-width: 767px)').matches) return;
+    const isMotionReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
+    // For mobile, we will use a different animation (fade in on scroll)
+    if (window.innerWidth < 767) {
+      if (isMotionReduced) return;
+
+      const mobilePanels = panelsRef.current.filter(p => p !== null) as HTMLElement[];
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          }
+        });
+      }, { threshold: 0.1 });
+
+      mobilePanels.forEach(panel => {
+        if(panel) observer.observe(panel);
+      });
+
+      return () => {
+        mobilePanels.forEach(panel => {
+          if(panel) observer.unobserve(panel);
+        });
+      };
+    }
+    
+    // Desktop scroll animation logic
+    if (isMotionReduced) return;
 
     const elements = {
         pinContainer: pinContainerRef.current,
@@ -205,7 +232,7 @@ export function Hero() {
             opacity: 0;
             transform: translateY(30px);
             transition: opacity 0.8s ease-out 0.3s, transform 0.8s ease-out 0.3s;
-            will-change: opacity;
+            will-change: opacity, transform;
         }
         .panel-content.is-visible {
             opacity: 1;
@@ -319,13 +346,14 @@ export function Hero() {
             50% { top: 20px; opacity: 0; }
             100% { top: 8px; opacity: 1; }
         }
+
         @media (max-width: 767px) {
             #pin-container {
-                height: auto;
+                height: auto; /* Let content dictate height */
             }
             #hero-viewport {
                 position: relative;
-                height: auto;
+                height: auto; 
             }
             #horizontal-track {
                 width: 100%;
@@ -334,18 +362,27 @@ export function Hero() {
             }
             .panel {
                 width: 100%;
-                height: 100vh;
+                height: 100vh; /* Each panel takes full viewport height */
                 min-height: 500px;
-                max-height: 700px;
+                max-height: 700px; /* Optional: cap height */
                 border-left: none;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                opacity: 0; /* Start invisible for animation */
+                transform: translateY(40px);
+                transition: opacity 1s ease-out, transform 1s ease-out;
+            }
+            .panel.is-visible {
+                opacity: 1;
+                transform: translateY(0);
             }
             .panel:last-child {
               border-bottom: none;
             }
+            /* The .is-visible class for panel-content is handled by the desktop JS, so we override it for mobile */
             .panel-content {
                 opacity: 1;
                 transform: translateY(0);
+                transition: none;
             }
             .panel-title {
                 font-size: clamp(2.5rem, 10vw, 3.5rem);
@@ -370,7 +407,7 @@ export function Hero() {
           </div>
           <div id="horizontal-track" ref={trackRef}>
             <section className="panel panel-1" ref={el => panelsRef.current[0] = el}>
-              <div className="panel-content is-visible" ref={el => panelContentsRef.current[0] = el}>
+              <div className="panel-content" ref={el => panelContentsRef.current[0] = el}>
                 <h1 className="panel-title">The Cool Alpine Experience—Anywhere</h1>
               </div>
             </section>
