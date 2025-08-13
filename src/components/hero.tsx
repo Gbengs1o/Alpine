@@ -15,10 +15,9 @@ export function Hero() {
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // A quick check to see if we're in an environment that supports window (i.e., the browser)
     if (typeof window === 'undefined') return;
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce) or (max-width: 767px)').matches) return;
 
     const elements = {
         pinContainer: pinContainerRef.current,
@@ -89,7 +88,7 @@ export function Hero() {
             });
 
             const exitSequenceDuration = totalPinDuration - horizontalPhaseEnd;
-            if (exitSequenceDuration <= 0) return; // Avoid division by zero
+            if (exitSequenceDuration <= 0) return;
             
             const exitProgress = (scrollTop - horizontalPhaseEnd) / exitSequenceDuration;
 
@@ -320,6 +319,44 @@ export function Hero() {
             50% { top: 20px; opacity: 0; }
             100% { top: 8px; opacity: 1; }
         }
+        @media (max-width: 767px) {
+            #pin-container {
+                height: auto;
+            }
+            #hero-viewport {
+                position: relative;
+                height: auto;
+            }
+            #horizontal-track {
+                width: 100%;
+                flex-direction: column;
+                height: auto;
+            }
+            .panel {
+                width: 100%;
+                height: 100vh;
+                min-height: 500px;
+                max-height: 700px;
+                border-left: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+            .panel:last-child {
+              border-bottom: none;
+            }
+            .panel-content {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .panel-title {
+                font-size: clamp(2.5rem, 10vw, 3.5rem);
+            }
+            .panel-subtitle {
+                font-size: clamp(1rem, 4vw, 1.2rem);
+            }
+            #scroll-indicator {
+                display: none;
+            }
+        }
       `}</style>
       <div id="pin-container" ref={pinContainerRef}>
         <div id="hero-viewport" ref={heroViewportRef}>
@@ -333,7 +370,7 @@ export function Hero() {
           </div>
           <div id="horizontal-track" ref={trackRef}>
             <section className="panel panel-1" ref={el => panelsRef.current[0] = el}>
-              <div className="panel-content" ref={el => panelContentsRef.current[0] = el}>
+              <div className="panel-content is-visible" ref={el => panelContentsRef.current[0] = el}>
                 <h1 className="panel-title">The Cool Alpine Experience—Anywhere</h1>
               </div>
             </section>
