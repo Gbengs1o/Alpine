@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
@@ -145,7 +144,7 @@ export function Hero() {
         #pin-container {
             height: calc(300vw + 250vh); 
             position: relative;
-            background-color: #020408;
+            background-color: #ffffff;
         }
         #hero-viewport {
             height: 100vh;
@@ -288,7 +287,7 @@ export function Hero() {
             z-index: 100;
             transition: opacity 0.5s ease;
             text-align: center;
-            color: rgba(255,255,255,0.7);
+            color: rgba(0,0,0,0.7);
         }
         #scroll-indicator span {
             display: block;
@@ -300,7 +299,7 @@ export function Hero() {
         .mouse-icon {
             width: 24px;
             height: 40px;
-            border: 2px solid rgba(255,255,255,0.7);
+            border: 2px solid rgba(0,0,0,0.7);
             border-radius: 12px;
             position: relative;
             margin: 0 auto;
@@ -308,7 +307,7 @@ export function Hero() {
         .mouse-wheel {
             width: 4px;
             height: 8px;
-            background: rgba(255,255,255,0.7);
+            background: rgba(0,0,0,0.7);
             border-radius: 2px;
             position: absolute;
             top: 8px;
