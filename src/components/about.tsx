@@ -41,12 +41,13 @@ export function About() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('animate-fade-in-slide');
+          } else {
+            entry.target.classList.remove('animate-fade-in-slide');
           }
         });
       },
       {
         threshold: 0.1,
-        triggerOnce: true,
       }
     );
 
