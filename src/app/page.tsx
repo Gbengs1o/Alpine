@@ -19,8 +19,8 @@ export default function Home() {
         <Advantages />
         <Services />
         <CoreValues />
-        <HvacEstimator />
         <Portfolio />
+        <HvacEstimator />
         <Contact />
       </main>
       <Footer />
