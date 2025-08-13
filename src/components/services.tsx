@@ -44,28 +44,26 @@ export function Services() {
     const [isDesktop, setIsDesktop] = useState(true);
     const descriptionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-    // Logic to handle accordion/slider switch on resize
+    // Accordion and Slider logic
     useEffect(() => {
         const handleResize = () => {
             const newIsDesktop = window.innerWidth >= 1024; // lg breakpoint
-            if (newIsDesktop !== isDesktop) {
-                setIsDesktop(newIsDesktop);
-            }
+            setIsDesktop(newIsDesktop);
         };
 
         handleResize(); // Initial check
         window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, [isDesktop]);
 
-    // Accordion logic
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    // Accordion height logic
     useEffect(() => {
         if (isDesktop) {
-            const descriptions = descriptionRefs.current;
-            const activeDesc = descriptions[activeIndex];
+            const activeDesc = descriptionRefs.current[activeIndex];
             if (activeDesc) {
                 // Set height for active item
-                descriptions.forEach((desc, i) => {
+                descriptionRefs.current.forEach((desc, i) => {
                     if (desc) {
                         desc.style.maxHeight = i === activeIndex ? `${desc.scrollHeight}px` : '0px';
                     }
@@ -86,10 +84,11 @@ export function Services() {
     const sliderTrackRef = useRef<HTMLDivElement>(null);
 
     const goToSlide = (slideIndex: number) => {
-        if (sliderTrackRef.current) {
-            sliderTrackRef.current.style.transform = `translateX(-${slideIndex * 100}%)`;
-            setCurrentSlide(slideIndex);
+        const slider = sliderTrackRef.current;
+        if(slider) {
+            slider.style.transform = `translateX(-${slideIndex * 100}%)`;
         }
+        setCurrentSlide(slideIndex);
     };
 
     const nextSlide = () => {
