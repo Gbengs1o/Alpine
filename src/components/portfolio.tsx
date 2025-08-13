@@ -54,20 +54,23 @@ const duplicatedProjects = [...projects, ...projects];
 function ProjectCard({ title, category, description, image }: Project) {
     return (
         <div
-            className="group relative h-[450px] flex-none rounded-lg overflow-hidden flex items-end bg-cover bg-center border border-slate-700
-                       w-[80%] sm:w-[48%] md:w-[32%] mr-4 md:mr-[2%]"
-            style={{ backgroundImage: `url(${image})` }}
+            className="project-card group relative h-[450px] flex-none rounded-lg overflow-hidden flex items-end bg-cover bg-center border"
+            style={{ 
+              backgroundImage: `url(${image})`,
+              borderColor: '#30363d',
+              flex: '0 0 32%',
+              marginRight: '2%',
+            }}
         >
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
-
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent z-0"></div>
             <div className="relative z-10 p-6 md:p-8 text-white">
-                <span className="inline-block bg-blue-500 text-white px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider mb-4">
+                <span className="project-category inline-block px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider mb-4" style={{ backgroundColor: '#5d99f7', color: '#f0f6fc'}}>
                     {category}
                 </span>
-                <h3 className="text-2xl font-bold leading-tight mb-2">
+                <h3 className="project-title text-2xl font-bold leading-tight mb-2">
                     {title}
                 </h3>
-                <p className="text-sm text-slate-300 leading-relaxed">
+                <p className="project-description text-sm leading-relaxed" style={{color: '#c9d1d9'}}>
                     {description}
                 </p>
             </div>
@@ -75,26 +78,21 @@ function ProjectCard({ title, category, description, image }: Project) {
     );
 }
 
-export function Portfolio() {
+export default function Portfolio() {
     const trackRef = useRef<HTMLDivElement>(null);
+    const viewportRef = useRef<HTMLDivElement>(null);
     const animationFrameId = useRef<number>();
 
     const animateScroll = useCallback(() => {
-        const track = trackRef.current;
-        if (!track) return;
+        if (!trackRef.current) return;
+        trackRef.current.style.transform = `translateX(${parseFloat(getComputedStyle(trackRef.current).transform.split(',')[4] || '0') - 1}px)`;
 
-        track.style.transition = 'none';
-        const currentTransform = new DOMMatrix(getComputedStyle(track).transform).e;
-        let newTransform = currentTransform - 1;
-
-        const cardWidth = (track.children[0] as HTMLElement).offsetWidth + parseFloat(getComputedStyle(track.children[0]).marginRight);
+        const cardWidth = trackRef.current.children[0].getBoundingClientRect().width + parseFloat(getComputedStyle(trackRef.current.children[0]).marginRight);
         const scrollWidth = cardWidth * projects.length;
 
-        if (Math.abs(newTransform) >= scrollWidth) {
-            newTransform = 0;
+        if (Math.abs(parseFloat(getComputedStyle(trackRef.current).transform.split(',')[4] || '0')) >= scrollWidth) {
+            trackRef.current.style.transform = 'translateX(0px)';
         }
-
-        track.style.transform = `translateX(${newTransform}px)`;
         animationFrameId.current = requestAnimationFrame(animateScroll);
     }, []);
 
@@ -111,38 +109,49 @@ export function Portfolio() {
 
     useEffect(() => {
         const startTimeout = setTimeout(startAutoScroll, 100);
+        const viewport = viewportRef.current;
+        if(viewport) {
+            viewport.addEventListener('mouseenter', stopAutoScroll);
+            viewport.addEventListener('mouseleave', startAutoScroll);
+        }
         return () => {
             clearTimeout(startTimeout);
             stopAutoScroll();
+            if(viewport) {
+                viewport.removeEventListener('mouseenter', stopAutoScroll);
+                viewport.removeEventListener('mouseleave', startAutoScroll);
+            }
         };
     }, [startAutoScroll]);
 
     return (
         <section
             id="portfolio"
-            className="w-full bg-[#0d1117] text-white py-20 relative overflow-hidden"
-            style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/blueprint.png')" }}
+            className="w-full text-white py-20 relative overflow-hidden"
+            style={{ 
+              backgroundColor: "#0d1117",
+              backgroundImage: "url('https://www.transparenttextures.com/patterns/blueprint.png')"
+            }}
         >
             <div className="w-[90%] max-w-7xl mx-auto">
                 <div className="text-center mb-8 md:mb-16">
-                    <a href="#portfolio" className="inline-flex items-center gap-2 text-xs font-bold tracking-wider mb-6 text-slate-400">
-                        <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                    <a href="#portfolio" className="inline-flex items-center gap-2 text-xs font-bold tracking-wider mb-6" style={{color: "#c9d1d9"}}>
+                        <span className="w-2 h-2 rounded-full" style={{backgroundColor: "#5d99f7"}}></span>
                         OUR PORTFOLIO
                     </a>
                     <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
                         A Showcase<br />Of Our Work
                     </h2>
-                    <p className="text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
+                    <p className="text-lg max-w-2xl mx-auto leading-relaxed" style={{color: "#c9d1d9"}}>
                         From large-scale commercial VRF systems to residential units, we deliver top-tier HVAC solutions. Explore some of our featured projects.
                     </p>
                 </div>
             </div>
 
             <div
+                ref={viewportRef}
                 className="slider-viewport"
                 style={{ WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)', maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)' }}
-                onMouseEnter={stopAutoScroll}
-                onMouseLeave={startAutoScroll}
             >
                 <div ref={trackRef} className="flex will-change-transform">
                     {duplicatedProjects.map((project, index) => (
@@ -153,7 +162,7 @@ export function Portfolio() {
 
             <div className="text-center mt-8 md:mt-16">
                 <Link href="/portfolio" passHref>
-                    <button className="bg-blue-600 text-white font-semibold px-8 py-3 rounded-lg shadow-lg shadow-blue-500/20 hover:bg-blue-700 hover:-translate-y-0.5 transition-all duration-300">
+                    <button className="bg-blue-600 text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:-translate-y-0.5 transition-all duration-300" style={{boxShadow: '0 4px 14px 0 rgba(93, 153, 247, 0.39)'}}>
                         View More Projects
                     </button>
                 </Link>
