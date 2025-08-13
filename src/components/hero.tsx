@@ -1,7 +1,9 @@
+
 "use client";
 
 import { useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 export function Hero() {
   const pinContainerRef = useRef<HTMLDivElement>(null);
@@ -67,13 +69,19 @@ export function Hero() {
         }
         
         if (scrollTop <= horizontalPhaseEnd) {
-            const progress = scrollTop / horizontalPhaseEnd;
-            elements.track.style.transform = `translateX(-${progress * (elements.track.offsetWidth - window.innerWidth)}px)`;
-            const currentPanelIndex = Math.min(lastPanelIndex, Math.floor(progress * numPanels));
-            
-            elements.panelContents.forEach((content, index) => {
-              content.classList.toggle('is-visible', index === currentPanelIndex)
-            });
+            // New logic: Only show panel content if user has started scrolling
+            if (scrollTop === 0) {
+              elements.panelContents.forEach(content => content.classList.remove('is-visible'));
+            } else {
+              const progress = scrollTop / horizontalPhaseEnd;
+              const currentPanelIndex = Math.min(lastPanelIndex, Math.floor(progress * numPanels));
+              
+              elements.panelContents.forEach((content, index) => {
+                content.classList.toggle('is-visible', index === currentPanelIndex);
+              });
+            }
+
+            elements.panels.forEach(p => p.classList.remove('panel-no-blur'));
             
             elements.heroViewport.style.opacity = '1';
             elements.lastPanel.style.opacity = '1';
@@ -81,6 +89,9 @@ export function Hero() {
         } else {
             elements.track.style.transform = `translateX(-${elements.track.offsetWidth - window.innerWidth}px)`;
             elements.panelContents.forEach((content, index) => content.classList.toggle('is-visible', index === lastPanelIndex));
+            if (elements.lastPanel) {
+                elements.lastPanel.classList.add('panel-no-blur');
+            }
 
             const exitSequenceDuration = totalPinDuration - horizontalPhaseEnd;
             if (exitSequenceDuration <= 0) return;
@@ -201,6 +212,11 @@ export function Hero() {
             transition: backdrop-filter 0.5s ease;
         }
 
+        .panel.panel-no-blur {
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+
         .panel:first-child { border-left: none; }
 
         .panel-content {
@@ -209,7 +225,7 @@ export function Hero() {
             transform: translateY(30px);
             transition: opacity 0.8s ease-out 0.3s, transform 0.8s ease-out 0.3s;
             will-change: opacity;
-            color: #eef2f9; /* Set text color explicitly for hero */
+            color: #eef2f9; 
         }
         
         .panel-content.is-visible {
@@ -305,7 +321,7 @@ export function Hero() {
                   <p className="panel-subtitle">With over 13 years in the industry, our team of certified technicians delivers reliable installation, maintenance, and repair for residential and commercial spaces.</p>
                 </div>
               </section>
-              <section className="panel panel-3" ref={el => { panelsRef.current[2] = el; lastPanelRef.current = el; }}>
+              <section className={cn("panel panel-3")} ref={el => { panelsRef.current[2] = el; lastPanelRef.current = el; }}>
                 <div className="panel-content" ref={el => { panelContentsRef.current[2] = el; }}>
                   <h2 className="panel-title">EXPERIENCE COOLING AT ITS PEAK</h2>
                   <p className="panel-subtitle">Premium HVAC Solutions for Every Space – Powered by Alpine Tech.</p>
@@ -322,9 +338,6 @@ export function Hero() {
           <span>Scroll to explore</span>
           <div className="mouse-icon"><div className="mouse-wheel"></div></div>
         </div>
-      </div>
-      <div style={{ height: '100vh', background: '#020408', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '1rem' }}>
-        <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', color: '#eef2f9' }}>The Next Section is Now Revealed.</h2>
       </div>
     </>
   );
