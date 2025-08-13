@@ -45,9 +45,42 @@ export function Services() {
     const descriptionRefs = useRef<(HTMLDivElement | null)[]>([]);
     const [currentSlide, setCurrentSlide] = useState(0);
 
+    const [touchStart, setTouchStart] = useState<number | null>(null);
+    const [touchEnd, setTouchEnd] = useState<number | null>(null);
+    
+    // the required distance between touchStart and touchEnd to be detected as a swipe
+    const minSwipeDistance = 50;
+
+    const onTouchStart = (e: React.TouchEvent) => {
+        setTouchEnd(null); // otherwise the swipe is fired even with a single click
+        setTouchStart(e.targetTouches[0].clientX);
+    };
+
+    const onTouchMove = (e: React.TouchEvent) => {
+        setTouchEnd(e.targetTouches[0].clientX);
+    };
+
+    const onTouchEnd = () => {
+        if (!touchStart || !touchEnd) return;
+        const distance = touchStart - touchEnd;
+        const isLeftSwipe = distance > minSwipeDistance;
+        const isRightSwipe = distance < -minSwipeDistance;
+
+        if (isLeftSwipe) {
+            nextSlide();
+        }
+        if (isRightSwipe) {
+            prevSlide();
+        }
+        // reset
+        setTouchStart(null);
+        setTouchEnd(null);
+    };
+
+
     useEffect(() => {
         const handleResize = () => {
-            setIsDesktop(window.innerWidth >= 768); // Use tablet breakpoint
+            setIsDesktop(window.innerWidth >= 992); // Set to tablet breakpoint
         };
         handleResize();
         window.addEventListener('resize', handleResize);
@@ -152,7 +185,7 @@ export function Services() {
     );
 
     const MobileLayout = () => (
-      <div className="lg:hidden">
+      <div className="lg:hidden" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
          <div className="overflow-hidden">
             <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
               {servicesData.map((service, index) => (
