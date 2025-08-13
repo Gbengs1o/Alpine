@@ -20,7 +20,7 @@ export function Hero() {
     const isMotionReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     
     // For mobile, we will use a different animation (fade in on scroll)
-    if (window.innerWidth < 767) {
+    if (window.innerWidth < 768) {
       if (isMotionReduced) return;
 
       const mobilePanels = panelsRef.current.filter(p => p !== null) as HTMLElement[];
@@ -363,11 +363,12 @@ export function Hero() {
             .panel {
                 width: 100%;
                 height: 100vh; /* Each panel takes full viewport height */
-                min-height: 500px;
-                max-height: 700px; /* Optional: cap height */
+                min-height: 600px;
+                max-height: 800px; /* Optional: cap height */
                 border-left: none;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-                opacity: 0; /* Start invisible for animation */
+                /* Styles for mobile animation */
+                opacity: 0;
                 transform: translateY(40px);
                 transition: opacity 1s ease-out, transform 1s ease-out;
             }
