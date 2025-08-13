@@ -2,7 +2,8 @@
 
 import { useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
+// I'm assuming you have a cn utility, but it's not used in this component.
+// import { cn } from '@/lib/utils'; 
 
 export function Hero() {
   const pinContainerRef = useRef<HTMLDivElement>(null);
@@ -19,18 +20,19 @@ export function Hero() {
 
     const isMotionReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     
-    // For mobile, we will use a different animation (fade in on scroll)
+    // For mobile, we use a simpler fade-in-on-scroll animation
     if (window.innerWidth < 768) {
       if (isMotionReduced) return;
 
       const mobilePanels = panelsRef.current.filter(p => p !== null) as HTMLElement[];
+      
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             entry.target.classList.add('is-visible');
           }
         });
-      }, { threshold: 0.1 });
+      }, { threshold: 0.2 }); // A threshold of 0.2 feels better on mobile
 
       mobilePanels.forEach(panel => {
         if(panel) observer.observe(panel);
@@ -167,6 +169,7 @@ export function Hero() {
   return (
     <>
       <style jsx>{`
+        /* --- DESKTOP FIRST STYLES --- */
         #pin-container {
             height: calc(300vw + 250vh); 
             position: relative;
@@ -221,10 +224,11 @@ export function Hero() {
             backdrop-filter: blur(12px) brightness(90%);
             -webkit-backdrop-filter: blur(12px) brightness(90%);
             border-left: 1px solid rgba(255, 255, 255, 0.05);
-            will-change: opacity;
             color: #eef2f9;
         }
         .panel:first-child { border-left: none; }
+
+        /* The content inside the panel has its own animation */
         .panel-content {
             z-index: 1;
             max-width: 800px;
@@ -234,6 +238,7 @@ export function Hero() {
             transition: opacity 0.8s ease-out 0.3s, transform 0.8s ease-out 0.3s;
             will-change: opacity, transform;
         }
+        /* JS toggles this class for both desktop and mobile logic */
         .panel-content.is-visible {
             opacity: 1;
             transform: translateY(0);
@@ -315,13 +320,6 @@ export function Hero() {
             text-align: center;
             color: rgba(0,0,0,0.7);
         }
-        #scroll-indicator span {
-            display: block;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
         .mouse-icon {
             width: 24px;
             height: 40px;
@@ -347,14 +345,17 @@ export function Hero() {
             100% { top: 8px; opacity: 1; }
         }
 
+        /* --- MOBILE STYLES & FIXES --- */
         @media (max-width: 767px) {
+            /* 1. Disable the desktop "pinning" scroll effect */
             #pin-container {
-                height: auto; /* Let content dictate height */
-            }
-            #hero-viewport {
-                position: relative;
                 height: auto; 
             }
+            #hero-viewport {
+                position: relative; /* Un-stick the viewport */
+                height: auto; 
+            }
+            /* 2. Stack panels vertically instead of horizontally */
             #horizontal-track {
                 width: 100%;
                 flex-direction: column;
@@ -362,29 +363,20 @@ export function Hero() {
             }
             .panel {
                 width: 100%;
-                height: 100vh; /* Each panel takes full viewport height */
-                min-height: 600px;
-                max-height: 800px; /* Optional: cap height */
+                height: 100vh; /* Make each panel a full screen scroll */
+                min-height: 650px; /* Ensure content fits on small screens */
                 border-left: none;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-                /* Styles for mobile animation */
-                opacity: 0;
-                transform: translateY(40px);
-                transition: opacity 1s ease-out, transform 1s ease-out;
-            }
-            .panel.is-visible {
-                opacity: 1;
-                transform: translateY(0);
             }
             .panel:last-child {
               border-bottom: none;
             }
-            /* The .is-visible class for panel-content is handled by the desktop JS, so we override it for mobile */
-            .panel-content {
+            /* 3. The FIX: Animate the content, not the panel */
+            .panel.is-visible .panel-content {
                 opacity: 1;
                 transform: translateY(0);
-                transition: none;
             }
+            /* 4. Adjust typography and hide desktop-only elements */
             .panel-title {
                 font-size: clamp(2.5rem, 10vw, 3.5rem);
             }
