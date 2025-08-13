@@ -3,7 +3,6 @@
 import { useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 
-// Define the type for a single project
 type Project = {
     title: string;
     category: string;
@@ -11,8 +10,6 @@ type Project = {
     image: string;
 };
 
-// --- DATA SOURCE ---
-// This data can come from a CMS, an API, or be static like this.
 const projects: Project[] = [
     {
         title: "Braithwaite Memorial Hospital",
@@ -52,10 +49,8 @@ const projects: Project[] = [
     }
 ];
 
-// Create a duplicated list for the "infinite" scroll effect
 const duplicatedProjects = [...projects, ...projects];
 
-// --- ProjectCard Sub-Component ---
 function ProjectCard({ title, category, description, image }: Project) {
     return (
         <div
@@ -80,8 +75,6 @@ function ProjectCard({ title, category, description, image }: Project) {
     );
 }
 
-
-// --- Main Portfolio Component ---
 export function Portfolio() {
     const trackRef = useRef<HTMLDivElement>(null);
     const animationFrameId = useRef<number>();
@@ -126,8 +119,7 @@ export function Portfolio() {
 
     return (
         <section
-            id="portfolio"
-            className="w-full bg-[#0d1117] py-20 relative overflow-hidden"
+            className="w-full h-full flex flex-col justify-center bg-[#0d1117] text-white"
             style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/blueprint.png')" }}
         >
             <div className="w-[90%] max-w-7xl mx-auto">
@@ -136,7 +128,7 @@ export function Portfolio() {
                         <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
                         OUR PORTFOLIO
                     </a>
-                    <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-6 text-white">
+                    <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
                         A Showcase<br />Of Our Work
                     </h2>
                     <p className="text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">

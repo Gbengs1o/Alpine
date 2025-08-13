@@ -18,8 +18,16 @@ export default function Page() {
         <About />
         <Advantages />
         <Services />
-        <CoreValues />
-        <Portfolio />
+
+        <div className="sticky-container">
+          <div className="sticky-panel">
+            <CoreValues />
+          </div>
+          <div className="scroll-over-panel">
+            <Portfolio />
+          </div>
+        </div>
+
         <HvacEstimator />
         <Contact />
       </main>
