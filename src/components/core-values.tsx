@@ -136,6 +136,7 @@ export function CoreValues() {
             position: relative;
             overflow: hidden;
             box-sizing: border-box;
+            color: var(--dark-text);
         }
 
         .panel-header {
@@ -251,6 +252,7 @@ export function CoreValues() {
             background-color: var(--brand-blue);
             border-color: var(--brand-blue);
             flex-grow: 4; /* Expand horizontally */
+            color: white;
         }
         .intro-finished .step-panel:hover .panel-header,
         .intro-finished .step-panel:hover .panel-content h3,
