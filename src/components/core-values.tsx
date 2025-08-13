@@ -34,24 +34,15 @@ export function CoreValues() {
     // Cleanup function to remove event listener
     return () => {
         clearTimeout(introTimeout);
-        stepsContainer.removeEventListener("mouseenter", handleMouseEnter);
+        if (stepsContainer) {
+            stepsContainer.removeEventListener("mouseenter", handleMouseEnter);
+        }
     };
   }, []);
 
   return (
     <>
       <style jsx>{`
-        /* 
-        IMPROVEMENT SUMMARY:
-        1. UX & Accessibility: The infinite animation is replaced with a single playthrough on load.
-           After the intro, users can hover to inspect any value at their own pace.
-        2. Reduced Motion Support: Animations are disabled for users who prefer reduced motion.
-        3. Code Maintainability: Repetitive keyframe animations have been consolidated into a single,
-           reusable set, orchestrated with 'animation-delay' for much cleaner CSS.
-        4. Semantic HTML: The document structure has been improved with <main>, <section>, and <article> tags.
-        5. Hover Effect: The hovered card now expands horizontally, pushing its siblings aside.
-        */
-        
         :root {
             --brand-blue: #5d99f7;
             --light-bg: #f8f9fa;
@@ -200,17 +191,16 @@ export function CoreValues() {
             transition: stroke 0.4s ease;
         }
         
-        /* --- Animation & Interaction Logic --- */
-        
-        /* The single animation that all panels will use */
         @keyframes panel-intro-activation {
             0%, var(--animation-step-active-until) {
                 background-color: var(--brand-blue);
                 border-color: var(--brand-blue);
+                color: white;
             }
             var(--animation-step-duration), 100% {
                 background-color: white;
                 border-color: var(--border-color);
+                color: var(--dark-text);
             }
         }
 
@@ -218,18 +208,27 @@ export function CoreValues() {
             0%, var(--animation-step-active-until) { opacity: 1; transform: translateY(0); }
             var(--animation-step-duration), 100% { opacity: 0; transform: translateY(10px); }
         }
+
+        @keyframes header-intro-fade {
+             0%, var(--animation-step-active-until) { color: white; }
+             var(--animation-step-duration), 100% { color: var(--dark-text); }
+        }
+
+        @keyframes icon-intro-fade {
+            0%, var(--animation-step-active-until) { stroke: white; }
+            var(--animation-step-duration), 100% { stroke: var(--light-text); }
+        }
         
-        /* Apply animations with a single iteration and a calculated delay */
         .intro-animation .step-panel { animation: panel-intro-activation var(--animation-total-duration) 1; }
         .intro-animation .panel-content { animation: content-intro-fade var(--animation-total-duration) 1; }
+        .intro-animation .panel-header { animation: header-intro-fade var(--animation-total-duration) 1; }
+        .intro-animation .panel-icon-container svg { animation: icon-intro-fade var(--animation-total-duration) 1; }
         
-        /* Updated delays for 4 panels */
-        #panel-1 { animation-delay: calc(var(--animation-total-duration) * -0.75); } /* starts at 0s */
-        #panel-2 { animation-delay: calc(var(--animation-total-duration) * -0.50); } /* starts at 3s */
-        #panel-3 { animation-delay: calc(var(--animation-total-duration) * -0.25); } /* starts at 6s */
-        #panel-4 { animation-delay: calc(var(--animation-total-duration) * 0);   }   /* starts at 9s */
+        #panel-1, #panel-1 .panel-content, #panel-1 .panel-header, #panel-1 .panel-icon-container svg { animation-delay: calc(var(--animation-total-duration) * -0.75); } /* starts at 0s */
+        #panel-2, #panel-2 .panel-content, #panel-2 .panel-header, #panel-2 .panel-icon-container svg { animation-delay: calc(var(--animation-total-duration) * -0.50); } /* starts at 3s */
+        #panel-3, #panel-3 .panel-content, #panel-3 .panel-header, #panel-3 .panel-icon-container svg { animation-delay: calc(var(--animation-total-duration) * -0.25); } /* starts at 6s */
+        #panel-4, #panel-4 .panel-content, #panel-4 .panel-header, #panel-4 .panel-icon-container svg { animation-delay: calc(var(--animation-total-duration) * 0);   }   /* starts at 9s */
 
-        /* After intro, hover takes over. The .intro-finished className is added by JS. */
         .intro-finished .step-panel:hover {
             background-color: var(--brand-blue);
             border-color: var(--brand-blue);
@@ -245,19 +244,22 @@ export function CoreValues() {
         }
         .intro-finished .step-panel:hover .panel-content p,
         .intro-finished .step-panel:hover .panel-content h3 {
-             font-weight: 600; /* Improve readability on blue background */
+             color: white;
+             font-weight: 600; 
         }
         .intro-finished .step-panel:hover .panel-icon-container svg {
             stroke: white;
         }
 
-        /* Accessibility: Respect user's choice to reduce motion */
+        .intro-finished .panel-content h3, .intro-finished .panel-content p {
+            color: var(--dark-text);
+        }
+
         @media (prefers-reduced-motion: reduce) {
-            .step-panel, .panel-content {
+            .step-panel, .panel-content, .panel-header, .panel-icon-container svg {
                 animation: none !important;
                 transition: none !important;
             }
-            /* Show the first panel as active by default for reduced motion users */
             #panel-1 {
                 background-color: var(--brand-blue);
                 border-color: var(--brand-blue);
@@ -265,6 +267,7 @@ export function CoreValues() {
             }
             #panel-1 .panel-header { color: white; }
             #panel-1 .panel-content { opacity: 1; transform: translateY(0); }
+            #panel-1 .panel-content h3, #panel-1 .panel-content p { color: white; }
             #panel-1 .panel-icon-container svg { stroke: white; }
         }
       `}</style>
