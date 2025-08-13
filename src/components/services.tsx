@@ -42,12 +42,12 @@ const servicesData = [
 export function Services() {
     const [activeIndex, setActiveIndex] = useState(0);
     const [isDesktop, setIsDesktop] = useState(true);
-    const descriptionRefs = useRef<(HTMLParagraphElement | null)[]>([]);
+    const descriptionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
     // Logic to handle accordion/slider switch on resize
     useEffect(() => {
         const handleResize = () => {
-            const newIsDesktop = window.innerWidth >= 992;
+            const newIsDesktop = window.innerWidth >= 1024; // lg breakpoint
             if (newIsDesktop !== isDesktop) {
                 setIsDesktop(newIsDesktop);
             }
@@ -109,7 +109,7 @@ export function Services() {
     );
 
     const DesktopLayout = () => (
-      <div className="hidden md:grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-12 xl:gap-24 items-start">
+      <div className="hidden lg:grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-12 xl:gap-24 items-start">
         <div className="lg:sticky top-20 h-auto lg:h-[calc(100vh-10rem)] self-start">
           <div className="relative w-full max-w-md mx-auto aspect-square bg-white/50 rounded-2xl backdrop-blur-md shadow-lg">
             {servicesData.map((service, index) => (
@@ -172,7 +172,7 @@ export function Services() {
     );
 
     const MobileLayout = () => (
-      <div className="md:hidden">
+      <div className="lg:hidden">
          <div className="overflow-hidden">
             <div ref={sliderTrackRef} className="flex transition-transform duration-500 ease-in-out">
               {servicesData.map((service, index) => (
