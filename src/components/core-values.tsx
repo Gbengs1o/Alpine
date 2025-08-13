@@ -166,6 +166,7 @@ export function CoreValues() {
             margin: 0 0 10px 0;
             font-weight: 700;
             color: var(--dark-text);
+            transition: color 0.4s ease;
         }
 
         .panel-content p {
@@ -173,6 +174,7 @@ export function CoreValues() {
             line-height: 1.5;
             margin: 0;
             color: var(--dark-text);
+            transition: color 0.4s ease;
         }
 
         .panel-icon-container {
@@ -210,6 +212,11 @@ export function CoreValues() {
              0%, var(--animation-step-active-until) { color: white; }
              var(--animation-step-duration), 100% { color: var(--dark-text); }
         }
+        
+        @keyframes p-intro-color {
+             0%, var(--animation-step-active-until) { color: white; }
+             var(--animation-step-duration), 100% { color: var(--dark-text); }
+        }
 
         @keyframes icon-intro-stroke {
             0%, var(--animation-step-active-until) { stroke: white; }
@@ -228,15 +235,17 @@ export function CoreValues() {
         .intro-animation .panel-icon-container svg {
             animation: icon-intro-stroke var(--animation-total-duration) 1;
         }
-        .intro-animation .panel-content h3,
-        .intro-animation .panel-content p {
+        .intro-animation .panel-content h3 {
             animation: header-intro-color var(--animation-total-duration) 1;
         }
+        .intro-animation .panel-content p {
+            animation: p-intro-color var(--animation-total-duration) 1;
+        }
         
-        #panel-1, #panel-1 .panel-content, #panel-1 .panel-header, #panel-1 .panel-icon-container svg, #panel-1 .panel-content h3, #panel-1 .panel-content p { animation-delay: calc(var(--animation-total-duration) * -0.75); } /* starts at 0s */
-        #panel-2, #panel-2 .panel-content, #panel-2 .panel-header, #panel-2 .panel-icon-container svg, #panel-2 .panel-content h3, #panel-2 .panel-content p { animation-delay: calc(var(--animation-total-duration) * -0.50); } /* starts at 3s */
-        #panel-3, #panel-3 .panel-content, #panel-3 .panel-header, #panel-3 .panel-icon-container svg, #panel-3 .panel-content h3, #panel-3 .panel-content p { animation-delay: calc(var(--animation-total-duration) * -0.25); } /* starts at 6s */
-        #panel-4, #panel-4 .panel-content, #panel-4 .panel-header, #panel-4 .panel-icon-container svg, #panel-4 .panel-content h3, #panel-4 .panel-content p { animation-delay: calc(var(--animation-total-duration) * 0);   }   /* starts at 9s */
+        .intro-animation #panel-1, .intro-animation #panel-1 .panel-content, .intro-animation #panel-1 .panel-header, .intro-animation #panel-1 .panel-icon-container svg, .intro-animation #panel-1 .panel-content h3, .intro-animation #panel-1 .panel-content p { animation-delay: calc(var(--animation-total-duration) * -0.75); } /* starts at 0s */
+        .intro-animation #panel-2, .intro-animation #panel-2 .panel-content, .intro-animation #panel-2 .panel-header, .intro-animation #panel-2 .panel-icon-container svg, .intro-animation #panel-2 .panel-content h3, .intro-animation #panel-2 .panel-content p { animation-delay: calc(var(--animation-total-duration) * -0.50); } /* starts at 3s */
+        .intro-animation #panel-3, .intro-animation #panel-3 .panel-content, .intro-animation #panel-3 .panel-header, .intro-animation #panel-3 .panel-icon-container svg, .intro-animation #panel-3 .panel-content h3, .intro-animation #panel-3 .panel-content p { animation-delay: calc(var(--animation-total-duration) * -0.25); } /* starts at 6s */
+        .intro-animation #panel-4, .intro-animation #panel-4 .panel-content, .intro-animation #panel-4 .panel-header, .intro-animation #panel-4 .panel-icon-container svg, .intro-animation #panel-4 .panel-content h3, .intro-animation #panel-4 .panel-content p { animation-delay: calc(var(--animation-total-duration) * 0);   }   /* starts at 9s */
 
         .intro-finished .step-panel:hover {
             background-color: var(--brand-blue);
@@ -252,10 +261,12 @@ export function CoreValues() {
             opacity: 1;
             transform: translateY(0);
         }
+        
         .intro-finished .step-panel:hover .panel-content h3,
         .intro-finished .step-panel:hover .panel-content p {
              font-weight: 600; 
         }
+
         .intro-finished .step-panel:hover .panel-icon-container svg {
             stroke: white;
         }
