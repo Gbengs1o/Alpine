@@ -1,60 +1,52 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 export function CoreValues() {
   const stepsContainerRef = useRef<HTMLElement | null>(null);
+  const [isIntroFinished, setIntroFinished] = useState(false);
 
   useEffect(() => {
     const stepsContainer = stepsContainerRef.current;
     if (!stepsContainer) return;
 
-    // This small script manages the transition from the intro animation to user-controlled hover.
-    const animationDuration = 12000; // Must match --animation-total-duration in CSS (12s)
+    const animationDuration = 12000;
 
-    // After the intro animation finishes, switch to a hover-based interaction model.
     const switchToHover = () => {
-        stepsContainer.classList.remove("intro-animation");
-        stepsContainer.classList.add("intro-finished");
+      setIntroFinished(true);
     };
 
-    // Set a timeout to switch after the animation completes.
     const introTimeout = setTimeout(switchToHover, animationDuration);
 
-    // If the user interacts with the container before the animation is done,
-    // switch to hover mode immediately for a better user experience.
     const handleMouseEnter = () => {
-        clearTimeout(introTimeout); // Cancel the scheduled switch
-        switchToHover();
+      clearTimeout(introTimeout);
+      switchToHover();
     };
     
-    stepsContainer.addEventListener("mouseenter", handleMouseEnter, { once: true }); // Listener only needs to fire once
+    stepsContainer.addEventListener("mouseenter", handleMouseEnter, { once: true });
     
-    // Cleanup function to remove event listener
     return () => {
-        clearTimeout(introTimeout);
-        if (stepsContainer) {
-            stepsContainer.removeEventListener("mouseenter", handleMouseEnter);
-        }
+      clearTimeout(introTimeout);
+      stepsContainer.removeEventListener("mouseenter", handleMouseEnter);
     };
   }, []);
 
   return (
     <>
-      <style jsx>{`
+      <style jsx global>{`
         :root {
             --brand-blue: #5d99f7;
             --light-bg: #f8f9fa;
             --dark-text: #212529;
             --light-text: #6c757d;
             --border-color: #e9ecef;
-            /* Updated for 4 panels */
-            --animation-total-duration: 12s; /* 3s per value */
-            --animation-step-duration: 25%; /* Each step is active for 22% of the time, with a 3% gap */
+            --animation-total-duration: 12s;
+            --animation-step-duration: 25%;
             --animation-step-active-until: 22%;
         }
-
+      `}</style>
+      <style jsx>{`
         .core-values-section {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: var(--light-bg);
@@ -68,7 +60,6 @@ export function CoreValues() {
             box-sizing: border-box;
             width: 100%;
         }
-
         .main-container {
             width: 100%;
             max-width: 1200px;
@@ -76,7 +67,6 @@ export function CoreValues() {
             flex-direction: column;
             align-items: center;
         }
-
         .how-it-works-link {
             display: flex;
             align-items: center;
@@ -89,14 +79,12 @@ export function CoreValues() {
             margin-bottom: 24px;
             align-self: flex-start;
         }
-
         .how-it-works-link .dot {
             width: 8px;
             height: 8px;
             background-color: var(--brand-blue);
             border-radius: 50%;
         }
-
         .main-title {
             font-size: clamp(2.5rem, 5vw, 3.5rem);
             font-weight: 700;
@@ -105,7 +93,6 @@ export function CoreValues() {
             line-height: 1.1;
             margin: 0 0 24px 0;
         }
-
         .subtitle {
             font-size: 18px;
             color: var(--light-text);
@@ -114,14 +101,12 @@ export function CoreValues() {
             line-height: 1.6;
             margin-bottom: 48px;
         }
-
         .steps-container {
             display: flex;
             flex-wrap: wrap;
             width: 100%;
             gap: 16px;
         }
-
         .step-panel {
             flex: 1;
             min-width: 220px;
@@ -136,9 +121,7 @@ export function CoreValues() {
             position: relative;
             overflow: hidden;
             box-sizing: border-box;
-            color: var(--dark-text);
         }
-
         .panel-header {
             display: flex;
             align-items: center;
@@ -148,20 +131,19 @@ export function CoreValues() {
             font-weight: 600;
             z-index: 2;
             transition: color 0.4s ease;
+            color: var(--dark-text);
         }
-        
         .panel-content {
             text-align: left;
             opacity: 0;
             transform: translateY(10px);
-            transition: all 0.4s ease;
+            transition: opacity 0.4s ease, transform 0.4s ease;
             z-index: 2;
             position: absolute;
             bottom: 90px;
             left: 24px;
             right: 24px;
         }
-
         .panel-content h3 {
             font-size: 22px;
             margin: 0 0 10px 0;
@@ -169,15 +151,13 @@ export function CoreValues() {
             color: var(--dark-text);
             transition: color 0.4s ease;
         }
-
         .panel-content p {
             font-size: 15px;
             line-height: 1.5;
             margin: 0;
-            color: var(--dark-text);
+            color: var(--light-text);
             transition: color 0.4s ease;
         }
-
         .panel-icon-container {
             height: 50px;
             display: flex;
@@ -185,7 +165,6 @@ export function CoreValues() {
             justify-content: flex-start;
             z-index: 2;
         }
-        
         .panel-icon-container svg {
             width: 48px;
             height: 48px;
@@ -193,35 +172,37 @@ export function CoreValues() {
             transition: stroke 0.4s ease;
         }
         
-        @keyframes panel-intro-activation {
-            0%, var(--animation-step-active-until) {
-                background-color: var(--brand-blue);
-                border-color: var(--brand-blue);
-            }
-            var(--animation-step-duration), 100% {
-                background-color: white;
-                border-color: var(--border-color);
-            }
+        @keyframes panel-intro-activation { 
+            0%, var(--animation-step-active-until) { 
+                background-color: var(--brand-blue); 
+                border-color: var(--brand-blue); 
+            } 
+            var(--animation-step-duration), 100% { 
+                background-color: white; 
+                border-color: var(--border-color); 
+            } 
         }
-
-        @keyframes content-intro-fade {
-            0%, var(--animation-step-active-until) { opacity: 1; transform: translateY(0); }
-            var(--animation-step-duration), 100% { opacity: 0; transform: translateY(10px); }
+        @keyframes content-intro-fade { 
+            0%, var(--animation-step-active-until) { 
+                opacity: 1; 
+                transform: translateY(0); 
+            } 
+            var(--animation-step-duration), 100% { 
+                opacity: 0; 
+                transform: translateY(10px); 
+            } 
         }
-
-        @keyframes header-intro-color {
-             0%, var(--animation-step-active-until) { color: white; }
-             var(--animation-step-duration), 100% { color: var(--dark-text); }
+        @keyframes color-intro-change {
+            0%, var(--animation-step-active-until) { color: white; }
+            var(--animation-step-duration), 100% { color: inherit; }
         }
-        
-        @keyframes p-intro-color {
-             0%, var(--animation-step-active-until) { color: white; }
-             var(--animation-step-duration), 100% { color: var(--dark-text); }
+        @keyframes p-color-intro-change {
+            0%, var(--animation-step-active-until) { color: white; }
+            var(--animation-step-duration), 100% { color: var(--light-text); }
         }
-
-        @keyframes icon-intro-stroke {
-            0%, var(--animation-step-active-until) { stroke: white; }
-            var(--animation-step-duration), 100% { stroke: var(--light-text); }
+        @keyframes icon-intro-stroke { 
+            0%, var(--animation-step-active-until) { stroke: white; } 
+            var(--animation-step-duration), 100% { stroke: var(--light-text); } 
         }
         
         .intro-animation .step-panel { 
@@ -230,128 +211,97 @@ export function CoreValues() {
         .intro-animation .panel-content { 
             animation: content-intro-fade var(--animation-total-duration) 1; 
         }
-        .intro-animation .panel-header {
-             animation: header-intro-color var(--animation-total-duration) 1;
-        }
-        .intro-animation .panel-icon-container svg {
-            animation: icon-intro-stroke var(--animation-total-duration) 1;
-        }
-        .intro-animation .panel-content h3 {
-            animation: header-intro-color var(--animation-total-duration) 1;
+        .intro-animation .panel-header, .intro-animation .panel-content h3 { 
+            animation: color-intro-change var(--animation-total-duration) 1; 
         }
         .intro-animation .panel-content p {
-            animation: p-intro-color var(--animation-total-duration) 1;
+            animation: p-color-intro-change var(--animation-total-duration) 1;
         }
-        
-        .intro-animation #panel-1, .intro-animation #panel-1 .panel-content, .intro-animation #panel-1 .panel-header, .intro-animation #panel-1 .panel-icon-container svg, .intro-animation #panel-1 .panel-content h3, .intro-animation #panel-1 .panel-content p { animation-delay: calc(var(--animation-total-duration) * -0.75); } /* starts at 0s */
-        .intro-animation #panel-2, .intro-animation #panel-2 .panel-content, .intro-animation #panel-2 .panel-header, .intro-animation #panel-2 .panel-icon-container svg, .intro-animation #panel-2 .panel-content h3, .intro-animation #panel-2 .panel-content p { animation-delay: calc(var(--animation-total-duration) * -0.50); } /* starts at 3s */
-        .intro-animation #panel-3, .intro-animation #panel-3 .panel-content, .intro-animation #panel-3 .panel-header, .intro-animation #panel-3 .panel-icon-container svg, .intro-animation #panel-3 .panel-content h3, .intro-animation #panel-3 .panel-content p { animation-delay: calc(var(--animation-total-duration) * -0.25); } /* starts at 6s */
-        .intro-animation #panel-4, .intro-animation #panel-4 .panel-content, .intro-animation #panel-4 .panel-header, .intro-animation #panel-4 .panel-icon-container svg, .intro-animation #panel-4 .panel-content h3, .intro-animation #panel-4 .panel-content p { animation-delay: calc(var(--animation-total-duration) * 0);   }   /* starts at 9s */
+        .intro-animation .panel-icon-container svg { 
+            animation: icon-intro-stroke var(--animation-total-duration) 1; 
+        }
 
-        .intro-finished .step-panel:hover {
-            background-color: var(--brand-blue);
-            border-color: var(--brand-blue);
-            flex-grow: 4; /* Expand horizontally */
-            color: white;
+        .intro-animation #panel-1, .intro-animation #panel-1 > * { animation-delay: -9s; }
+        .intro-animation #panel-2, .intro-animation #panel-2 > * { animation-delay: -6s; }
+        .intro-animation #panel-3, .intro-animation #panel-3 > * { animation-delay: -3s; }
+        .intro-animation #panel-4, .intro-animation #panel-4 > * { animation-delay: 0s; }
+        
+        .intro-finished .step-panel:hover { 
+            background-color: var(--brand-blue); 
+            border-color: var(--brand-blue); 
+            flex-grow: 4; 
         }
         .intro-finished .step-panel:hover .panel-header,
         .intro-finished .step-panel:hover .panel-content h3,
-        .intro-finished .step-panel:hover .panel-content p {
-            color: white;
+        .intro-finished .step-panel:hover .panel-content p { 
+            color: white; 
         }
-        .intro-finished .step-panel:hover .panel-content {
-            opacity: 1;
-            transform: translateY(0);
+        .intro-finished .step-panel:hover .panel-content { 
+            opacity: 1; 
+            transform: translateY(0); 
         }
-        
-        .intro-finished .step-panel:hover .panel-content h3,
-        .intro-finished .step-panel:hover .panel-content p {
-             font-weight: 600; 
+        .intro-finished .step-panel:hover .panel-icon-container svg { 
+            stroke: white; 
         }
 
-        .intro-finished .step-panel:hover .panel-icon-container svg {
-            stroke: white;
-        }
-        
         @media (prefers-reduced-motion: reduce) {
-            .step-panel, .panel-content, .panel-header, .panel-icon-container svg, .panel-content h3, .panel-content p {
-                animation: none !important;
-                transition: none !important;
-            }
-            #panel-1 {
-                background-color: var(--brand-blue);
-                border-color: var(--brand-blue);
-            }
-            #panel-1 .panel-header { color: white; }
-            #panel-1 .panel-content { opacity: 1; transform: translateY(0); }
-            #panel-1 .panel-content h3, #panel-1 .panel-content p { color: white; }
-            #panel-1 .panel-icon-container svg { stroke: white; }
+          .step-panel, .panel-content, .panel-header, .panel-icon-container svg, .panel-content h3, .panel-content p {
+            animation: none !important;
+            transition: none !important;
+          }
+          #panel-1 { background-color: var(--brand-blue); border-color: var(--brand-blue); }
+          #panel-1 .panel-header, #panel-1 .panel-content h3, #panel-1 .panel-content p { color: white; }
+          #panel-1 .panel-content { opacity: 1; transform: translateY(0); }
+          #panel-1 .panel-icon-container svg { stroke: white; }
         }
       `}</style>
-      <section id="core-values" className="core-values-section">
+      
+      <section className="core-values-section">
         <main className="main-container">
-            <a href="#values-section" className="how-it-works-link">
+            <a href="#core-values" className="how-it-works-link">
                 <span className="dot"></span>
                 OUR PROMISE
             </a>
             <h1 className="main-title" id="values-section-title">The Principles<br/>That Guide Us</h1>
             <p className="subtitle">More than just a service, we're a commitment. These four pillars define every interaction and ensure your complete satisfaction and comfort.</p>
 
-            <section ref={stepsContainerRef} className="steps-container intro-animation" id="steps-section" aria-labelledby="values-section-title">
-                {/* Value 1: Reliability */}
+            <section
+              ref={stepsContainerRef}
+              className={cn('steps-container', { 'intro-animation': !isIntroFinished, 'intro-finished': isIntroFinished })}
+              id="steps-section"
+              aria-labelledby="values-section-title"
+            >
                 <article className="step-panel" id="panel-1">
-                    <div className="panel-header">
-                        <span className="step-title">Reliability</span>
-                    </div>
+                    <div className="panel-header"><span className="step-title">Reliability</span></div>
                     <div className="panel-content">
                         <h3>Always There For You</h3>
                         <p>You can depend on us to provide a lasting solution, even when it's tough. We focus on building long-term relationships.</p>
                     </div>
-                    <div className="panel-icon-container">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M12 2L4 5v6c0 5.55 3.58 10.42 8 12 4.42-1.58 8-6.45 8-12V5l-8-3z"></path></svg>
-                    </div>
+                    <div className="panel-icon-container"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 2L4 5v6c0 5.55 3.58 10.42 8 12 4.42-1.58 8-6.45 8-12V5l-8-3z"></path></svg></div>
                 </article>
-
-                {/* Value 2: Professionalism */}
                 <article className="step-panel" id="panel-2">
-                    <div className="panel-header">
-                        <span className="step-title">Professionalism</span>
-                    </div>
+                    <div className="panel-header"><span className="step-title">Professionalism</span></div>
                     <div className="panel-content">
                         <h3>Excellence in Every Detail</h3>
                         <p>From our appearance to our workmanship, we hold ourselves to the highest standards to ensure our work always stands out.</p>
                     </div>
-                    <div className="panel-icon-container">
-                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                    </div>
+                    <div className="panel-icon-container"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"></path><circle cx="12" cy="12" r="3"></circle></svg></div>
                 </article>
-
-                {/* Value 3: Courtesy */}
                 <article className="step-panel" id="panel-3">
-                    <div className="panel-header">
-                        <span className="step-title">Courtesy</span>
-                    </div>
-                     <div className="panel-content">
+                    <div className="panel-header"><span className="step-title">Courtesy</span></div>
+                    <div className="panel-content">
                         <h3>Respect for Your Space</h3>
                         <p>We work in your private home or office with the utmost respect for your privacy, convenience, and comfort.</p>
                     </div>
-                    <div className="panel-icon-container">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                    </div>
+                    <div className="panel-icon-container"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
                 </article>
-
-                {/* Value 4: Integrity */}
                 <article className="step-panel" id="panel-4">
-                    <div className="panel-header">
-                        <span className="step-title">Integrity</span>
-                    </div>
-                     <div className="panel-content">
-                        <h3>Honest &amp; Transparent</h3>
+                    <div className="panel-header"><span className="step-title">Integrity</span></div>
+                    <div className="panel-content">
+                        <h3>Honest & Transparent</h3>
                         <p>We will not take advantage of our clients. Our services and products will always match our promises, guaranteed.</p>
                     </div>
-                    <div className="panel-icon-container">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 22 12 17 17 22 15.79 13.88"></polyline></svg>
-                    </div>
+                    <div className="panel-icon-container"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 22 12 17 17 22 15.79 13.88"></polyline></svg></div>
                 </article>
             </section>
         </main>
