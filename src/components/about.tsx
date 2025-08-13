@@ -83,32 +83,36 @@ export function About() {
 
         {/* Timeline Section */}
         <div className="bg-gradient-to-b from-[#f8fbff] to-[#f0f4f8] py-16 px-4 md:py-24">
-            <div className="max-w-5xl mx-auto">
-                <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Our Journey</h2>
-                    <p className="text-lg text-gray-600">Building excellence through innovation and dedication</p>
-                </div>
-
-                <div className="relative">
-                    <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 via-blue-300 to-blue-500/30 transform -translate-x-1/2 hidden md:block"></div>
-                    
-                    {timelineData.map((item, index) => (
-                        <div key={item.year} className="relative mb-12 md:mb-0">
-                            <div className="hidden md:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 bg-gradient-to-br from-blue-500 to-blue-400 rounded-full shadow-md ring-8 ring-white z-10"></div>
-                            <div className={`flex flex-col md:flex-row items-center ${index % 2 === 0 ? 'md:flex-row-reverse' : ''}`}>
-                                 <div className="md:w-5/12"></div>
-                                 <div className="md:w-2/12"></div>
-                                 <div className="w-full md:w-5/12 p-6 bg-white rounded-xl shadow-lg border border-gray-200/80 hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
-                                    <span className="inline-block bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-3">{item.year}</span>
-                                    <h3 className="text-xl font-bold text-gray-800 mb-2">{item.title}</h3>
-                                    <p className="text-sm text-gray-600 leading-relaxed">{item.description}</p>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Our Journey</h2>
+              <p className="text-lg text-gray-600">Building excellence through innovation and dedication</p>
             </div>
+
+            <div className="relative">
+              {/* This is the line for the timeline */}
+              <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 via-blue-300 to-blue-500/30 transform md:-translate-x-1/2"></div>
+              
+              {timelineData.map((item, index) => (
+                <div key={item.year} className="relative mb-12 last:mb-0 group/item">
+                  <div className="md:hidden absolute top-1 left-4 -translate-x-1/2 w-5 h-5 bg-gradient-to-br from-blue-500 to-blue-400 rounded-full shadow-md ring-8 ring-white z-10"></div>
+                  <div className="hidden md:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 bg-gradient-to-br from-blue-500 to-blue-400 rounded-full shadow-md ring-8 ring-white z-10"></div>
+                  
+                  <div className={`flex flex-col md:flex-row items-center ${index % 2 === 0 ? 'md:flex-row-reverse' : ''}`}>
+                    <div className="md:w-5/12"></div>
+                    <div className="md:w-2/12"></div>
+                    <div className="w-full md:w-5/12 p-6 bg-white rounded-xl shadow-lg border border-gray-200/80 transition-all duration-500 opacity-0 translate-x-[-20px] group-hover/item:opacity-100 group-hover/item:translate-x-0 ml-12 md:ml-0">
+                      <span className="inline-block bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-3">{item.year}</span>
+                      <h3 className="text-xl font-bold text-gray-800 mb-2">{item.title}</h3>
+                      <p className="text-sm text-gray-600 leading-relaxed">{item.description}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
+
 
         {/* CTA Section */}
         <div className="bg-gradient-to-t from-[#f8fbff] to-[#f0f4f8] text-center py-16 px-4 md:py-24">
