@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from 'react';
+import Link from 'next/link';
 
 // Define the type for a single project
 type Project = {
@@ -55,7 +56,6 @@ const projects: Project[] = [
 const duplicatedProjects = [...projects, ...projects];
 
 // --- ProjectCard Sub-Component ---
-// It's good practice to break down UI into smaller, reusable components.
 function ProjectCard({ title, category, description, image }: Project) {
     return (
         <div
@@ -63,7 +63,6 @@ function ProjectCard({ title, category, description, image }: Project) {
                        w-[80%] sm:w-[48%] md:w-[32%] mr-4 md:mr-[2%]"
             style={{ backgroundImage: `url(${image})` }}
         >
-            {/* Dark gradient overlay for text readability */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
 
             <div className="relative z-10 p-6 md:p-8 text-white">
@@ -87,19 +86,17 @@ export function Portfolio() {
     const trackRef = useRef<HTMLDivElement>(null);
     const animationFrameId = useRef<number>();
 
-    // We use useCallback to memoize these functions so they aren't recreated on every render
     const animateScroll = useCallback(() => {
         const track = trackRef.current;
         if (!track) return;
 
-        track.style.transition = 'none'; // Disable transition for smooth, continuous animation
+        track.style.transition = 'none';
         const currentTransform = new DOMMatrix(getComputedStyle(track).transform).e;
         let newTransform = currentTransform - 1;
 
         const cardWidth = (track.children[0] as HTMLElement).offsetWidth + parseFloat(getComputedStyle(track.children[0]).marginRight);
         const scrollWidth = cardWidth * projects.length;
 
-        // If we've scrolled past the first set of items, reset to the beginning
         if (Math.abs(newTransform) >= scrollWidth) {
             newTransform = 0;
         }
@@ -109,7 +106,7 @@ export function Portfolio() {
     }, []);
 
     const startAutoScroll = useCallback(() => {
-        stopAutoScroll(); // Ensure no multiple loops are running
+        stopAutoScroll();
         animationFrameId.current = requestAnimationFrame(animateScroll);
     }, [animateScroll]);
 
@@ -119,45 +116,6 @@ export function Portfolio() {
         }
     };
 
-    const manualMove = useCallback((direction: 'next' | 'prev') => {
-        const track = trackRef.current;
-        if (!track) return;
-
-        stopAutoScroll();
-        track.style.transition = 'transform 0.7s ease-in-out'; // Re-enable for manual clicks
-
-        const cardWidth = (track.children[0] as HTMLElement).offsetWidth + parseFloat(getComputedStyle(track.children[0]).marginRight);
-        const currentTransform = new DOMMatrix(getComputedStyle(track).transform).e;
-        
-        // Snap to the nearest card
-        let targetTransform = direction === 'next'
-            ? Math.floor(currentTransform / cardWidth) * cardWidth - cardWidth
-            : Math.ceil(currentTransform / cardWidth) * cardWidth + cardWidth;
-
-        const scrollWidth = cardWidth * projects.length;
-        
-        // Logic to handle the infinite loop illusion when clicking buttons
-        let tempTransform = currentTransform;
-        if (targetTransform > 0) {
-            track.style.transition = 'none';
-            tempTransform -= scrollWidth;
-            track.style.transform = `translateX(${tempTransform}px)`;
-            targetTransform = tempTransform + cardWidth;
-        } else if (Math.abs(targetTransform) >= scrollWidth * 1.5) {
-            track.style.transition = 'none';
-            tempTransform += scrollWidth;
-            track.style.transform = `translateX(${tempTransform}px)`;
-            targetTransform = tempTransform - cardWidth;
-        }
-
-        setTimeout(() => {
-            if (!track) return;
-            track.style.transition = 'transform 0.7s ease-in-out';
-            track.style.transform = `translateX(${targetTransform}px)`;
-        }, 20); // A small delay to ensure the browser applies the instant transform first
-    }, []);
-
-    // Effect to start and stop the animation
     useEffect(() => {
         const startTimeout = setTimeout(startAutoScroll, 100);
         return () => {
@@ -168,12 +126,13 @@ export function Portfolio() {
 
     return (
         <section
+            id="portfolio"
             className="w-full bg-[#0d1117] text-white py-20 relative overflow-hidden"
             style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/blueprint.png')" }}
         >
             <div className="w-[90%] max-w-7xl mx-auto">
                 <div className="text-center mb-16">
-                    <a href="#" className="inline-flex items-center gap-2 text-xs font-bold tracking-wider mb-6 text-slate-400">
+                    <a href="#portfolio" className="inline-flex items-center gap-2 text-xs font-bold tracking-wider mb-6 text-slate-400">
                         <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
                         OUR PORTFOLIO
                     </a>
@@ -186,9 +145,9 @@ export function Portfolio() {
                 </div>
             </div>
 
-            {/* The faded-out edges are created with a CSS mask */}
             <div
                 className="slider-viewport"
+                style={{ WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)', maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)' }}
                 onMouseEnter={stopAutoScroll}
                 onMouseLeave={startAutoScroll}
             >
@@ -199,21 +158,12 @@ export function Portfolio() {
                 </div>
             </div>
 
-            <div className="absolute bottom-10 left-[5%] md:left-[calc(50%-580px)] flex gap-3 z-20">
-                <button
-                    onClick={() => manualMove('prev')}
-                    aria-label="Previous Project"
-                    className="w-11 h-11 rounded-full border border-white/20 bg-black/30 text-white text-2xl flex items-center justify-center transition-colors hover:bg-white/20 backdrop-blur-sm"
-                >
-                    &larr;
-                </button>
-                <button
-                    onClick={() => manualMove('next')}
-                    aria-label="Next Project"
-                    className="w-11 h-11 rounded-full border border-white/20 bg-black/30 text-white text-2xl flex items-center justify-center transition-colors hover:bg-white/20 backdrop-blur-sm"
-                >
-                    &rarr;
-                </button>
+            <div className="text-center mt-16">
+                <Link href="/portfolio" passHref>
+                    <button className="bg-blue-600 text-white font-semibold px-8 py-3 rounded-lg shadow-lg shadow-blue-500/20 hover:bg-blue-700 hover:-translate-y-0.5 transition-all duration-300">
+                        View More Projects
+                    </button>
+                </Link>
             </div>
         </section>
     );
