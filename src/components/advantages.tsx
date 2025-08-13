@@ -8,14 +8,14 @@ import { Button } from '@/components/ui/button';
 
 // Data for team members
 const teamMembers = [
-  { name: 'Alex Thompson', role: 'Lead Technician', src: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80' },
-  { name: 'Mike Rodriguez', role: 'HVAC Specialist', src: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80' },
-  { name: 'Sarah Chen', role: 'Installation Expert', src: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80' },
-  { name: 'David Wilson', role: 'Service Manager', src: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80' },
-  { name: 'Lisa Johnson', role: 'Customer Care', src: 'https://images.unsplash.com/photo-1494790108377-2616b2234843?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80' },
-  { name: 'James Brown', role: 'Field Supervisor', src: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80' },
-  { name: 'Emma Davis', role: 'Quality Assurance', src: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80' },
-  { name: 'Carlos Martinez', role: 'Senior Technician', src: 'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80' },
+  { name: 'Alex Thompson', role: 'Lead Technician & Safety Specialist', src: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80' },
+  { name: 'Mike Rodriguez', role: 'HVAC Systems Expert', src: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80' },
+  { name: 'Sarah Chen', role: 'Installation & Maintenance Pro', src: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80' },
+  { name: 'David Wilson', role: 'Service Manager & Quality Control', src: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80' },
+  { name: 'Lisa Johnson', role: 'Customer Relations Specialist', src: 'https://images.unsplash.com/photo-1494790108377-2616b2234843?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80' },
+  { name: 'James Brown', role: 'Field Operations Supervisor', src: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80' },
+  { name: 'Emma Davis', role: 'Quality Assurance & Training', src: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80' },
+  { name: 'Carlos Martinez', role: 'Senior Technical Advisor', src: 'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80' },
 ];
 
 // Data for the scrolling statistics cards
@@ -37,6 +37,80 @@ export function Advantages() {
     const progressIndicatorRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        const teamAvatars = document.getElementById('teamAvatars');
+        const teamPopup = document.getElementById('teamPopup');
+        const popupClose = document.getElementById('popupClose');
+
+        if (!teamAvatars || !teamPopup || !popupClose) return;
+
+        let hoverTimeout: NodeJS.Timeout;
+
+        const showPopup = () => {
+            setIsPopupOpen(true);
+            document.body.style.overflow = 'hidden';
+        };
+
+        const hidePopup = () => {
+            setIsPopupOpen(false);
+            document.body.style.overflow = '';
+        };
+
+        const handleMouseEnter = () => {
+            clearTimeout(hoverTimeout);
+            if (window.innerWidth > 768) {
+                hoverTimeout = setTimeout(showPopup, 500);
+            }
+        };
+
+        const handleMouseLeave = () => {
+            clearTimeout(hoverTimeout);
+            if (window.innerWidth > 768) {
+                hoverTimeout = setTimeout(hidePopup, 800);
+            }
+        };
+
+        const handlePopupMouseEnter = () => clearTimeout(hoverTimeout);
+        const handlePopupMouseLeave = () => { if (window.innerWidth > 768) hidePopup(); };
+        const handleClick = (e: MouseEvent) => {
+            e.preventDefault();
+            if (window.innerWidth <= 768 || !isPopupOpen) {
+                showPopup();
+            }
+        };
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                showPopup();
+            }
+        };
+        const handlePopupClick = (e: MouseEvent) => { if (e.target === teamPopup) hidePopup(); };
+        const handleEscapeKey = (e: KeyboardEvent) => { if (e.key === 'Escape') hidePopup(); };
+        
+        teamAvatars.addEventListener('mouseenter', handleMouseEnter);
+        teamAvatars.addEventListener('mouseleave', handleMouseLeave);
+        teamAvatars.addEventListener('click', handleClick as EventListener);
+        teamAvatars.addEventListener('keydown', handleKeyDown as EventListener);
+        teamPopup.addEventListener('mouseenter', handlePopupMouseEnter);
+        teamPopup.addEventListener('mouseleave', handlePopupMouseLeave);
+        popupClose.addEventListener('click', hidePopup);
+        teamPopup.addEventListener('click', handlePopupClick as EventListener);
+        document.addEventListener('keydown', handleEscapeKey);
+
+        return () => {
+            teamAvatars.removeEventListener('mouseenter', handleMouseEnter);
+            teamAvatars.removeEventListener('mouseleave', handleMouseLeave);
+            teamAvatars.removeEventListener('click', handleClick as EventListener);
+            teamAvatars.removeEventListener('keydown', handleKeyDown as EventListener);
+            teamPopup.removeEventListener('mouseenter', handlePopupMouseEnter);
+            teamPopup.removeEventListener('mouseleave', handlePopupMouseLeave);
+            popupClose.removeEventListener('click', hidePopup);
+            teamPopup.removeEventListener('click', handlePopupClick as EventListener);
+            document.removeEventListener('keydown', handleEscapeKey);
+        };
+    }, [isPopupOpen]);
+
+
+    useEffect(() => {
         const handleScroll = () => {
             const stickyWrapper = stickyWrapperRef.current;
             const filmStrip = filmStripRef.current;
@@ -48,8 +122,10 @@ export function Advantages() {
             const wrapperRect = stickyWrapper.getBoundingClientRect();
             
             const isVisible = wrapperRect.top <= 0 && wrapperRect.bottom >= window.innerHeight;
+
             statsHeader.classList.toggle('visible', isVisible);
             progressIndicator.classList.toggle('visible', isVisible);
+            
             if (!isVisible) return;
 
             const scrollableHeight = stickyWrapper.offsetHeight - window.innerHeight;
@@ -80,13 +156,7 @@ export function Advantages() {
                 ticking = true;
             }
         };
-
-        window.addEventListener('scroll', onScroll, { passive: true });
-        onScroll();
-        return () => window.removeEventListener('scroll', onScroll);
-    }, []);
-
-    useEffect(() => {
+        
         const animateValue = (obj: HTMLElement, start: number, end: number, duration: number, suffix: string) => {
             let startTimestamp: number | null = null;
             const step = (timestamp: number) => {
@@ -121,25 +191,15 @@ export function Advantages() {
         statCardsRef.current.forEach(card => {
             if (card) observer.observe(card);
         });
-
-        return () => observer.disconnect();
-    }, []);
-
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') setIsPopupOpen(false);
-        };
-        if (isPopupOpen) {
-            document.body.style.overflow = 'hidden';
-            window.addEventListener('keydown', handleKeyDown);
-        } else {
-            document.body.style.overflow = '';
-        }
+        
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll(); // Initial call
+        
         return () => {
-            document.body.style.overflow = '';
-            window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('scroll', onScroll);
+            observer.disconnect();
         };
-    }, [isPopupOpen]);
+    }, []);
     
     const handleDotClick = (index: number) => {
         const stickyWrapper = stickyWrapperRef.current;
@@ -157,135 +217,572 @@ export function Advantages() {
     };
 
     return (
-        <div className="bg-gradient-to-b from-blue-50 to-blue-100/60 text-gray-800 overflow-x-hidden">
-             {/* Hero Section */}
-            <section className="min-h-screen flex items-center relative bg-[radial-gradient(circle_at_20%_80%,rgba(91,157,255,0.1)_0%,transparent_50%),radial-gradient(circle_at_80%_20%,rgba(91,157,255,0.1)_0%,transparent_50%)]">
-                <header className="grid md:grid-cols-[1fr_auto] gap-10 md:gap-16 items-start max-w-7xl mx-auto px-5 py-10 md:py-20 w-full z-10">
-                    <div className="header-content max-w-xl text-center md:text-left">
-                        <p className="section-pre-title flex items-center justify-center md:justify-start text-sm font-semibold tracking-[2px] text-gray-500 uppercase mb-5 opacity-0 animate-slide-in-up">
-                           <span className="text-lg font-bold text-[#5B9DFF] mr-2">•</span>Why Choose Alpine Tech
-                        </p>
-                        <h1 className="section-title text-[clamp(36px,6vw,64px)] font-bold text-gray-800 leading-tight mb-7 opacity-0 animate-slide-in-up" style={{animationDelay: '0.2s'}}>Your Trusted Partner For Total Comfort</h1>
-                        <p className="section-subtitle text-lg text-gray-600 leading-relaxed opacity-0 animate-slide-in-up" style={{animationDelay: '0.4s'}}>Experience unmatched HVAC expertise with over a decade of proven reliability, cutting-edge solutions, and customer-first service that keeps your home comfortable year-round.</p>
-                    </div>
-                    
-                    <div className="team-showcase flex flex-col items-center md:items-end gap-5 opacity-0 animate-slide-in-right" style={{animationDelay: '0.6s'}}>
-                        <div 
-                            className="team-card bg-white/90 backdrop-blur-md border border-white/60 rounded-2xl p-6 shadow-lg shadow-blue-500/10 transition-all duration-300 cursor-pointer w-full max-w-sm md:min-w-[320px] text-center hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B9DFF] focus-visible:ring-offset-2"
-                            onClick={() => setIsPopupOpen(true)}
-                            onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setIsPopupOpen(true)}
-                            tabIndex={0}
-                            role="button"
-                            aria-label="View our expert team"
-                        >
-                            <div className="team-label text-xs font-semibold text-gray-500 tracking-wider uppercase mb-4">Meet Our Expert Team</div>
-                            <div className="team-avatars flex items-center justify-center relative mb-4">
-                                {teamMembers.slice(0, 3).map((member) => (
-                                    <Image key={member.name} src={member.src} alt={member.name} width={44} height={44} className="rounded-full border-[3px] border-white -ml-2 first:ml-0 hover:scale-110 hover:z-10 transition-transform shadow-md" />
-                                ))}
-                                <div className="avatar-more w-11 h-11 rounded-full border-[3px] border-white -ml-2 bg-gradient-to-br from-[#5B9DFF] to-blue-400 text-white flex items-center justify-center text-xs font-bold hover:scale-110 transition-transform shadow-md">
-                                    +9
-                                </div>
+        <>
+        <style jsx>{`
+            .hero-section {
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                position: relative;
+                background: 
+                    radial-gradient(circle at 20% 80%, rgba(91, 157, 255, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(91, 157, 255, 0.1) 0%, transparent 50%);
+            }
+            .page-header {
+                display: grid;
+                grid-template-columns: 1fr auto;
+                gap: 60px;
+                align-items: start;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 40px 20px;
+                width: 100%;
+                position: relative;
+                z-index: 10;
+            }
+            .header-content {
+                max-width: 600px;
+            }
+            .section-pre-title {
+                color: #718096;
+                font-weight: 600;
+                font-size: 14px;
+                letter-spacing: 2px;
+                margin: 0 0 20px 0;
+                text-transform: uppercase;
+                display: flex;
+                align-items: center;
+                opacity: 0;
+                transform: translateY(20px);
+                animation: slideInUp 0.8s ease-out forwards;
+            }
+            .section-pre-title::before {
+                content: '•';
+                color: #5B9DFF;
+                font-size: 18px;
+                margin-right: 8px;
+                line-height: 1;
+            }
+            .section-title {
+                font-size: clamp(36px, 6vw, 64px);
+                font-weight: 700;
+                color: #2d3748;
+                line-height: 1.1;
+                margin: 0 0 30px 0;
+                opacity: 0;
+                transform: translateY(30px);
+                animation: slideInUp 0.8s ease-out 0.2s forwards;
+            }
+            .section-subtitle {
+                font-size: 18px;
+                color: #718096;
+                line-height: 1.6;
+                margin-bottom: 0;
+                opacity: 0;
+                transform: translateY(20px);
+                animation: slideInUp 0.8s ease-out 0.4s forwards;
+            }
+            .team-showcase {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 20px;
+                opacity: 0;
+                transform: translateX(30px);
+                animation: slideInRight 0.8s ease-out 0.6s forwards;
+                min-width: 320px;
+            }
+            .team-card {
+                background: rgba(255, 255, 255, 0.9);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.6);
+                border-radius: 16px;
+                padding: 24px;
+                box-shadow: 0 8px 32px rgba(91, 157, 255, 0.1);
+                transition: all 0.3s ease;
+                cursor: pointer;
+                width: 100%;
+                text-align: center;
+            }
+            .team-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 12px 40px rgba(91, 157, 255, 0.2);
+            }
+            .team-label {
+                font-size: 12px;
+                font-weight: 600;
+                color: #718096;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                margin-bottom: 16px;
+            }
+            .team-avatars {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                margin-bottom: 16px;
+            }
+            .team-avatars img, .avatar-more {
+                width: 44px;
+                height: 44px;
+                border-radius: 50%;
+                border: 3px solid white;
+                margin-left: -8px;
+                object-fit: cover;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 12px rgba(91, 157, 255, 0.15);
+            }
+            .team-avatars img:first-child {
+                margin-left: 0;
+            }
+            .team-avatars img:hover {
+                transform: scale(1.1) translateY(-2px);
+                box-shadow: 0 8px 20px rgba(91, 157, 255, 0.25);
+                z-index: 10;
+                position: relative;
+            }
+            .avatar-more {
+                background: linear-gradient(135deg, #5B9DFF, #4a8df8);
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 700;
+                font-size: 12px;
+            }
+            .team-stats {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                align-items: center;
+            }
+            .team-stat-item {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 13px;
+                color: #718096;
+                font-weight: 500;
+            }
+            .team-stat-number {
+                color: #5B9DFF;
+                font-weight: 700;
+            }
+            .team-stat-dot {
+                width: 4px;
+                height: 4px;
+                background: #5B9DFF;
+                border-radius: 50%;
+            }
+            .team-popup {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.6);
+                backdrop-filter: blur(10px);
+                z-index: 1000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .team-popup.active {
+                opacity: 1;
+                visibility: visible;
+            }
+            .popup-content {
+                background: white;
+                border-radius: 20px;
+                padding: 40px;
+                max-width: 800px;
+                max-height: 90vh;
+                overflow-y: auto;
+                position: relative;
+                box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+                transform: scale(0.9) translateY(20px);
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .team-popup.active .popup-content {
+                transform: scale(1) translateY(0);
+            }
+            .popup-close {
+                position: absolute;
+                top: 20px;
+                right: 25px;
+                background: none;
+                border: none;
+                font-size: 28px;
+                cursor: pointer;
+                color: #718096;
+                transition: color 0.2s ease;
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+            }
+            .popup-close:hover {
+                color: #2d3748;
+                background: #f8fafc;
+            }
+            .popup-title {
+                font-size: 28px;
+                font-weight: 700;
+                color: #2d3748;
+                margin-bottom: 30px;
+                text-align: center;
+            }
+            .team-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                gap: 25px;
+            }
+            .team-member {
+                text-align: center;
+                padding: 25px 20px;
+                border-radius: 16px;
+                transition: all 0.3s ease;
+                border: 1px solid transparent;
+            }
+            .team-member:hover {
+                background: #f8fafc;
+                border-color: #5B9DFF;
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(91, 157, 255, 0.1);
+            }
+            .team-member img {
+                width: 90px;
+                height: 90px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 3px solid #5B9DFF;
+                margin-bottom: 15px;
+            }
+            .team-member h4 {
+                font-size: 16px;
+                font-weight: 600;
+                color: #2d3748;
+                margin-bottom: 5px;
+            }
+            .team-member p {
+                font-size: 14px;
+                color: #718096;
+                font-weight: 500;
+            }
+            .stats-section {
+                position: relative;
+            }
+            .sticky-wrapper {
+                height: 400vh;
+                position: relative;
+            }
+            .sticky-container {
+                position: sticky;
+                top: 0;
+                height: 100vh;
+                width: 100%;
+                overflow: hidden;
+                background: rgba(255, 255, 255, 0.85);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border-top: 1px solid rgba(255, 255, 255, 0.8);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+            }
+            .stats-header {
+                position: absolute;
+                top: 40px;
+                left: 40px;
+                z-index: 100;
+                opacity: 0;
+                transform: translateY(-20px);
+                transition: all 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+            }
+            .stats-header.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .stats-pre-title-header {
+                color: #5B9DFF;
+                font-weight: 700;
+                font-size: 12px;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+            .stats-pre-title-header::before {
+                content: '';
+                width: 30px;
+                height: 2px;
+                background: #5B9DFF;
+                margin-right: 10px;
+            }
+            .stats-title-header {
+                font-size: 24px;
+                font-weight: 700;
+                color: #2d3748;
+            }
+            .film-strip {
+                display: flex;
+                height: 100%;
+                width: 400%;
+                will-change: transform;
+                transition: transform 0.1s linear;
+            }
+            .stat-card {
+                width: 25%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding: 60px 40px;
+                box-sizing: border-box;
+                text-align: center;
+                position: relative;
+            }
+            .stat-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: radial-gradient(circle at center, rgba(91, 157, 255, 0.05) 0%, transparent 70%);
+                opacity: 0;
+                transition: opacity 0.6s ease;
+            }
+            .stat-card.is-active::before {
+                opacity: 1;
+            }
+            .stat-number {
+                font-size: clamp(64px, 12vw, 128px);
+                color: #5B9DFF;
+                font-weight: 700;
+                line-height: 1;
+                margin-bottom: 30px;
+                position: relative;
+                z-index: 2;
+            }
+            .stat-description {
+                color: #2d3748;
+                font-weight: 600;
+                font-size: 16px;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                max-width: 400px;
+                line-height: 1.4;
+                opacity: 0;
+                transform: translateY(30px);
+                transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+                position: relative;
+                z-index: 2;
+            }
+            .stat-card.is-active .stat-description {
+                opacity: 0.9;
+                transform: translateY(0);
+            }
+            .stat-highlight {
+                display: block;
+                color: #5B9DFF;
+                font-weight: 700;
+                margin-top: 10px;
+                font-size: 14px;
+                letter-spacing: 0.5px;
+            }
+            .progress-indicator {
+                position: absolute;
+                bottom: 40px;
+                left: 50%;
+                transform: translateX(-50%);
+                display: flex;
+                gap: 12px;
+                z-index: 100;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            .progress-indicator.visible {
+                opacity: 1;
+            }
+            .progress-dot {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background: rgba(91, 157, 255, 0.3);
+                transition: all 0.3s ease;
+                cursor: pointer;
+            }
+            .progress-dot.active {
+                background: #5B9DFF;
+                transform: scale(1.2);
+            }
+            @media (max-width: 768px) {
+                .page-header {
+                    grid-template-columns: 1fr;
+                    gap: 40px;
+                    padding: 60px 20px;
+                    text-align: center;
+                }
+                .header-content {
+                    order: 1;
+                }
+                .team-showcase {
+                    order: 2;
+                    align-items: center;
+                    transform: translateY(20px);
+                    animation: slideInUp 0.8s ease-out 0.6s forwards;
+                    min-width: auto;
+                }
+                .section-title {
+                    font-size: 42px;
+                }
+                .team-avatars img, .avatar-more {
+                    width: 40px;
+                    height: 40px;
+                }
+                .avatar-more {
+                    font-size: 11px;
+                }
+                .team-card {
+                    padding: 20px;
+                }
+                .popup-content {
+                    margin: 20px;
+                    padding: 30px 20px;
+                }
+                .team-grid {
+                    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                    gap: 20px;
+                }
+                .stats-header {
+                    top: 20px;
+                    left: 20px;
+                }
+                .stat-card {
+                    padding: 40px 20px;
+                }
+                .stat-description {
+                    font-size: 14px;
+                }
+                .progress-indicator {
+                    bottom: 20px;
+                }
+            }
+            @media (max-width: 480px) {
+                .section-title {
+                    font-size: 36px;
+                }
+                .team-avatars img, .avatar-more {
+                    width: 36px;
+                    height: 36px;
+                }
+                .avatar-more {
+                    font-size: 10px;
+                }
+                .stat-description {
+                    font-size: 12px;
+                }
+                .team-card {
+                    padding: 16px;
+                }
+                .team-stat-item {
+                    font-size: 12px;
+                }
+            }
+        `}</style>
+        <section className="hero-section">
+            <header className="page-header">
+                <div className="header-content">
+                    <p className="section-pre-title">Why Choose Alpine Tech</p>
+                    <h1 className="section-title">Your Trusted Partner For Total Comfort</h1>
+                    <p className="section-subtitle">Experience unmatched HVAC expertise with over a decade of proven reliability, cutting-edge solutions, and customer-first service that keeps your home comfortable year-round.</p>
+                </div>
+                
+                <div className="team-showcase">
+                    <div id="teamAvatars" className="team-card" tabIndex={0} role="button" aria-label="View our expert team">
+                        <div className="team-label">Meet Our Expert Team</div>
+                        <div className="team-avatars">
+                            <Image src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80" alt="Team member 1" width={44} height={44}/>
+                            <Image src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80" alt="Team member 2" width={44} height={44}/>
+                            <Image src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80" alt="Team member 3" width={44} height={44}/>
+                            <div className="avatar-more">+9</div>
+                        </div>
+                        <div className="team-stats">
+                            <div className="team-stat-item">
+                                <span className="team-stat-number">12</span>
+                                <span>Certified Technicians</span>
                             </div>
-                            <div className="team-stats flex flex-col gap-2 items-center">
-                                <div className="team-stat-item flex items-center gap-2 text-[13px] text-gray-600 font-medium">
-                                    <span className="team-stat-number font-bold text-[#5B9DFF]">12</span>
-                                    <span>Certified Technicians</span>
-                                </div>
-                                <div className="team-stat-dot w-1 h-1 bg-[#5B9DFF] rounded-full"></div>
-                                <div className="team-stat-item flex items-center gap-2 text-[13px] text-gray-600 font-medium">
-                                    <span className="team-stat-number font-bold text-[#5B9DFF]">13+</span>
-                                    <span>Years Experience</span>
-                                </div>
+                            <div className="team-stat-dot"></div>
+                            <div className="team-stat-item">
+                                <span className="team-stat-number">13+</span>
+                                <span>Years Experience</span>
                             </div>
                         </div>
                     </div>
-                </header>
-            </section>
+                </div>
+            </header>
+        </section>
 
-            {/* Team Popup */}
-            {isPopupOpen && (
-                 <div 
-                    className="team-popup fixed inset-0 bg-black/60 backdrop-blur-md z-[1000] flex items-center justify-center p-5 animate-in fade-in"
-                    onClick={() => setIsPopupOpen(false)}
-                    role="dialog"
-                    aria-modal="true"
-                 >
-                    <div 
-                        className="popup-content bg-white rounded-2xl p-7 md:p-10 w-full max-w-4xl max-h-[90vh] overflow-y-auto relative shadow-2xl animate-in fade-in zoom-in-95"
-                        onClick={e => e.stopPropagation()}
-                    >
-                        <button className="popup-close absolute top-3 right-3 md:top-4 md:right-4 text-gray-500 hover:bg-gray-100 hover:text-gray-800 rounded-full" onClick={() => setIsPopupOpen(false)}>
-                            <X className="h-6 w-6" />
-                            <span className="sr-only">Close team popup</span>
-                        </button>
-                        <h3 className="popup-title text-2xl md:text-3xl font-bold text-center mb-8">Meet Our Expert Team</h3>
-                        <div className="team-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-4 gap-y-6 md:gap-8">
-                            {teamMembers.map(member => (
-                                <div key={member.name} className="team-member text-center p-4 rounded-2xl transition-all duration-300 hover:bg-gray-100/70 hover:border-[#5B9DFF] hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/10 border border-transparent">
-                                    <Image src={member.src} alt={member.name} width={90} height={90} className="w-20 h-20 md:w-24 md:h-24 rounded-full mx-auto border-[3px] border-[#5B9DFF] mb-4" />
-                                    <h4 className="font-semibold text-sm md:text-base">{member.name}</h4>
-                                    <p className="text-gray-500 text-xs md:text-sm">{member.role}</p>
-                                </div>
-                            ))}
-                        </div>
+        {isPopupOpen && (
+            <div id="teamPopup" className={cn("team-popup", { active: isPopupOpen })} role="dialog" aria-modal="true" aria-labelledby="popup-title">
+                <div className="popup-content">
+                    <button id="popupClose" className="popup-close" aria-label="Close team popup" onClick={() => setIsPopupOpen(false)}>&times;</button>
+                    <h2 id="popup-title" className="popup-title">Meet Our Expert Team</h2>
+                    <div className="team-grid">
+                        {teamMembers.map(member => (
+                            <div key={member.name} className="team-member">
+                                <Image src={member.src} alt={member.name} width={90} height={90} className="rounded-full object-cover border-3 border-primary-color" />
+                                <h4>{member.name}</h4>
+                                <p>{member.role}</p>
+                            </div>
+                        ))}
                     </div>
-                 </div>
-            )}
+                </div>
+            </div>
+        )}
 
-            {/* Stats Section */}
-            <section className="stats-section relative h-[400vh]">
-                <div ref={stickyWrapperRef} className="sticky-container sticky top-0 h-screen w-full overflow-hidden bg-white/85 backdrop-blur-xl border-y border-white/80">
-                    <div ref={statsHeaderRef} className="stats-header absolute top-10 left-10 z-50 transition-all duration-500 opacity-0 -translate-y-5">
-                        <p className="stats-pre-title flex items-center text-xs font-bold text-[#5B9DFF] tracking-[2px] uppercase"><span className="w-8 h-0.5 bg-[#5B9DFF] mr-3"></span>Our Track Record</p>
-                        <h3 className="stats-title text-2xl font-bold text-gray-800 mt-2">Proven Excellence</h3>
+        <section className="stats-section">
+            <div ref={stickyWrapperRef} className="sticky-wrapper">
+                <div className="sticky-container">
+                    <div ref={statsHeaderRef} id="statsHeader" className="stats-header">
+                        <p className="stats-pre-title-header">Our Track Record</p>
+                        <h3 className="stats-title-header">Proven Excellence</h3>
                     </div>
                     
-                    <div ref={filmStripRef} className="film-strip flex h-full w-[400%]">
+                    <div ref={filmStripRef} className="film-strip">
                         {stats.map((stat, index) => (
-                            <div key={stat.id} id={stat.id} ref={el => statCardsRef.current[index] = el} className="stat-card w-1/4 h-full flex flex-col justify-center items-center p-10 text-center relative">
-                                <div className="stat-bg absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(91,157,255,0.05)_0%,transparent_70%)] opacity-0 transition-opacity duration-500"></div>
-                                <span className="stat-number text-[clamp(64px,12vw,128px)] text-[#5B9DFF] font-bold leading-none z-10">{`0${stat.suffix}`}</span>
-                                <p className="stat-description text-gray-800 font-semibold text-base tracking-wider uppercase max-w-sm mt-6 opacity-0 translate-y-8 transition-all duration-700 z-10">
+                            <div key={stat.id} id={stat.id} ref={el => statCardsRef.current[index] = el} className="stat-card">
+                                <span className="stat-number">{`0${stat.suffix || ''}`}</span>
+                                <p className="stat-description">
                                     {stat.description}
-                                    <span className="stat-highlight block text-[#5B9DFF] font-bold mt-2.5 text-sm tracking-normal normal-case">{stat.highlight}</span>
+                                    <span className="stat-highlight">{stat.highlight}</span>
                                 </p>
                             </div>
                         ))}
                     </div>
                     
-                    <div ref={progressIndicatorRef} className="progress-indicator absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-50 transition-opacity duration-300 opacity-0">
+                    <div ref={progressIndicatorRef} id="progressIndicator" className="progress-indicator">
                         {stats.map((_, index) => (
                             <button
                                 key={`dot-${index}`}
                                 aria-label={`Go to slide ${index + 1}`}
                                 onClick={() => handleDotClick(index)}
                                 ref={el => progressDotsRef.current[index] = el}
-                                className="progress-dot w-2.5 h-2.5 rounded-full bg-blue-500/30 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B9DFF] focus-visible:ring-offset-2"
+                                className="progress-dot"
+                                data-card={index}
                             ></button>
                         ))}
                     </div>
                 </div>
-            </section>
-            
-            <style jsx>{`
-                .stats-header.visible, .progress-indicator.visible {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-                .stat-card.is-active .stat-bg {
-                    opacity: 1;
-                }
-                .stat-card.is-active .stat-description {
-                    opacity: 0.9;
-                    transform: translateY(0);
-                    transition-delay: 200ms;
-                }
-                .progress-dot.active {
-                    background-color: #5B9DFF;
-                    transform: scale(1.2);
-                }
-            `}</style>
-        </div>
+            </div>
+        </section>
+        </>
     );
 }
