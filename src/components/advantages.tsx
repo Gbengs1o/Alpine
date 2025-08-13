@@ -479,7 +479,7 @@ export function Advantages() {
                 position: relative;
             }
             .sticky-wrapper {
-                height: 400vh;
+                height: 300vh;
                 position: relative;
             }
             .sticky-container {
@@ -496,7 +496,7 @@ export function Advantages() {
             }
             .stats-header {
                 position: absolute;
-                top: 40px;
+                top: 100px;
                 left: 40px;
                 z-index: 100;
                 opacity: 0;
@@ -662,7 +662,7 @@ export function Advantages() {
                     gap: 20px;
                 }
                 .stats-header {
-                    top: 20px;
+                    top: 80px;
                     left: 20px;
                 }
                 .stat-card {
