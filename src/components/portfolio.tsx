@@ -126,17 +126,16 @@ export function Portfolio() {
 
     return (
         <section
-            id="portfolio"
-            className="w-full bg-[#0d1117] text-white py-20 relative overflow-hidden"
+            className="w-full h-full flex flex-col justify-center"
             style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/blueprint.png')" }}
         >
             <div className="w-[90%] max-w-7xl mx-auto">
-                <div className="text-center mb-16">
+                <div className="text-center mb-8 md:mb-16">
                     <a href="#portfolio" className="inline-flex items-center gap-2 text-xs font-bold tracking-wider mb-6 text-slate-400">
                         <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
                         OUR PORTFOLIO
                     </a>
-                    <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
+                    <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-6 text-white">
                         A Showcase<br />Of Our Work
                     </h2>
                     <p className="text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
@@ -158,7 +157,7 @@ export function Portfolio() {
                 </div>
             </div>
 
-            <div className="text-center mt-16">
+            <div className="text-center mt-8 md:mt-16">
                 <Link href="/portfolio" passHref>
                     <button className="bg-blue-600 text-white font-semibold px-8 py-3 rounded-lg shadow-lg shadow-blue-500/20 hover:bg-blue-700 hover:-translate-y-0.5 transition-all duration-300">
                         View More Projects

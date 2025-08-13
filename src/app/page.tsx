@@ -18,11 +18,11 @@ export default function Page() {
         <About />
         <Advantages />
         <Services />
-        <div className="relative">
-          <div className="sticky top-0 h-screen">
+        <div className="sticky-container">
+          <div className="sticky-panel">
             <CoreValues />
           </div>
-          <div className="relative z-10">
+          <div className="scroll-over-panel">
             <Portfolio />
           </div>
         </div>
