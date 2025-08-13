@@ -70,8 +70,8 @@ export function Hero() {
         } else { 
             elements.scrollIndicator.style.opacity = '1'; 
         }
-
-        // Handle first panel visibility
+        
+        // Hide first panel content initially
         const firstPanelContent = elements.panelContents[0];
         if (scrollTop > 1) {
             if(firstPanelContent) firstPanelContent.classList.add('is-visible');
@@ -86,18 +86,23 @@ export function Hero() {
             const currentPanelIndex = Math.min(numPanels - 1, Math.floor(progress * numPanels));
             
             elements.panelContents.forEach((content, index) => {
-                if (index === 0 && scrollTop > 1) return; // Keep first panel visible after initial scroll
+                // Don't hide the first panel if it's already visible
+                if(index === 0 && scrollTop > 1) return;
                 content.classList.toggle('is-visible', index === currentPanelIndex);
             });
             
             elements.heroViewport.style.opacity = '1';
             elements.lastPanel.style.opacity = '1';
             elements.video.style.transform = 'scale(1)';
+            elements.lastPanel.classList.remove('panel-no-blur');
+
         } else {
             elements.track.style.transform = `translateX(-${elements.track.offsetWidth - window.innerWidth}px)`;
             elements.panelContents.forEach((content, index) => {
                 content.classList.toggle('is-visible', index === numPanels - 1);
             });
+            elements.lastPanel.classList.add('panel-no-blur');
+
 
             const exitSequenceDuration = totalPinDuration - horizontalPhaseEnd;
             if (exitSequenceDuration <= 0) return;
@@ -145,6 +150,7 @@ export function Hero() {
     
     window.addEventListener('scroll', onScroll, { passive: true });
     
+    // Initial call to set states
     animateHero();
 
     return () => {
@@ -156,15 +162,15 @@ export function Hero() {
     <>
       <style jsx>{`
         :root {
-            --background-color: #020408;
+            --background-color: #ffffff;
             --text-color: #eef2f9;
             --highlight-color: #63a4ff;
             --panel-bg-color: rgba(10, 20, 35, 0.25); 
         }
         
         .hero-section-wrapper {
-            background-color: #ffffff;
-            color: #020408;
+            background-color: var(--background-color);
+            color: var(--text-color);
         }
         
         #pin-container {
@@ -213,6 +219,7 @@ export function Hero() {
             -webkit-backdrop-filter: blur(20px) brightness(90%);
             border-left: 1px solid rgba(255, 255, 255, 0.05);
             will-change: opacity;
+            transition: backdrop-filter 0.5s ease-out;
         }
         
         .panel:last-child {
@@ -226,7 +233,6 @@ export function Hero() {
             transform: translateY(30px);
             transition: opacity 0.8s ease-out 0.3s, transform 0.8s ease-out 0.3s;
             will-change: opacity;
-            color: var(--text-color);
         }
 
         .panel-content.is-visible {
