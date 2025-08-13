@@ -1,8 +1,18 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 
-const projects = [
+// Define the type for a single project
+type Project = {
+    title: string;
+    category: string;
+    description: string;
+    image: string;
+};
+
+// --- DATA SOURCE ---
+// This data can come from a CMS, an API, or be static like this.
+const projects: Project[] = [
     {
         title: "Braithwaite Memorial Hospital",
         category: "Commercial / VRF",
@@ -41,336 +51,170 @@ const projects = [
     }
 ];
 
-export function Portfolio() {
-    const trackRef = useRef<HTMLDivElement>(null);
-    const viewportRef = useRef<HTMLDivElement>(null);
-    const prevBtnRef = useRef<HTMLButtonElement>(null);
-    const nextBtnRef = useRef<HTMLButtonElement>(null);
-    const animationFrameId = useRef<number>();
+// Create a duplicated list for the "infinite" scroll effect
+const duplicatedProjects = [...projects, ...projects];
 
-    useEffect(() => {
-        const track = trackRef.current;
-        const viewport = viewportRef.current;
-        const nextBtn = nextBtnRef.current;
-        const prevBtn = prevBtnRef.current;
+// --- ProjectCard Sub-Component ---
+// It's good practice to break down UI into smaller, reusable components.
+function ProjectCard({ title, category, description, image }: Project) {
+    return (
+        <div
+            className="group relative h-[450px] flex-none rounded-lg overflow-hidden flex items-end bg-cover bg-center border border-slate-700
+                       w-[80%] sm:w-[48%] md:w-[32%] mr-4 md:mr-[2%]"
+            style={{ backgroundImage: `url(${image})` }}
+        >
+            {/* Dark gradient overlay for text readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
 
-        if (!track || !viewport || !nextBtn || !prevBtn) return;
-
-        const populateTrack = () => {
-            track.innerHTML = '';
-            // Create two sets of cards for the infinite loop illusion
-            [...projects, ...projects].forEach(p => {
-                const card = document.createElement('div');
-                card.className = 'project-card';
-                card.style.backgroundImage = `url(${p.image})`;
-                card.innerHTML = `
-                    <div class="card-content">
-                        <span class="project-category">${p.category}</span>
-                        <h3 class="project-title">${p.title}</h3>
-                        <p class="project-description">${p.description}</p>
-                    </div>
-                `;
-                track.appendChild(card);
-            });
-        };
-
-        const animateScroll = () => {
-            if (!track) return;
-            track.style.transition = 'none';
-            const currentTransformVal = track.style.getPropertyValue('transform').match(/[-0-9.]+/);
-            const currentTransform = currentTransformVal ? parseFloat(currentTransformVal[0]) : 0;
-            track.style.transform = `translateX(${currentTransform - 1}px)`;
-
-            const cardWidth = (track.children[0] as HTMLElement).offsetWidth + parseFloat(getComputedStyle(track.children[0]).marginRight);
-            const scrollWidth = cardWidth * projects.length;
-
-            if (Math.abs(currentTransform) >= scrollWidth) {
-                track.style.transform = 'translateX(0px)';
-            }
-            
-            animationFrameId.current = requestAnimationFrame(animateScroll);
-        };
-
-        const startAutoScroll = () => {
-            if (track && !track.style.transform) {
-                 track.style.transform = 'translateX(0px)';
-            }
-            stopAutoScroll();
-            animationFrameId.current = requestAnimationFrame(animateScroll);
-        };
-
-        const stopAutoScroll = () => {
-            if (animationFrameId.current) {
-                cancelAnimationFrame(animationFrameId.current);
-            }
-        };
-
-        const manualMove = (direction: 'next' | 'prev') => {
-            if(!track) return;
-            stopAutoScroll();
-            track.style.transition = 'transform 0.7s ease-in-out';
-            
-            const cardWidth = (track.children[0] as HTMLElement).offsetWidth + parseFloat(getComputedStyle(track.children[0]).marginRight);
-            const currentTransformVal = track.style.getPropertyValue('transform').match(/[-0-9.]+/);
-            let currentTransform = currentTransformVal ? parseFloat(currentTransformVal[0]) : 0;
-
-            let targetTransform;
-            if (direction === 'next') {
-                targetTransform = Math.floor(currentTransform / cardWidth) * cardWidth - cardWidth;
-            } else { // 'prev'
-                targetTransform = Math.ceil(currentTransform / cardWidth) * cardWidth + cardWidth;
-            }
-
-            const scrollWidth = cardWidth * projects.length;
-            
-            if (targetTransform > 0) {
-                 track.style.transition = 'none';
-                 currentTransform -= scrollWidth;
-                 track.style.transform = `translateX(${currentTransform}px)`;
-                 targetTransform = currentTransform + cardWidth;
-            } else if (Math.abs(targetTransform) >= scrollWidth * 1.5) {
-                 track.style.transition = 'none';
-                 currentTransform += scrollWidth;
-                 track.style.transform = `translateX(${currentTransform}px)`;
-                 targetTransform = currentTransform - cardWidth;
-            }
-            
-            setTimeout(() => {
-                if(!track) return;
-                track.style.transition = 'transform 0.7s ease-in-out';
-                track.style.transform = `translateX(${targetTransform}px)`;
-            }, 20);
-        };
-
-        const handleNext = () => manualMove('next');
-        const handlePrev = () => manualMove('prev');
-        
-        nextBtn.addEventListener('click', handleNext);
-        prevBtn.addEventListener('click', handlePrev);
-        viewport.addEventListener('mouseenter', stopAutoScroll);
-        viewport.addEventListener('mouseleave', startAutoScroll);
-
-        populateTrack();
-        const startTimeout = setTimeout(startAutoScroll, 100);
-
-        return () => {
-            clearTimeout(startTimeout);
-            stopAutoScroll();
-            nextBtn.removeEventListener('click', handleNext);
-            prevBtn.removeEventListener('click', handlePrev);
-            viewport.removeEventListener('mouseenter', stopAutoScroll);
-            viewport.removeEventListener('mouseleave', startAutoScroll);
-        };
-    }, []);
-
-  return (
-    <>
-    <style jsx>{`
-        :root {
-            --brand-blue: #5d99f7;
-            --dark-bg: #0d1117;
-            --card-bg: #161b22;
-            --light-text: #c9d1d9;
-            --white-text: #f0f6fc;
-            --border-color: #30363d;
-        }
-
-        .portfolio-section {
-            width: 100%;
-            background-color: var(--dark-bg);
-            color: var(--white-text);
-            padding: 80px 0;
-            position: relative;
-            overflow: hidden;
-            background-image: url('https://www.transparenttextures.com/patterns/blueprint.png'); 
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .portfolio-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .portfolio-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            color: var(--light-text);
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin-bottom: 24px;
-        }
-
-        .portfolio-link .dot {
-            width: 8px;
-            height: 8px;
-            background-color: var(--brand-blue);
-            border-radius: 50%;
-        }
-
-        .portfolio-header h2 {
-            font-size: clamp(2.5rem, 5vw, 3.5rem);
-            font-weight: 700;
-            line-height: 1.1;
-            margin: 0 0 24px 0;
-            color: var(--white-text);
-        }
-
-        .portfolio-header p {
-            font-size: 18px;
-            color: var(--light-text);
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.6;
-        }
-        
-        .slider-viewport {
-            width: 100%;
-            overflow: hidden;
-            position: relative;
-            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-        }
-        
-        .slider-track {
-            display: flex;
-            will-change: transform;
-        }
-
-        .project-card {
-            flex: 0 0 32%; /* Shows roughly 3 cards */
-            margin-right: 2%; /* Gap between cards */
-            height: 450px;
-            position: relative;
-            border-radius: 8px;
-            overflow: hidden;
-            display: flex;
-            align-items: flex-end;
-            background-size: cover;
-            background-position: center;
-            color: var(--white-text);
-            border: 1px solid var(--border-color);
-        }
-
-        .project-card::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 70%;
-            background: linear-gradient(to top, rgba(13, 17, 23, 0.95) 20%, rgba(13, 17, 23, 0));
-            z-index: 1;
-        }
-
-        .card-content {
-            padding: 32px;
-            z-index: 2;
-            position: relative;
-        }
-        
-        .project-category {
-            display: inline-block;
-            background-color: var(--brand-blue);
-            color: var(--white-text);
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 16px;
-        }
-
-        .project-title {
-            font-size: 24px;
-            font-weight: 700;
-            line-height: 1.2;
-            margin: 0 0 8px 0;
-        }
-        
-        .project-description {
-            font-size: 15px;
-            color: var(--light-text);
-            line-height: 1.5;
-            margin: 0;
-        }
-
-        .slider-controls {
-            position: absolute;
-            bottom: 40px;
-            left: 5%; /* Aligned to the left side of the content container */
-            display: flex;
-            gap: 12px;
-            z-index: 10;
-        }
-
-        .slider-controls button {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background-color: rgba(30, 30, 40, 0.5);
-            color: var(--white-text);
-            font-size: 24px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s ease;
-            backdrop-filter: blur(4px);
-        }
-
-        .slider-controls button:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-        
-        @media (max-width: 992px) {
-            .project-card {
-                flex-basis: 48%; /* Show 2 cards */
-                margin-right: 4%;
-            }
-        }
-
-        @media (max-width: 768px) {
-             .project-card {
-                flex-basis: 80%; /* Show ~1.2 cards */
-                margin-right: 5%;
-            }
-        }
-    `}</style>
-    <section id="portfolio" className="portfolio-section">
-        <div className="container">
-            <div className="portfolio-header">
-                <a href="#" className="portfolio-link">
-                    <span className="dot"></span>
-                    OUR PORTFOLIO
-                </a>
-                <h2>A Showcase<br/>Of Our Work</h2>
-                <p>
-                    From large-scale commercial VRF systems to residential units, we deliver top-tier HVAC solutions. Explore some of our featured projects.
+            <div className="relative z-10 p-6 md:p-8 text-white">
+                <span className="inline-block bg-blue-500 text-white px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider mb-4">
+                    {category}
+                </span>
+                <h3 className="text-2xl font-bold leading-tight mb-2">
+                    {title}
+                </h3>
+                <p className="text-sm text-slate-300 leading-relaxed">
+                    {description}
                 </p>
             </div>
         </div>
+    );
+}
+
+
+// --- Main Portfolio Component ---
+export function Portfolio() {
+    const trackRef = useRef<HTMLDivElement>(null);
+    const animationFrameId = useRef<number>();
+
+    // We use useCallback to memoize these functions so they aren't recreated on every render
+    const animateScroll = useCallback(() => {
+        const track = trackRef.current;
+        if (!track) return;
+
+        track.style.transition = 'none'; // Disable transition for smooth, continuous animation
+        const currentTransform = new DOMMatrix(getComputedStyle(track).transform).e;
+        let newTransform = currentTransform - 1;
+
+        const cardWidth = (track.children[0] as HTMLElement).offsetWidth + parseFloat(getComputedStyle(track.children[0]).marginRight);
+        const scrollWidth = cardWidth * projects.length;
+
+        // If we've scrolled past the first set of items, reset to the beginning
+        if (Math.abs(newTransform) >= scrollWidth) {
+            newTransform = 0;
+        }
+
+        track.style.transform = `translateX(${newTransform}px)`;
+        animationFrameId.current = requestAnimationFrame(animateScroll);
+    }, []);
+
+    const startAutoScroll = useCallback(() => {
+        stopAutoScroll(); // Ensure no multiple loops are running
+        animationFrameId.current = requestAnimationFrame(animateScroll);
+    }, [animateScroll]);
+
+    const stopAutoScroll = () => {
+        if (animationFrameId.current) {
+            cancelAnimationFrame(animationFrameId.current);
+        }
+    };
+
+    const manualMove = useCallback((direction: 'next' | 'prev') => {
+        const track = trackRef.current;
+        if (!track) return;
+
+        stopAutoScroll();
+        track.style.transition = 'transform 0.7s ease-in-out'; // Re-enable for manual clicks
+
+        const cardWidth = (track.children[0] as HTMLElement).offsetWidth + parseFloat(getComputedStyle(track.children[0]).marginRight);
+        const currentTransform = new DOMMatrix(getComputedStyle(track).transform).e;
         
-        <div className="slider-viewport" ref={viewportRef}>
-            <div className="slider-track" ref={trackRef}>
-                {/* Project cards are populated by JavaScript */}
+        // Snap to the nearest card
+        let targetTransform = direction === 'next'
+            ? Math.floor(currentTransform / cardWidth) * cardWidth - cardWidth
+            : Math.ceil(currentTransform / cardWidth) * cardWidth + cardWidth;
+
+        const scrollWidth = cardWidth * projects.length;
+        
+        // Logic to handle the infinite loop illusion when clicking buttons
+        let tempTransform = currentTransform;
+        if (targetTransform > 0) {
+            track.style.transition = 'none';
+            tempTransform -= scrollWidth;
+            track.style.transform = `translateX(${tempTransform}px)`;
+            targetTransform = tempTransform + cardWidth;
+        } else if (Math.abs(targetTransform) >= scrollWidth * 1.5) {
+            track.style.transition = 'none';
+            tempTransform += scrollWidth;
+            track.style.transform = `translateX(${tempTransform}px)`;
+            targetTransform = tempTransform - cardWidth;
+        }
+
+        setTimeout(() => {
+            if (!track) return;
+            track.style.transition = 'transform 0.7s ease-in-out';
+            track.style.transform = `translateX(${targetTransform}px)`;
+        }, 20); // A small delay to ensure the browser applies the instant transform first
+    }, []);
+
+    // Effect to start and stop the animation
+    useEffect(() => {
+        const startTimeout = setTimeout(startAutoScroll, 100);
+        return () => {
+            clearTimeout(startTimeout);
+            stopAutoScroll();
+        };
+    }, [startAutoScroll]);
+
+    return (
+        <section
+            className="w-full bg-[#0d1117] text-white py-20 relative overflow-hidden"
+            style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/blueprint.png')" }}
+        >
+            <div className="w-[90%] max-w-7xl mx-auto">
+                <div className="text-center mb-16">
+                    <a href="#" className="inline-flex items-center gap-2 text-xs font-bold tracking-wider mb-6 text-slate-400">
+                        <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                        OUR PORTFOLIO
+                    </a>
+                    <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
+                        A Showcase<br />Of Our Work
+                    </h2>
+                    <p className="text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
+                        From large-scale commercial VRF systems to residential units, we deliver top-tier HVAC solutions. Explore some of our featured projects.
+                    </p>
+                </div>
             </div>
-        </div>
-        
-        <div className="slider-controls">
-            <button ref={prevBtnRef}>&larr;</button>
-            <button ref={nextBtnRef}>&rarr;</button>
-        </div>
-    </section>
-    </>
-  );
+
+            {/* The faded-out edges are created with a CSS mask */}
+            <div
+                className="slider-viewport"
+                onMouseEnter={stopAutoScroll}
+                onMouseLeave={startAutoScroll}
+            >
+                <div ref={trackRef} className="flex will-change-transform">
+                    {duplicatedProjects.map((project, index) => (
+                        <ProjectCard key={index} {...project} />
+                    ))}
+                </div>
+            </div>
+
+            <div className="absolute bottom-10 left-[5%] md:left-[calc(50%-580px)] flex gap-3 z-20">
+                <button
+                    onClick={() => manualMove('prev')}
+                    aria-label="Previous Project"
+                    className="w-11 h-11 rounded-full border border-white/20 bg-black/30 text-white text-2xl flex items-center justify-center transition-colors hover:bg-white/20 backdrop-blur-sm"
+                >
+                    &larr;
+                </button>
+                <button
+                    onClick={() => manualMove('next')}
+                    aria-label="Next Project"
+                    className="w-11 h-11 rounded-full border border-white/20 bg-black/30 text-white text-2xl flex items-center justify-center transition-colors hover:bg-white/20 backdrop-blur-sm"
+                >
+                    &rarr;
+                </button>
+            </div>
+        </section>
+    );
 }

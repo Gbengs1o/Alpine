@@ -9,7 +9,7 @@ import { Portfolio } from '@/components/portfolio';
 import { Contact } from '@/components/contact';
 import { HvacEstimator } from '@/components/hvac-estimator';
 
-export default function Home() {
+export default function Page() {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
