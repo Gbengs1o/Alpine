@@ -1,7 +1,9 @@
 "use client";
 
+// --- IMPORTS ---
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 export function CoreValues() {
   const stepsContainerRef = useRef<HTMLElement | null>(null);
@@ -32,6 +34,7 @@ export function CoreValues() {
     };
   }, []);
 
+
   return (
     <>
       <style jsx global>{`
@@ -41,9 +44,6 @@ export function CoreValues() {
             --dark-text: #212529;
             --light-text: #6c757d;
             --border-color: #e9ecef;
-            --animation-total-duration: 12s;
-            --animation-step-duration: 25%;
-            --animation-step-active-until: 22%;
         }
       `}</style>
       <style jsx>{`
@@ -172,77 +172,17 @@ export function CoreValues() {
             transition: stroke 0.4s ease;
         }
         
-        @keyframes panel-intro-activation { 
-            0%, var(--animation-step-active-until) { 
-                background-color: var(--brand-blue); 
-                border-color: var(--brand-blue); 
-            } 
-            var(--animation-step-duration), 100% { 
-                background-color: white; 
-                border-color: var(--border-color); 
-            } 
-        }
-        @keyframes content-intro-fade { 
-            0%, var(--animation-step-active-until) { 
-                opacity: 1; 
-                transform: translateY(0); 
-            } 
-            var(--animation-step-duration), 100% { 
-                opacity: 0; 
-                transform: translateY(10px); 
-            } 
-        }
-        @keyframes color-intro-change {
-            0%, var(--animation-step-active-until) { color: white; }
-            var(--animation-step-duration), 100% { color: inherit; }
-        }
-        @keyframes p-color-intro-change {
-            0%, var(--animation-step-active-until) { color: white; }
-            var(--animation-step-duration), 100% { color: var(--light-text); }
-        }
-        @keyframes icon-intro-stroke { 
-            0%, var(--animation-step-active-until) { stroke: white; } 
-            var(--animation-step-duration), 100% { stroke: var(--light-text); } 
-        }
+        .intro-animation #panel-1, .intro-animation #panel-1 > * { animation-delay: 0s; }
+        .intro-animation #panel-2, .intro-animation #panel-2 > * { animation-delay: 3s; }
+        .intro-animation #panel-3, .intro-animation #panel-3 > * { animation-delay: 6s; }
+        .intro-animation #panel-4, .intro-animation #panel-4 > * { animation-delay: 9s; }
         
-        .intro-animation .step-panel { 
-            animation: panel-intro-activation var(--animation-total-duration) 1; 
-        }
-        .intro-animation .panel-content { 
-            animation: content-intro-fade var(--animation-total-duration) 1; 
-        }
-        .intro-animation .panel-header, .intro-animation .panel-content h3 { 
-            animation: color-intro-change var(--animation-total-duration) 1; 
-        }
-        .intro-animation .panel-content p {
-            animation: p-color-intro-change var(--animation-total-duration) 1;
-        }
-        .intro-animation .panel-icon-container svg { 
-            animation: icon-intro-stroke var(--animation-total-duration) 1; 
-        }
-
-        .intro-animation #panel-1, .intro-animation #panel-1 > * { animation-delay: -9s; }
-        .intro-animation #panel-2, .intro-animation #panel-2 > * { animation-delay: -6s; }
-        .intro-animation #panel-3, .intro-animation #panel-3 > * { animation-delay: -3s; }
-        .intro-animation #panel-4, .intro-animation #panel-4 > * { animation-delay: 0s; }
-        
-        .intro-finished .step-panel:hover { 
-            background-color: var(--brand-blue); 
-            border-color: var(--brand-blue); 
-            flex-grow: 4; 
-        }
+        .intro-finished .step-panel:hover { background-color: var(--brand-blue); border-color: var(--brand-blue); flex-grow: 4; }
         .intro-finished .step-panel:hover .panel-header,
         .intro-finished .step-panel:hover .panel-content h3,
-        .intro-finished .step-panel:hover .panel-content p { 
-            color: white; 
-        }
-        .intro-finished .step-panel:hover .panel-content { 
-            opacity: 1; 
-            transform: translateY(0); 
-        }
-        .intro-finished .step-panel:hover .panel-icon-container svg { 
-            stroke: white; 
-        }
+        .intro-finished .step-panel:hover .panel-content p { color: white; }
+        .intro-finished .step-panel:hover .panel-content { opacity: 1; transform: translateY(0); }
+        .intro-finished .step-panel:hover .panel-icon-container svg { stroke: white; }
 
         @media (prefers-reduced-motion: reduce) {
           .step-panel, .panel-content, .panel-header, .panel-icon-container svg, .panel-content h3, .panel-content p {
@@ -254,6 +194,33 @@ export function CoreValues() {
           #panel-1 .panel-content { opacity: 1; transform: translateY(0); }
           #panel-1 .panel-icon-container svg { stroke: white; }
         }
+
+        @keyframes panel-intro-activation { 
+            0%, 22% { background-color: var(--brand-blue); border-color: var(--brand-blue); } 
+            25%, 100% { background-color: white; border-color: var(--border-color); } 
+        }
+        @keyframes content-intro-fade { 
+            0%, 22% { opacity: 1; transform: translateY(0); } 
+            25%, 100% { opacity: 0; transform: translateY(10px); } 
+        }
+        @keyframes color-intro-change {
+            0%, 22% { color: white; }
+            25%, 100% { color: inherit; }
+        }
+        @keyframes p-color-intro-change {
+            0%, 22% { color: white; }
+            25%, 100% { color: var(--light-text); }
+        }
+        @keyframes icon-intro-stroke { 
+            0%, 22% { stroke: white; } 
+            25%, 100% { stroke: var(--light-text); } 
+        }
+        
+        .intro-animation .step-panel { animation: panel-intro-activation 12s 1; }
+        .intro-animation .panel-content { animation: content-intro-fade 12s 1; }
+        .intro-animation .panel-header, .intro-animation .panel-content h3 { animation: color-intro-change 12s 1; }
+        .intro-animation .panel-content p { animation: p-color-intro-change 12s 1; }
+        .intro-animation .panel-icon-container svg { animation: icon-intro-stroke 12s 1; }
       `}</style>
       
       <section className="core-values-section">
