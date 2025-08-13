@@ -4,6 +4,7 @@ import { Hero } from '@/components/hero';
 import { About } from '@/components/about';
 import { Advantages } from '@/components/advantages';
 import { Services } from '@/components/services';
+import { CoreValues } from '@/components/core-values';
 import { Portfolio } from '@/components/portfolio';
 import { Contact } from '@/components/contact';
 import { HvacEstimator } from '@/components/hvac-estimator';
@@ -17,6 +18,7 @@ export default function Home() {
         <About />
         <Advantages />
         <Services />
+        <CoreValues />
         <HvacEstimator />
         <Portfolio />
         <Contact />
