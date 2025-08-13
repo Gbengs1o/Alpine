@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { Plus, ChevronLeft, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
 
 // Define Lottie component type for TypeScript
 declare global {
@@ -153,12 +154,14 @@ export function Services() {
                                     marginTop: isActive ? '1rem' : '0'
                                 }}
                             >
-                                <p 
-                                    ref={el => descriptionRefs.current[index] = el}
-                                    className="text-gray-600 text-base leading-relaxed pr-16"
-                                >
-                                    {service.description}
-                                </p>
+                                <div ref={el => descriptionRefs.current[index] = el} className="pr-16">
+                                    <p className="text-gray-600 text-base leading-relaxed">
+                                        {service.description}
+                                    </p>
+                                    <Link href="#" className="inline-block mt-4 font-semibold text-blue-500 hover:text-blue-600 transition-colors">
+                                        Learn More &rarr;
+                                    </Link>
+                                </div>
                             </div>
                         </button>
                     );
@@ -180,6 +183,9 @@ export function Services() {
                     <div className="mt-6 text-center">
                         <h3 className="text-xl font-bold text-gray-800 mb-2">{service.title}</h3>
                         <p className="text-gray-600 max-w-xs mx-auto">{service.description}</p>
+                         <Link href="#" className="inline-block mt-4 font-semibold text-blue-500 hover:text-blue-600 transition-colors">
+                            Learn More &rarr;
+                        </Link>
                     </div>
                 </div>
               ))}
@@ -202,7 +208,7 @@ export function Services() {
     );
     
     return (
-        <section id="services" className="py-16 md:py-24 px-4">
+        <section id="services" className="py-16 md:py-24 px-4 bg-gradient-to-b from-transparent to-blue-500/5">
             <div className="max-w-7xl mx-auto">
                 <header className="mb-12 md:mb-16 text-center max-w-3xl mx-auto">
                     <p className="flex items-center justify-center text-sm font-bold tracking-wider text-gray-600 uppercase mb-4">
