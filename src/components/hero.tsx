@@ -59,7 +59,7 @@ export function Hero() {
         const scrollIndicator = elements.scrollIndicator!;
 
         const totalPinDuration = pinContainer.offsetHeight - window.innerHeight;
-        const horizontalPhaseEnd = (window.innerWidth) * (numPanels - 1); // Corrected calculation
+        const horizontalPhaseEnd = (window.innerWidth / 100) * 300; 
 
         if (scrollTop > 50) {
             scrollIndicator.style.opacity = '0';
@@ -142,17 +142,10 @@ export function Hero() {
   return (
     <>
       <style jsx>{`
-        :root {
-          --background-color: #020408;
-          --text-color: #eef2f9;
-          --highlight-color: #63a4ff;
-          --panel-bg-color: rgba(10, 20, 35, 0.25);
-        }
         #pin-container {
-            /* Width of all panels combined + extra scroll for exit animation */
-            height: calc(200vw + 250vh); 
+            height: calc(300vw + 250vh); 
             position: relative;
-            background-color: var(--background-color);
+            background-color: #020408;
         }
         #hero-viewport {
             height: 100vh;
@@ -199,11 +192,12 @@ export function Hero() {
             padding: 4vw;
             box-sizing: border-box;
             position: relative;
-            background-color: var(--panel-bg-color);
+            background-color: rgba(10, 20, 35, 0.25);
             backdrop-filter: blur(12px) brightness(90%);
             -webkit-backdrop-filter: blur(12px) brightness(90%);
             border-left: 1px solid rgba(255, 255, 255, 0.05);
             will-change: opacity;
+            color: #eef2f9;
         }
         .panel:first-child { border-left: none; }
         .panel-content {
@@ -226,7 +220,7 @@ export function Hero() {
             line-height: 1.1;
             margin: 0 0 1rem;
             text-shadow: 0 4px 25px rgba(0,0,0,0.6);
-            color: var(--text-color);
+            color: inherit;
         }
         .panel-subtitle {
             font-size: clamp(1.1rem, 2vw, 1.4rem);
@@ -237,7 +231,7 @@ export function Hero() {
             margin-left: auto;
             margin-right: auto;
             text-shadow: 0 2px 10px rgba(0,0,0,0.7);
-             color: var(--text-color);
+            color: inherit;
         }
         .cta-button {
             position: relative;
