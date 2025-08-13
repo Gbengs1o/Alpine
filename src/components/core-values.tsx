@@ -66,10 +66,6 @@ export function CoreValues() {
             min-height: 100vh;
             padding: 4rem 1rem;
             box-sizing: border-box;
-            background-image: url('https://i.imgur.com/KTrbFhY.png');
-            background-repeat: no-repeat;
-            background-position: bottom center;
-            background-size: cover;
             width: 100%;
         }
 
