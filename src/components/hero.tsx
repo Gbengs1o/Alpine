@@ -2,8 +2,6 @@
 
 import { useRef, useEffect } from 'react';
 import Link from 'next/link';
-// I'm assuming you have a cn utility, but it's not used in this component.
-// import { cn } from '@/lib/utils'; 
 
 export function Hero() {
   const pinContainerRef = useRef<HTMLDivElement>(null);
@@ -32,7 +30,7 @@ export function Hero() {
             entry.target.classList.add('is-visible');
           }
         });
-      }, { threshold: 0.2 }); // A threshold of 0.2 feels better on mobile
+      }, { threshold: 0.2 });
 
       mobilePanels.forEach(panel => {
         if(panel) observer.observe(panel);
@@ -228,7 +226,6 @@ export function Hero() {
         }
         .panel:first-child { border-left: none; }
 
-        /* The content inside the panel has its own animation */
         .panel-content {
             z-index: 1;
             max-width: 800px;
@@ -347,15 +344,13 @@ export function Hero() {
 
         /* --- MOBILE STYLES & FIXES --- */
         @media (max-width: 767px) {
-            /* 1. Disable the desktop "pinning" scroll effect */
             #pin-container {
                 height: auto; 
             }
             #hero-viewport {
-                position: relative; /* Un-stick the viewport */
+                position: relative;
                 height: auto; 
             }
-            /* 2. Stack panels vertically instead of horizontally */
             #horizontal-track {
                 width: 100%;
                 flex-direction: column;
@@ -363,20 +358,25 @@ export function Hero() {
             }
             .panel {
                 width: 100%;
-                height: 100vh; /* Make each panel a full screen scroll */
-                min-height: 650px; /* Ensure content fits on small screens */
+                height: 100vh;
+                min-height: 650px;
                 border-left: none;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                opacity: 0;
+                transform: translateY(2rem) scale(0.95);
+                transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            }
+            .panel.is-visible {
+                opacity: 1;
+                transform: translateY(0) scale(1);
             }
             .panel:last-child {
               border-bottom: none;
             }
-            /* 3. The FIX: Animate the content, not the panel */
-            .panel.is-visible .panel-content {
-                opacity: 1;
-                transform: translateY(0);
+            .panel-content {
+                opacity: 1; /* Override desktop opacity for mobile animation */
+                transform: translateY(0); /* Override desktop transform for mobile animation */
             }
-            /* 4. Adjust typography and hide desktop-only elements */
             .panel-title {
                 font-size: clamp(2.5rem, 10vw, 3.5rem);
             }
