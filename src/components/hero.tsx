@@ -23,7 +23,6 @@ export function Hero() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     
     const elements = {
         pinContainer: pinContainerRef.current,
@@ -39,6 +38,11 @@ export function Hero() {
     if (Object.values(elements).some(el => !el || (Array.isArray(el) && el.length === 0))) {
         console.warn('Hero elements missing, animation will not run.');
         return;
+    }
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      elements.panelContents.forEach(content => content.classList.add('is-visible'));
+      return;
     }
 
     const numPanels = elements.panels.length;
@@ -67,17 +71,12 @@ export function Hero() {
             elements.scrollIndicator.style.opacity = '1'; 
         }
 
-        // Hide first panel content until scroll
+        // Handle first panel visibility
+        const firstPanelContent = elements.panelContents[0];
         if (scrollTop > 1) {
-          const firstPanelContent = elements.panelContents[0];
-          if(firstPanelContent) {
-            firstPanelContent.classList.add('is-visible');
-          }
+            if(firstPanelContent) firstPanelContent.classList.add('is-visible');
         } else {
-          const firstPanelContent = elements.panelContents[0];
-           if(firstPanelContent) {
-            firstPanelContent.classList.remove('is-visible');
-          }
+            if(firstPanelContent) firstPanelContent.classList.remove('is-visible');
         }
         
         if (scrollTop <= horizontalPhaseEnd) {
@@ -85,9 +84,9 @@ export function Hero() {
             elements.track.style.transform = `translateX(-${progress * (elements.track.offsetWidth - window.innerWidth)}px)`;
             
             const currentPanelIndex = Math.min(numPanels - 1, Math.floor(progress * numPanels));
+            
             elements.panelContents.forEach((content, index) => {
-                // Keep first panel visible after initial scroll
-                if (index === 0 && scrollTop > 1) return;
+                if (index === 0 && scrollTop > 1) return; // Keep first panel visible after initial scroll
                 content.classList.toggle('is-visible', index === currentPanelIndex);
             });
             
@@ -146,13 +145,7 @@ export function Hero() {
     
     window.addEventListener('scroll', onScroll, { passive: true });
     
-    // Initial call to set states
     animateHero();
-    const firstPanelContent = elements.panelContents[0];
-    if (firstPanelContent) {
-        firstPanelContent.classList.remove('is-visible');
-    }
-
 
     return () => {
         window.removeEventListener('scroll', onScroll);
@@ -161,7 +154,7 @@ export function Hero() {
 
   return (
     <>
-      <style jsx global>{`
+      <style jsx>{`
         :root {
             --background-color: #020408;
             --text-color: #eef2f9;
@@ -170,8 +163,8 @@ export function Hero() {
         }
         
         .hero-section-wrapper {
-            background-color: var(--background-color);
-            color: var(--text-color);
+            background-color: #ffffff;
+            color: #020408;
         }
         
         #pin-container {
@@ -199,8 +192,10 @@ export function Hero() {
         #hero-video-background iframe {
             position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 177.77vh; min-width: 100vw;
-            height: 56.25vw; min-height: 100vh;
+            width: 177.77vh;
+            min-width: 100vw;
+            height: 56.25vw;
+            min-height: 100vh;
             pointer-events: none;
         }
 
@@ -219,15 +214,10 @@ export function Hero() {
             border-left: 1px solid rgba(255, 255, 255, 0.05);
             will-change: opacity;
         }
-
-        .panel:first-child {
-            backdrop-filter: blur(20px) brightness(90%);
-            -webkit-backdrop-filter: blur(20px) brightness(90%);
-        }
         
         .panel:last-child {
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
+          backdrop-filter: none;
+          -webkit-backdrop-filter: none;
         }
 
         .panel-content {
@@ -236,12 +226,9 @@ export function Hero() {
             transform: translateY(30px);
             transition: opacity 0.8s ease-out 0.3s, transform 0.8s ease-out 0.3s;
             will-change: opacity;
+            color: var(--text-color);
         }
 
-        .panel:first-child .panel-content {
-            transition-delay: 0s;
-        }
-        
         .panel-content.is-visible {
             opacity: 1;
             transform: translateY(0);
@@ -326,7 +313,6 @@ export function Hero() {
             </div>
           </div>
         </div>
-
         <div id="scroll-indicator" ref={scrollIndicatorRef}>
           <span>Scroll to explore</span>
           <div className="mouse-icon"><div className="mouse-wheel"></div></div>
