@@ -71,7 +71,7 @@ export function About() {
       <div className="container max-w-7xl mx-auto">
         {/* Hero Section */}
         <div className="relative overflow-hidden border-b border-blue-500/10 bg-gradient-to-br from-white to-[#f8fbff] text-center py-20 px-4 md:py-28">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] h-[200%] bg-[radial-gradient(circle,rgba(91,157,255,0.05)_0%,transparent_70%)] animate-[spin_20s_linear_infinite]"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] h-[200%] bg-[radial-gradient(circle,rgba(91,157,255,0.05)_0%,transparent_70%)] animate-spin" style={{animationDuration: '20s'}}></div>
             <div className="relative z-10 max-w-3xl mx-auto">
                 <p className="flex items-center justify-center text-xs md:text-sm font-bold tracking-widest text-gray-700 uppercase mb-5">
                     <span className="text-lg md:text-xl font-bold text-blue-500 mr-2">•</span>WHO WE ARE

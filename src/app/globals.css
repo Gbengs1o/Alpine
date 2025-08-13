@@ -89,6 +89,22 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  .animate-fade-in-slide {
+      animation: fade-in-slide 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  }
+
+  @keyframes fade-in-slide {
+      from {
+          opacity: 0;
+          transform: translateY(2rem) scale(0.95);
+      }
+      to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+      }
+  }
+
   @keyframes slideInUp {
       from {
           opacity: 0;
