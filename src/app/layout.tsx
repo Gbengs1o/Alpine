@@ -14,8 +14,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="!scroll-smooth">
-      <head />
-      <body className="font-body antialiased bg-background text-foreground">
+      <head>
+        <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module" async></script>
+      </head>
+      <body className="font-eras antialiased bg-background text-foreground">
         {children}
         <Toaster />
       </body>
