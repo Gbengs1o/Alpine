@@ -43,62 +43,43 @@ export function Services() {
     const [activeIndex, setActiveIndex] = useState(0);
     const [isDesktop, setIsDesktop] = useState(true);
     const descriptionRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const [currentSlide, setCurrentSlide] = useState(0);
 
-    // Accordion and Slider logic
     useEffect(() => {
         const handleResize = () => {
-            const newIsDesktop = window.innerWidth >= 1024; // lg breakpoint
-            setIsDesktop(newIsDesktop);
+            setIsDesktop(window.innerWidth >= 768); // Use tablet breakpoint
         };
-
-        handleResize(); // Initial check
+        handleResize();
         window.addEventListener('resize', handleResize);
-
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // Accordion height logic
     useEffect(() => {
         if (isDesktop) {
-            const activeDesc = descriptionRefs.current[activeIndex];
-            if (activeDesc) {
-                // Set height for active item
-                descriptionRefs.current.forEach((desc, i) => {
-                    if (desc) {
-                        desc.style.maxHeight = i === activeIndex ? `${desc.scrollHeight}px` : '0px';
-                    }
-                });
-            }
+            descriptionRefs.current.forEach((desc, i) => {
+                if (desc) {
+                    desc.style.maxHeight = i === activeIndex ? `${desc.scrollHeight}px` : '0px';
+                }
+            });
         }
     }, [activeIndex, isDesktop]);
-    
 
     const handleDesktopInteraction = (index: number) => {
         if (isDesktop) {
             setActiveIndex(index);
         }
     };
-    
-    // Slider Logic
-    const [currentSlide, setCurrentSlide] = useState(0);
-    const sliderTrackRef = useRef<HTMLDivElement>(null);
 
     const goToSlide = (slideIndex: number) => {
-        const slider = sliderTrackRef.current;
-        if(slider) {
-            slider.style.transform = `translateX(-${slideIndex * 100}%)`;
-        }
         setCurrentSlide(slideIndex);
     };
 
     const nextSlide = () => {
-        const newIndex = currentSlide === servicesData.length - 1 ? 0 : currentSlide + 1;
-        goToSlide(newIndex);
+        setCurrentSlide((prev) => (prev === servicesData.length - 1 ? 0 : prev + 1));
     };
 
     const prevSlide = () => {
-        const newIndex = currentSlide === 0 ? servicesData.length - 1 : currentSlide - 1;
-        goToSlide(newIndex);
+        setCurrentSlide((prev) => (prev === 0 ? servicesData.length - 1 : prev - 1));
     };
 
     const LottiePlayer = ({ src, isVisible }: { src: string; isVisible: boolean }) => (
@@ -173,7 +154,7 @@ export function Services() {
     const MobileLayout = () => (
       <div className="lg:hidden">
          <div className="overflow-hidden">
-            <div ref={sliderTrackRef} className="flex transition-transform duration-500 ease-in-out">
+            <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
               {servicesData.map((service, index) => (
                 <div key={index} className="flex-shrink-0 w-full px-2.5">
                     <div className="relative w-full max-w-sm mx-auto aspect-square bg-white/50 rounded-2xl backdrop-blur-md shadow-lg">
