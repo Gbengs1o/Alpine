@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
+import { Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 
 // Define Lottie component type for TypeScript
 declare global {
@@ -39,118 +40,183 @@ const servicesData = [
 
 export function Services() {
     const [activeIndex, setActiveIndex] = useState(0);
-    const [lottieSrc, setLottieSrc] = useState(servicesData[0].lottieSrc);
     const [isDesktop, setIsDesktop] = useState(true);
-    const lottieContainerRef = useRef<HTMLDivElement>(null);
     const descriptionRefs = useRef<(HTMLParagraphElement | null)[]>([]);
 
+    // Logic to handle accordion/slider switch on resize
     useEffect(() => {
         const handleResize = () => {
-            setIsDesktop(window.innerWidth > 991);
+            const newIsDesktop = window.innerWidth >= 992;
+            if (newIsDesktop !== isDesktop) {
+                setIsDesktop(newIsDesktop);
+            }
         };
-        handleResize();
+
+        handleResize(); // Initial check
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
-    }, []);
-    
-    useEffect(() => {
-        const container = lottieContainerRef.current;
-        if (container) {
-            container.style.opacity = '0';
-            setTimeout(() => {
-                setLottieSrc(servicesData[activeIndex].lottieSrc);
-                container.style.opacity = '1';
-            }, 150);
-        }
-    }, [activeIndex]);
+    }, [isDesktop]);
 
-    const handleInteraction = (index: number) => {
-        if (!isDesktop && activeIndex === index) {
-            setActiveIndex(-1); // Collapse on mobile if clicking the same item
-        } else {
+    // Accordion logic
+    useEffect(() => {
+        if (isDesktop) {
+            const descriptions = descriptionRefs.current;
+            const activeDesc = descriptions[activeIndex];
+            if (activeDesc) {
+                // Set height for active item
+                descriptions.forEach((desc, i) => {
+                    if (desc) {
+                        desc.style.maxHeight = i === activeIndex ? `${desc.scrollHeight}px` : '0px';
+                    }
+                });
+            }
+        }
+    }, [activeIndex, isDesktop]);
+    
+
+    const handleDesktopInteraction = (index: number) => {
+        if (isDesktop) {
             setActiveIndex(index);
         }
     };
     
-    return (
-        <section className="bg-[#f0f4f8] md:py-12">
-            <div className="max-w-7xl mx-auto my-8 md:my-12 bg-white md:p-20 p-5 relative overflow-hidden md:shadow-lg md:rounded-lg">
-                <div className="flex flex-col md:flex-row md:items-center md:gap-20">
-                    <div className="md:flex-1 md:min-w-[45%] order-1 md:order-1 p-5 md:p-0">
-                        <div ref={lottieContainerRef} className="w-full transition-opacity duration-300">
-                           {lottieSrc && (
-                             <dotlottie-wc
-                                 src={lottieSrc}
-                                 style={{ width: '100%', height: 'auto' }}
-                                 speed="1"
-                                 autoplay
-                                 loop
-                                 controls={false}
-                             />
-                           )}
-                        </div>
-                    </div>
-                    <div className="md:flex-1 md:min-w-[50%] order-2 md:order-2">
-                        <div className="hidden md:block">
-                            <p className="flex items-center text-sm font-bold tracking-wider text-gray-600 uppercase mb-5">
-                                <span className="text-lg font-bold text-[#5B9DFF] mr-2">•</span>OUR SERVICES
-                            </p>
-                            <h2 className="text-5xl font-bold leading-tight mb-5 text-gray-800">Comprehensive<br/>HVAC Solutions</h2>
-                            <p className="text-lg text-gray-600 leading-relaxed mb-10">
-                                From sourcing and installation to repairs and ongoing maintenance, we provide end-to-end solutions for residential and commercial clients.
-                            </p>
-                        </div>
+    // Slider Logic
+    const [currentSlide, setCurrentSlide] = useState(0);
+    const sliderTrackRef = useRef<HTMLDivElement>(null);
 
-                        <div className="border-t border-gray-200">
-                            {servicesData.map((service, index) => {
-                                const isActive = index === activeIndex;
-                                return (
-                                    <button 
-                                        key={service.title}
-                                        className={cn(
-                                            "w-full py-6 text-left border-b border-gray-200 transition-colors duration-300",
-                                            { "border-b-[#5B9DFF]": isActive }
-                                        )}
-                                        onClick={() => isDesktop ? null : handleInteraction(index)}
-                                        onMouseEnter={() => isDesktop ? setActiveIndex(index) : null}
-                                        aria-expanded={isActive}
-                                    >
-                                        <div className="flex justify-between items-center">
-                                            <h3 className={cn(
-                                                "text-xl md:text-2xl font-semibold text-gray-400 transition-colors duration-300",
-                                                { "text-black": isActive }
-                                            )}>
-                                                {service.title}
-                                            </h3>
-                                            <div className={cn(
-                                                "flex-shrink-0 w-11 h-11 rounded-full flex items-center justify-center border border-gray-300 text-gray-400 text-2xl transition-all duration-300",
-                                                { "bg-[#5B9DFF] border-[#5B9DFF] text-white": isActive }
-                                            )}>
-                                                <span>→</span>
-                                            </div>
-                                        </div>
-                                        <div 
-                                            className="overflow-hidden transition-all duration-400 ease-in-out"
-                                            style={{
-                                                maxHeight: isActive ? `${descriptionRefs.current[index]?.scrollHeight ?? 0}px` : '0px',
-                                                opacity: isActive ? 1 : 0,
-                                                marginTop: isActive ? '15px' : '0'
-                                            }}
-                                        >
-                                            <p 
-                                                ref={el => descriptionRefs.current[index] = el}
-                                                className="text-gray-600 text-base leading-relaxed pr-0 md:pr-14"
-                                            >
-                                                {service.description}
-                                            </p>
-                                        </div>
-                                    </button>
-                                );
-                            })}
-                        </div>
+    const goToSlide = (slideIndex: number) => {
+        if (sliderTrackRef.current) {
+            sliderTrackRef.current.style.transform = `translateX(-${slideIndex * 100}%)`;
+            setCurrentSlide(slideIndex);
+        }
+    };
+
+    const nextSlide = () => {
+        const newIndex = currentSlide === servicesData.length - 1 ? 0 : currentSlide + 1;
+        goToSlide(newIndex);
+    };
+
+    const prevSlide = () => {
+        const newIndex = currentSlide === 0 ? servicesData.length - 1 : currentSlide - 1;
+        goToSlide(newIndex);
+    };
+
+    const LottiePlayer = ({ src, isVisible }: { src: string; isVisible: boolean }) => (
+      <div className={cn("lottie-player absolute inset-0 transition-opacity duration-300", isVisible ? "opacity-100 visible" : "opacity-0 invisible")}>
+          <dotlottie-wc src={src} style={{ width: '100%', height: '100%' }} speed="1" autoplay loop />
+      </div>
+    );
+
+    const DesktopLayout = () => (
+      <div className="hidden md:grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-12 xl:gap-24 items-start">
+        <div className="lg:sticky top-20 h-auto lg:h-[calc(100vh-10rem)] self-start">
+          <div className="relative w-full max-w-md mx-auto aspect-square bg-white/50 rounded-2xl backdrop-blur-md shadow-lg">
+            {servicesData.map((service, index) => (
+                <LottiePlayer key={index} src={service.lottieSrc} isVisible={activeIndex === index} />
+            ))}
+          </div>
+        </div>
+        <div className="lg:min-h-screen">
+            <div className="bg-white/50 border border-white/70 rounded-2xl backdrop-blur-sm overflow-hidden">
+                {servicesData.map((service, index) => {
+                    const isActive = index === activeIndex;
+                    return (
+                        <button 
+                            key={service.title}
+                            className={cn(
+                                "w-full p-7 text-left border-b border-gray-200/80 transition-all duration-300 last:border-b-0",
+                                { "bg-blue-500/5": isActive },
+                                "hover:bg-blue-500/5"
+                            )}
+                            onMouseEnter={() => handleDesktopInteraction(index)}
+                            aria-expanded={isActive}
+                        >
+                            <div className="flex justify-between items-center gap-4">
+                                <h3 className={cn(
+                                    "text-xl md:text-2xl font-semibold text-gray-400 transition-colors duration-300",
+                                    { "text-gray-800": isActive }
+                                )}>
+                                    {service.title}
+                                </h3>
+                                <div className={cn(
+                                    "flex-shrink-0 w-11 h-11 rounded-full flex items-center justify-center border border-gray-300 bg-white/80 transition-all duration-300",
+                                    { "bg-blue-500 border-blue-500 shadow-md": isActive }
+                                )}>
+                                    <Plus className={cn("h-6 w-6 text-gray-400 transition-transform duration-400", { "text-white rotate-45": isActive })} />
+                                </div>
+                            </div>
+                            <div 
+                                className="overflow-hidden transition-all duration-400 ease-in-out"
+                                style={{
+                                    maxHeight: isActive ? `${descriptionRefs.current[index]?.scrollHeight ?? 0}px` : '0px',
+                                    opacity: isActive ? 1 : 0,
+                                    marginTop: isActive ? '1rem' : '0'
+                                }}
+                            >
+                                <p 
+                                    ref={el => descriptionRefs.current[index] = el}
+                                    className="text-gray-600 text-base leading-relaxed pr-16"
+                                >
+                                    {service.description}
+                                </p>
+                            </div>
+                        </button>
+                    );
+                })}
+            </div>
+        </div>
+      </div>
+    );
+
+    const MobileLayout = () => (
+      <div className="md:hidden">
+         <div className="overflow-hidden">
+            <div ref={sliderTrackRef} className="flex transition-transform duration-500 ease-in-out">
+              {servicesData.map((service, index) => (
+                <div key={index} className="flex-shrink-0 w-full px-2.5">
+                    <div className="relative w-full max-w-sm mx-auto aspect-square bg-white/50 rounded-2xl backdrop-blur-md shadow-lg">
+                        <dotlottie-wc src={service.lottieSrc} style={{ width: '100%', height: '100%' }} speed="1" autoplay loop />
+                    </div>
+                    <div className="mt-6 text-center">
+                        <h3 className="text-xl font-bold text-gray-800 mb-2">{service.title}</h3>
+                        <p className="text-gray-600 max-w-xs mx-auto">{service.description}</p>
                     </div>
                 </div>
-                <div className="hidden md:block absolute bottom-0 left-0 w-full h-[120px] bg-[url('https://i.imgur.com/gO07v1h.png')] bg-repeat-x bg-bottom bg-auto z-10" />
+              ))}
+            </div>
+         </div>
+         <div className="flex justify-between items-center mt-8 max-w-xs mx-auto">
+            <button onClick={prevSlide} aria-label="Previous service" className="p-3 rounded-full bg-white/70 border border-gray-200 shadow-sm hover:bg-white disabled:opacity-50">
+                <ChevronLeft className="h-5 w-5 text-gray-600" />
+            </button>
+            <div className="flex gap-2">
+                {servicesData.map((_, index) => (
+                    <button key={index} onClick={() => goToSlide(index)} className={cn("w-2.5 h-2.5 rounded-full transition-all", currentSlide === index ? 'bg-blue-500 scale-125' : 'bg-gray-300 hover:bg-gray-400')}/>
+                ))}
+            </div>
+             <button onClick={nextSlide} aria-label="Next service" className="p-3 rounded-full bg-white/70 border border-gray-200 shadow-sm hover:bg-white disabled:opacity-50">
+                <ChevronRight className="h-5 w-5 text-gray-600" />
+            </button>
+         </div>
+      </div>
+    );
+    
+    return (
+        <section id="services" className="py-16 md:py-24 px-4">
+            <div className="max-w-7xl mx-auto">
+                <header className="mb-12 md:mb-16 text-center max-w-3xl mx-auto">
+                    <p className="flex items-center justify-center text-sm font-bold tracking-wider text-gray-600 uppercase mb-4">
+                        <span className="text-lg font-bold text-blue-500 mr-2">•</span>OUR SERVICES
+                    </p>
+                    <h2 className="text-4xl md:text-5xl font-bold leading-tight text-gray-800 mb-4">Comprehensive HVAC Solutions</h2>
+                    <p className="text-lg text-gray-600 leading-relaxed">
+                        From sourcing and installation to repairs and ongoing maintenance, we provide end-to-end solutions for all clients.
+                    </p>
+                </header>
+
+                <div className="relative">
+                    {isDesktop ? <DesktopLayout /> : <MobileLayout />}
+                </div>
             </div>
         </section>
     );
