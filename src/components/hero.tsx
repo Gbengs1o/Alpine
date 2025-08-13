@@ -3,98 +3,369 @@
 import { useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 export function Hero() {
   const pinContainerRef = useRef<HTMLDivElement>(null);
-  const heroSectionRef = useRef<HTMLDivElement>(null);
-  const heroContentRef = useRef<HTMLDivElement>(null);
-  const videoIframeRef = useRef<HTMLIFrameElement>(null);
+  const heroViewportRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLDivElement>(null);
+  const panelsRef = useRef<(HTMLElement | null)[]>([]);
+  const panelContentsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const lastPanelRef = useRef<HTMLElement | null>(null);
+  const scrollIndicatorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const pinContainer = pinContainerRef.current;
-      const heroSection = heroSectionRef.current;
-      const heroContent = heroContentRef.current;
-      const videoIframe = videoIframeRef.current;
+    // A quick check to see if we're in an environment that supports window (i.e., the browser)
+    if (typeof window === 'undefined') return;
 
-      if (!pinContainer || !heroSection || !heroContent || !videoIframe) {
-        return;
-      }
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-      const scrollableHeight = pinContainer.offsetHeight - window.innerHeight;
-      const scrollTop = window.scrollY;
-      
-      let progress = Math.min(1, scrollTop / scrollableHeight);
-      if (scrollableHeight <= 0) {
-        progress = 1;
-      }
-
-
-      // Fade in entire section
-      const fadeInEndProgress = 0.25; 
-      if (progress < fadeInEndProgress) {
-        heroSection.style.opacity = (progress / fadeInEndProgress).toString();
-      } else {
-        heroSection.style.opacity = '1';
-      }
-      
-      // Zoom out video
-      const startScale = 2.5;
-      const endScale = 1;
-      const scaleRange = startScale - endScale;
-      const currentScale = startScale - (progress * scaleRange); 
-      videoIframe.style.transform = `translate(-50%, -50%) scale(${currentScale})`;
-
-      // Fade in text
-      const textFadeStartProgress = 0.4;
-      if (progress > textFadeStartProgress) {
-        const textFadeProgress = (progress - textFadeStartProgress) / (1 - textFadeStartProgress);
-        heroContent.style.opacity = textFadeProgress.toString();
-      } else {
-        heroContent.style.opacity = '0';
-      }
+    const elements = {
+        pinContainer: pinContainerRef.current,
+        heroViewport: heroViewportRef.current,
+        track: trackRef.current,
+        video: videoRef.current,
+        panels: panelsRef.current.filter(p => p !== null) as HTMLElement[],
+        panelContents: panelContentsRef.current.filter(p => p !== null),
+        lastPanel: lastPanelRef.current,
+        scrollIndicator: scrollIndicatorRef.current,
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Initial call to set correct initial state
+    if (Object.values(elements).some(el => !el || (Array.isArray(el) && el.length === 0))) {
+        console.warn('Hero elements missing.');
+        return;
+    }
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    const numPanels = elements.panels.length;
+
+    const exitTimings = {
+        revealDuration: 0.20,
+        zoomDuration: 0.60,
+        fadeDuration: 0.20,
+    };
+
+    const revealEnd = exitTimings.revealDuration;
+    const zoomEnd = exitTimings.revealDuration + exitTimings.zoomDuration;
+    const fadeEnd = zoomEnd + exitTimings.fadeDuration;
+
+    const animateHero = () => {
+        const scrollTop = window.scrollY;
+        const pinContainer = elements.pinContainer!;
+        const heroViewport = elements.heroViewport!;
+        const track = elements.track!;
+        const video = elements.video!;
+        const lastPanel = elements.lastPanel!;
+        const scrollIndicator = elements.scrollIndicator!;
+
+        const totalPinDuration = pinContainer.offsetHeight - window.innerHeight;
+        const horizontalPhaseEnd = (window.innerWidth) * (numPanels - 1); // Corrected calculation
+
+        if (scrollTop > 50) {
+            scrollIndicator.style.opacity = '0';
+        } else {
+            scrollIndicator.style.opacity = '1';
+        }
+
+        if (scrollTop <= horizontalPhaseEnd) {
+            const progress = scrollTop / horizontalPhaseEnd;
+            track.style.transform = `translateX(-${progress * (track.offsetWidth - window.innerWidth)}px)`;
+            const currentPanelIndex = Math.min(numPanels - 1, Math.floor(progress * numPanels));
+
+            elements.panelContents.forEach((content, index) => {
+                if (content) {
+                    content.classList.toggle('is-visible', index === currentPanelIndex);
+                }
+            });
+
+            heroViewport.style.opacity = '1';
+            lastPanel.style.opacity = '1';
+            video.style.transform = 'scale(1)';
+        } else {
+            track.style.transform = `translateX(-${track.offsetWidth - window.innerWidth}px)`;
+            elements.panelContents.forEach((content, index) => {
+                 if (content) {
+                    content.classList.toggle('is-visible', index === numPanels - 1);
+                }
+            });
+
+            const exitSequenceDuration = totalPinDuration - horizontalPhaseEnd;
+            if (exitSequenceDuration <= 0) return; // Avoid division by zero
+            
+            const exitProgress = (scrollTop - horizontalPhaseEnd) / exitSequenceDuration;
+
+            if (exitProgress <= revealEnd) {
+                const revealProgress = exitProgress / revealEnd;
+                lastPanel.style.opacity = (1 - revealProgress).toString();
+            } else {
+                lastPanel.style.opacity = '0';
+            }
+
+            if (exitProgress > revealEnd && exitProgress <= zoomEnd) {
+                const zoomProgress = (exitProgress - revealEnd) / (zoomEnd - revealEnd);
+                const scale = 1 + zoomProgress * 0.5;
+                video.style.transform = `scale(${scale})`;
+            } else if (exitProgress > zoomEnd) {
+                video.style.transform = 'scale(1.5)';
+            } else {
+                video.style.transform = 'scale(1)';
+            }
+
+            if (exitProgress > zoomEnd && exitProgress <= fadeEnd) {
+                const fadeProgress = (exitProgress - zoomEnd) / (fadeEnd - zoomEnd);
+                heroViewport.style.opacity = (1 - fadeProgress).toString();
+            } else if (exitProgress > fadeEnd) {
+                heroViewport.style.opacity = '0';
+            } else {
+                heroViewport.style.opacity = '1';
+            }
+        }
+    };
+
+    let isTicking = false;
+    const onScroll = () => {
+        if (!isTicking) {
+            window.requestAnimationFrame(() => {
+                animateHero();
+                isTicking = false;
+            });
+            isTicking = true;
+        }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    animateHero(); // Initial call
+
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   return (
-    <div ref={pinContainerRef} style={{ height: '250vh', position: 'relative' }}>
-      <section 
-        ref={heroSectionRef} 
-        className="h-screen w-full sticky top-0 overflow-hidden flex items-center justify-center text-center"
-        style={{ opacity: 0 }}
-      >
-        <div className="absolute top-0 left-0 w-full h-full z-[-2]">
-          <iframe 
-            ref={videoIframeRef}
-            src="https://www.youtube.com/embed/gCRNEJxDJKM?autoplay=1&mute=1&loop=1&playlist=gCRNEJxDJKM&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1"
-            className="absolute top-1/2 left-1/2 w-[177.77vh] min-w-[100vw] h-[56.25vw] min-h-screen border-0 pointer-events-none transition-transform duration-[100ms] ease-linear"
-            style={{ transform: 'translate(-50%, -50%) scale(2.5)' }}
-          ></iframe>
+    <>
+      <style jsx>{`
+        :root {
+          --background-color: #020408;
+          --text-color: #eef2f9;
+          --highlight-color: #63a4ff;
+          --panel-bg-color: rgba(10, 20, 35, 0.25);
+        }
+        #pin-container {
+            /* Width of all panels combined + extra scroll for exit animation */
+            height: calc(200vw + 250vh); 
+            position: relative;
+            background-color: var(--background-color);
+        }
+        #hero-viewport {
+            height: 100vh;
+            width: 100%;
+            position: sticky;
+            top: 0;
+            overflow: hidden;
+            will-change: opacity;
+        }
+        #hero-video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            will-change: transform;
+            overflow: hidden;
+        }
+        #hero-video-background iframe {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 177.77vh; /* 100vh * 16/9 */
+            min-width: 100vw;
+            height: 56.25vw; /* 100vw * 9/16 */
+            min-height: 100vh;
+            pointer-events: none;
+        }
+        #horizontal-track {
+            display: flex;
+            height: 100%;
+            width: 300%; /* 3 panels * 100% width */
+            will-change: transform;
+            z-index: 1;
+        }
+        .panel {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4vw;
+            box-sizing: border-box;
+            position: relative;
+            background-color: var(--panel-bg-color);
+            backdrop-filter: blur(12px) brightness(90%);
+            -webkit-backdrop-filter: blur(12px) brightness(90%);
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            will-change: opacity;
+        }
+        .panel:first-child { border-left: none; }
+        .panel-content {
+            z-index: 1;
+            max-width: 800px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out 0.3s, transform 0.8s ease-out 0.3s;
+            will-change: opacity;
+        }
+        .panel-content.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .panel-title {
+            font-size: clamp(3rem, 7vw, 6rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 1.1;
+            margin: 0 0 1rem;
+            text-shadow: 0 4px 25px rgba(0,0,0,0.6);
+            color: var(--text-color);
+        }
+        .panel-subtitle {
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            font-weight: 400;
+            line-height: 1.6;
+            margin: 0 0 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+             color: var(--text-color);
+        }
+        .cta-button {
+            position: relative;
+            overflow: hidden;
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: #f0f8ff;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+            border-radius: 14px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.2), 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .cta-button::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1.5px);
+            background-size: 4px 4px;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 75%;
+            height: 100%;
+            background: linear-gradient( to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 100% );
+            transform: skewX(-25deg);
+            transition: left 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .cta-button:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.4), 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+        .cta-button:hover::before {
+            left: 150%;
+        }
+        #scroll-indicator {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            transition: opacity 0.5s ease;
+            text-align: center;
+            color: rgba(255,255,255,0.7);
+        }
+        #scroll-indicator span {
+            display: block;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        .mouse-icon {
+            width: 24px;
+            height: 40px;
+            border: 2px solid rgba(255,255,255,0.7);
+            border-radius: 12px;
+            position: relative;
+            margin: 0 auto;
+        }
+        .mouse-wheel {
+            width: 4px;
+            height: 8px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 2px;
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: scroll-wheel 2s infinite;
+        }
+        @keyframes scroll-wheel {
+            0% { top: 8px; opacity: 1; }
+            50% { top: 20px; opacity: 0; }
+            100% { top: 8px; opacity: 1; }
+        }
+      `}</style>
+      <div id="pin-container" ref={pinContainerRef}>
+        <div id="hero-viewport" ref={heroViewportRef}>
+          <div id="hero-video-background" ref={videoRef}>
+            <iframe
+              src="https://www.youtube.com/embed/gCRNEJxDJKM?autoplay=1&mute=1&loop=1&playlist=gCRNEJxDJKM&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+          <div id="horizontal-track" ref={trackRef}>
+            <section className="panel panel-1" ref={el => panelsRef.current[0] = el}>
+              <div className="panel-content" ref={el => panelContentsRef.current[0] = el}>
+                <h1 className="panel-title">The Cool Alpine Experience—Anywhere</h1>
+              </div>
+            </section>
+            <section className="panel panel-2" ref={el => panelsRef.current[1] = el}>
+              <div className="panel-content" ref={el => panelContentsRef.current[1] = el}>
+                <h2 className="panel-title">Experience You Can Trust</h2>
+                <p className="panel-subtitle">With over 13 years in the industry, our team of certified technicians delivers reliable installation, maintenance, and repair for residential and commercial spaces.</p>
+              </div>
+            </section>
+            <section className="panel panel-3" ref={el => { panelsRef.current[2] = el; lastPanelRef.current = el; }}>
+              <div className="panel-content" ref={el => panelContentsRef.current[2] = el}>
+                <h2 className="panel-title">EXPERIENCE COOLING AT ITS PEAK</h2>
+                <p className="panel-subtitle">Premium HVAC Solutions for Every Space – Powered by Alpine Tech.</p>
+                 <Link href="#contact">
+                    <button className="cta-button">Request a Consultation</button>
+                 </Link>
+              </div>
+            </section>
+          </div>
         </div>
-
-        <div className="absolute top-0 left-0 w-full h-full bg-[rgba(40,70,110,0.15)] z-[-1]"></div>
-
-        <div ref={heroContentRef} className="z-10 text-white p-5" style={{ opacity: 0 }}>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold uppercase tracking-widest" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.5)' }}>
-            EXPERIENCE COOLING AT ITS PEAK
-          </h1>
-          <p className="mt-4 text-lg md:text-xl max-w-3xl mx-auto" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.5)' }}>
-            Premium HVAC Solutions for Every Space – Powered by Alpine Tech
-          </p>
-          <Button 
-            asChild
-            size="lg"
-            className="mt-8 bg-[rgba(255,255,255,0.4)] text-black border border-[rgba(255,255,255,0.2)] rounded-2xl backdrop-blur-md hover:bg-[rgba(255,255,255,0.6)]"
-          >
-            <Link href="#services">Explore Our Services</Link>
-          </Button>
-        </div>
-      </section>
-    </div>
+      </div>
+      <div id="scroll-indicator" ref={scrollIndicatorRef}>
+        <span>Scroll to explore</span>
+        <div className="mouse-icon"><div className="mouse-wheel"></div></div>
+      </div>
+    </>
   );
 }
