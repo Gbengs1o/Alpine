@@ -1,5 +1,9 @@
+"use client";
+
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 const timelineData = [
   {
@@ -29,6 +33,38 @@ const stats = [
 ]
 
 export function About() {
+  const timelineRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-fade-in-slide');
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        triggerOnce: true,
+      }
+    );
+
+    timelineRefs.current.forEach((ref) => {
+      if (ref) {
+        observer.observe(ref);
+      }
+    });
+
+    return () => {
+      timelineRefs.current.forEach((ref) => {
+        if (ref) {
+          observer.unobserve(ref);
+        }
+      });
+    };
+  }, []);
+
   return (
     <section id="about" className="bg-[#f0f4f8] relative">
       <div className="container max-w-7xl mx-auto">
@@ -94,14 +130,17 @@ export function About() {
               <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 via-blue-300 to-blue-500/30 transform md:-translate-x-1/2"></div>
               
               {timelineData.map((item, index) => (
-                <div key={item.year} className="relative mb-12 last:mb-0 group/item">
+                <div key={item.year} ref={el => timelineRefs.current[index] = el} className="relative mb-12 last:mb-0 opacity-0">
                   <div className="md:hidden absolute top-1 left-4 -translate-x-1/2 w-5 h-5 bg-gradient-to-br from-blue-500 to-blue-400 rounded-full shadow-md ring-8 ring-white z-10"></div>
                   <div className="hidden md:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 bg-gradient-to-br from-blue-500 to-blue-400 rounded-full shadow-md ring-8 ring-white z-10"></div>
                   
-                  <div className={`flex flex-col md:flex-row items-center ${index % 2 === 0 ? 'md:flex-row-reverse' : ''}`}>
+                  <div className={cn(
+                      "flex flex-col md:flex-row items-center",
+                      index % 2 === 0 ? 'md:flex-row-reverse' : ''
+                  )}>
                     <div className="md:w-5/12"></div>
                     <div className="md:w-2/12"></div>
-                    <div className="w-full md:w-5/12 p-6 bg-white rounded-xl shadow-lg border border-gray-200/80 transition-all duration-500 opacity-0 translate-x-[-20px] group-hover/item:opacity-100 group-hover/item:translate-x-0 ml-12 md:ml-0">
+                    <div className={cn("w-full md:w-5/12 p-6 bg-white rounded-xl shadow-lg border border-gray-200/80 transition-all duration-500 ml-12 md:ml-0")}>
                       <span className="inline-block bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-3">{item.year}</span>
                       <h3 className="text-xl font-bold text-gray-800 mb-2">{item.title}</h3>
                       <p className="text-sm text-gray-600 leading-relaxed">{item.description}</p>
