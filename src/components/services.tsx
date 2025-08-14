@@ -25,7 +25,7 @@ const installationSteps = [
 
 export function Services() {
   return (
-    <div className="bg-white text-gray-800">
+    <div id="services" className="bg-white text-gray-800">
       {/* Page Header */}
       <header className="bg-gradient-to-b from-primary/5 to-white py-16 md:py-24 text-center">
         <div className="container max-w-4xl mx-auto px-4">
@@ -166,7 +166,7 @@ export function Services() {
                 Let our experts provide a tailored solution for your home or business. Get in touch for a free, no-obligation consultation.
             </p>
             <Button asChild size="lg" variant="secondary" className="bg-white text-primary hover:bg-white/90">
-                <Link href="/contact">Request a Quote</Link>
+                <Link href="/#contact">Request a Quote</Link>
             </Button>
           </div>
         </div>
