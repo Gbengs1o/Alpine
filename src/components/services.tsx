@@ -1,22 +1,36 @@
 "use client"
 
-import { Wrench, Package, HardHat } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
+// Define the type for our custom element
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'dotlottie-wc': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement> & {
+        src: string;
+        speed?: string;
+        autoplay?: boolean;
+        loop?: boolean;
+      }, HTMLElement>;
+    }
+  }
+}
+
+
 const servicesSummary = [
   {
-    icon: Package,
+    lottieSrc: "https://lottie.host/853538fb-6abe-48b6-9ff6-2ef0bea08c22/Nq1FdjK1vp.lottie",
     title: "Equipment Sourcing",
     description: "Official partners with GREE, we supply top-tier HVAC systems at competitive prices.",
   },
   {
-    icon: HardHat,
+    lottieSrc: "https://lottie.host/ec1fb587-bc15-4a0a-8eef-a5d1505da1e7/VRXlLcwxdX.lottie",
     title: "Professional Installation",
     description: "Flawless execution for residential, commercial, and industrial projects, ensuring peak performance.",
   },
   {
-    icon: Wrench,
+    lottieSrc: "https://lottie.host/e3016043-5898-4174-837f-8713834637d4/iE0Szpx2sl.lottie",
     title: "Maintenance & Repairs",
     description: "Flexible plans and expert repairs to keep your systems running smoothly and efficiently.",
   },
@@ -35,12 +49,16 @@ export function Services() {
             </p>
           </div>
         </div>
-        <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 lg:grid-cols-3 lg:gap-12">
+        <div className="mx-auto grid max-w-5xl items-start gap-6 py-12 lg:grid-cols-3 lg:gap-12">
             {servicesSummary.map((service, index) => (
                 <div key={index} className="flex flex-col items-center text-center p-4">
-                    <div className="flex-shrink-0 w-16 h-16 rounded-full flex items-center justify-center bg-primary/10 text-primary mb-4">
-                        <service.icon className="w-8 h-8" />
-                    </div>
+                    <dotlottie-wc 
+                      src={service.lottieSrc}
+                      style={{width: '200px', height: '200px'}}
+                      speed="1" 
+                      autoplay 
+                      loop>
+                    </dotlottie-wc>
                     <h3 className="text-xl font-bold mb-2">{service.title}</h3>
                     <p className="text-muted-foreground">{service.description}</p>
                 </div>
