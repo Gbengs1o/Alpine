@@ -65,6 +65,17 @@ export function Hero() {
         const totalPinDuration = elements.pinContainer.offsetHeight - window.innerHeight;
         const horizontalPhaseEnd = (window.innerWidth / 100) * 300; 
 
+        // --- MODIFICATION START ---
+        // Logic to blur/unblur the background video.
+        // The video is blurred while the user scrolls through the horizontal text panels
+        // and un-blurs when the exit sequence begins.
+        if (scrollTop > 1 && scrollTop <= horizontalPhaseEnd) {
+            elements.video.classList.add('is-blurred');
+        } else {
+            elements.video.classList.remove('is-blurred');
+        }
+        // --- MODIFICATION END ---
+
         if (scrollTop > 50) { 
             elements.scrollIndicator.style.opacity = '0'; 
         } else { 
@@ -189,10 +200,22 @@ export function Hero() {
             position: absolute; top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: -1;
-            will-change: transform;
             overflow: hidden;
+            /* --- MODIFICATION START --- */
+            /* Added filter properties and transition for the blur effect */
+            filter: blur(0px);
+            transition: filter 0.8s ease-out;
+            will-change: transform, filter;
+            /* --- MODIFICATION END --- */
         }
         
+        /* --- MODIFICATION START --- */
+        /* This new class applies the blur effect when toggled by JavaScript */
+        #hero-video-background.is-blurred {
+            filter: blur(12px);
+        }
+        /* --- MODIFICATION END --- */
+
         #hero-video-background iframe {
             position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
