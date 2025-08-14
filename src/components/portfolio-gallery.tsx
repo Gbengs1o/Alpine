@@ -1,33 +1,38 @@
+"use client";
+
+import { useState, useMemo } from 'react';
 import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 const projects = [
   {
     title: "Raumplus",
-    category: "VRF Unit Installation",
+    category: "VRF",
     image: "https://placehold.co/600x400.png",
     hint: "office building"
   },
   {
     title: "Braithwaite Memorial Hospital, PHC",
-    category: "VRF Unit Supply & Installation",
+    category: "VRF",
     image: "https://placehold.co/600x400.png",
     hint: "hospital exterior"
   },
   {
     title: "KAPHUB",
-    category: "Ceiling Concealed & RAC Installation",
+    category: "Installation",
     image: "https://placehold.co/600x400.png",
     hint: "modern office"
   },
   {
     title: "BABCOCK University MRI Room",
-    category: "Ceiling Concealed Units",
+    category: "Installation",
     image: "https://placehold.co/600x400.png",
     hint: "university building"
   },
   {
     title: "Ashaka Cement, Gombe",
-    category: "VRF Unit Installation",
+    category: "VRF",
     image: "https://placehold.co/600x400.png",
     hint: "industrial factory"
   },
@@ -87,21 +92,50 @@ const projects = [
   },
   {
     title: "Premier Hotel & Resort",
-    category: "RAC Supply & Installation",
+    category: "Installation",
     image: "https://placehold.co/600x400.png",
     hint: "beach resort"
   },
 ];
 
+const categories = ["All", "VRF", "Commercial", "Residential", "Light Commercial", "Installation"];
+
 export function PortfolioGallery() {
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const filteredProjects = useMemo(() => {
+    if (selectedCategory === "All") {
+      return projects;
+    }
+    return projects.filter(project => project.category === selectedCategory);
+  }, [selectedCategory]);
+
   return (
     <section className="py-20 md:py-24 bg-background">
       <div className="container mx-auto px-4">
+        {/* Filter Buttons */}
+        <div className="flex justify-center flex-wrap gap-2 md:gap-4 mb-12">
+          {categories.map((category) => (
+            <Button
+              key={category}
+              variant={selectedCategory === category ? 'default' : 'outline'}
+              onClick={() => setSelectedCategory(category)}
+              className="px-4 py-2 rounded-full transition-all duration-300"
+            >
+              {category}
+            </Button>
+          ))}
+        </div>
+
+        {/* Projects Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project, index) => (
+          {filteredProjects.map((project, index) => (
             <div
-              key={index}
-              className="group bg-white rounded-lg shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-2"
+              key={`${project.title}-${index}`}
+              className={cn(
+                "group bg-white rounded-lg shadow-lg overflow-hidden transform transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 animate-fade-in-slide"
+              )}
+               style={{ animationDelay: `${index * 50}ms` }}
             >
               <div className="relative h-56">
                 <Image
