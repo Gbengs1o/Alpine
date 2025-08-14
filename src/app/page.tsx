@@ -4,7 +4,6 @@ import { Hero } from '@/components/hero';
 import { About } from '@/components/about';
 import { Advantages } from '@/components/advantages';
 import CoreValues from '@/components/core-values';
-import Portfolio from '@/components/portfolio';
 import { Services } from '@/components/services';
 import { Faq } from '@/components/faq';
 
@@ -19,7 +18,6 @@ export default function Page() {
         <Advantages />
         <Services />
         <CoreValues />
-        <Portfolio />
         <Faq />
         
         
