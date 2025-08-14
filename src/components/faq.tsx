@@ -41,8 +41,8 @@ export function Faq() {
             --dark-bg: #000000;
             --light-text: #8b949e;
             --white-text: #f0f6fc;
-            --border-color: #30363d;
-            --icon-bg: rgba(172, 185, 201, 0.15);
+            --border-color: #4a5568;
+            --icon-bg: #374151;
         }
 
         .faq-section {
@@ -154,7 +154,7 @@ export function Faq() {
         .item-icon::after {
             content: '';
             position: absolute;
-            background-color: var(--light-text);
+            background-color: #ffffff;
             transition: transform 0.3s ease-in-out;
         }
         .item-icon::before { /* Horizontal bar */
