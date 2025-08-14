@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Logo } from '@/components/logo';
+import { Button } from '@/components/ui/button';
 
 const navLinks = [
   { href: '/about', label: 'ABOUT' },
@@ -47,12 +48,14 @@ export function Header() {
                 <Menu className="h-[16px] w-[26px] text-black" />
             </button>
             
-            <button 
-                className="h-[40px] w-[150px] rounded-[7px] font-eras text-xs text-white transition-opacity hover:opacity-90"
-                style={{ backgroundColor: 'rgb(0, 65, 117)' }}
+            <Button asChild 
+              className="h-[40px] w-[150px] rounded-[7px] font-eras text-xs text-white transition-opacity hover:opacity-90"
+              style={{ backgroundColor: 'rgb(0, 65, 117)' }}
             >
+              <Link href="/contact">
                 CALL US
-            </button>
+              </Link>
+            </Button>
         </div>
 
         {/* Mobile Menu Trigger */}
@@ -89,13 +92,13 @@ export function Header() {
                   ))}
                 </nav>
                 <div className="flex flex-col gap-4">
-                    <button
+                    <Button asChild
                         className="h-[40px] w-full rounded-[7px] font-eras text-xs text-white"
                         style={{ backgroundColor: 'rgb(0, 65, 117)' }}
                         onClick={() => setIsMenuOpen(false)}
                     >
-                        CALL US
-                    </button>
+                      <Link href="/contact">CALL US</Link>
+                    </Button>
                 </div>
             </SheetContent>
           </Sheet>
