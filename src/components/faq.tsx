@@ -6,28 +6,32 @@ export function Faq() {
   useEffect(() => {
     const accordionItems = document.querySelectorAll('.accordion-item');
 
+    const handleClick = (event) => {
+      const item = event.currentTarget.closest('.accordion-item');
+      if (!item) return;
+
+      const currentlyActive = document.querySelector('.accordion-item.active');
+
+      if (currentlyActive && currentlyActive !== item) {
+        currentlyActive.classList.remove('active');
+      }
+
+      item.classList.toggle('active');
+    };
+
     accordionItems.forEach(item => {
-        const header = item.querySelector('.accordion-header');
-        if (header) {
-            header.addEventListener('click', () => {
-                const currentlyActive = document.querySelector('.accordion-item.active');
-
-                if (currentlyActive && currentlyActive !== item) {
-                    currentlyActive.classList.remove('active');
-                }
-
-                item.classList.toggle('active');
-            });
-        }
+      const header = item.querySelector('.accordion-header');
+      if (header) {
+        header.addEventListener('click', handleClick);
+      }
     });
-    
+
     // Cleanup function to remove event listeners when the component unmounts
     return () => {
       accordionItems.forEach(item => {
         const header = item.querySelector('.accordion-header');
         if (header) {
-          // You might need a more robust way to remove the exact listener function
-          // but for this example, this demonstrates the cleanup concept.
+          header.removeEventListener('click', handleClick);
         }
       });
     };
@@ -36,16 +40,14 @@ export function Faq() {
   return (
     <>
       <style jsx>{`
-        :root {
+        .faq-section {
             --brand-blue: #5d99f7;
             --dark-bg: #000000;
             --light-text: #8b949e;
             --white-text: #f0f6fc;
             --border-color: #4a5568;
             --icon-bg: #374151;
-        }
 
-        .faq-section {
             width: 100%;
             background-color: var(--dark-bg);
             color: var(--white-text);
@@ -157,11 +159,11 @@ export function Faq() {
             background-color: #ffffff;
             transition: transform 0.3s ease-in-out;
         }
-        .item-icon::before { /* Horizontal bar */
+        .item-icon::before {
             width: 14px;
             height: 2px;
         }
-        .item-icon::after { /* Vertical bar */
+        .item-icon::after {
             width: 2px;
             height: 14px;
         }
@@ -171,7 +173,7 @@ export function Faq() {
             overflow: hidden;
             opacity: 0;
             transition: max-height 0.4s ease-out, opacity 0.3s ease-in-out, padding 0.4s ease-out;
-            padding-left: 50px; /* Aligns with question text */
+            padding-left: 50px;
         }
         
         .accordion-content p {
@@ -180,7 +182,7 @@ export function Faq() {
             color: var(--light-text);
             font-size: 16px;
             line-height: 1.7;
-            max-width: 650px; /* Increased width for better text flow */
+            max-width: 650px;
         }
         
         .accordion-item.active .item-icon {
@@ -188,7 +190,7 @@ export function Faq() {
         }
         
         .accordion-item.active .accordion-content {
-            max-height: 250px; /* Should be larger than the content's height */
+            max-height: 250px;
             opacity: 1;
         }
       `}</style>

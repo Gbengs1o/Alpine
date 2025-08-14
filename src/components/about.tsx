@@ -159,7 +159,7 @@ export function About() {
             <div className="max-w-2xl mx-auto">
                 <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">Ready to Experience Alpine Tech Excellence?</h2>
                 <p className="text-base md:text-lg text-gray-600 mb-8">Discover how our 13 years of expertise can transform your comfort experience</p>
-                <Link href="#" className="group inline-flex items-center gap-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold px-8 py-4 rounded-lg shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden">
+                <Link href="/about" className="group inline-flex items-center gap-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold px-8 py-4 rounded-lg shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden">
                     Learn Our Full Story
                     <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
                     <span className="absolute top-0 left-[-100%] w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-all duration-500 group-hover:left-full"></span>

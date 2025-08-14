@@ -7,6 +7,8 @@ import { Services } from '@/components/services';
 import  CoreValues from '@/components/core-values';
 import  Portfolio from '@/components/portfolio';
 import { Faq } from '@/components/faq';
+import { HvacEstimator } from '@/components/hvac-estimator';
+import { Contact } from '@/components/contact';
 
 
 export default function Page() {
@@ -21,6 +23,8 @@ export default function Page() {
         <CoreValues />
         <Portfolio />
         <Faq />
+        <HvacEstimator />
+        <Contact />
       </main>
       <Footer />
     </div>
