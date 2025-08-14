@@ -4,10 +4,10 @@ import { Hero } from '@/components/hero';
 import { About } from '@/components/about';
 import { Advantages } from '@/components/advantages';
 import { Services } from '@/components/services';
-import { CoreValues } from '@/components/core-values';
-import { Portfolio } from '@/components/portfolio';
-import { Contact } from '@/components/contact';
-import { HvacEstimator } from '@/components/hvac-estimator';
+import  CoreValues from '@/components/core-values';
+import  Portfolio from '@/components/portfolio';
+import { Faq } from '@/components/faq';
+
 
 export default function Page() {
   return (
@@ -20,8 +20,7 @@ export default function Page() {
         <Services />
         <CoreValues />
         <Portfolio />
-        <HvacEstimator />
-        <Contact />
+        <Faq />
       </main>
       <Footer />
     </div>

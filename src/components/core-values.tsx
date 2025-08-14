@@ -3,8 +3,22 @@
 // --- COMBINED IMPORTS ---
 import { useEffect, useRef, useState } from 'react';
 
-// Helper for class names
-const cn = (...classes: (string | boolean | undefined)[]) => classes.filter(Boolean).join(' ');
+// Updated helper for class names that handles conditional objects
+const cn = (...classes: (string | boolean | undefined | Record<string, boolean>)[]) => {
+  return classes
+    .map(cls => {
+      if (typeof cls === 'string') return cls;
+      if (typeof cls === 'object' && cls !== null) {
+        return Object.entries(cls)
+          .filter(([, condition]) => condition)
+          .map(([className]) => className)
+          .join(' ');
+      }
+      return '';
+    })
+    .filter(Boolean)
+    .join(' ');
+};
 
 // --- DATA FOR CORE VALUES ---
 const coreValuesData = [
@@ -142,5 +156,3 @@ export default function CoreValues() {
         </>
     );
 }
-
-    
