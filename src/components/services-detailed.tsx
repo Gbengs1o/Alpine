@@ -1,176 +1,261 @@
+
 "use client";
 
-import { Wrench, Package, HardHat, ShieldCheck, CheckCircle2, DraftingCompass, Wind } from 'lucide-react';
+import { Wrench, Package, HardHat, CheckCircle2, DraftingCompass, Wind, X, Play } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { useState, useEffect, useRef } from 'react';
 
+// --- Data & Types ---
 const installationSteps = [
-  {
-    icon: DraftingCompass,
-    title: "1. Consultation & Design",
-    description: "We start by understanding your unique needs and assessing your space to design the most efficient and cost-effective HVAC solution.",
-  },
-  {
-    icon: HardHat,
-    title: "2. Precision Installation",
-    description: "Our certified technicians handle everything from pipework to unit placement with meticulous attention to detail, ensuring perfect integration.",
-  },
-  {
-    icon: Wind,
-    title: "3. System Commissioning",
-    description: "We thoroughly test and calibrate your new system, guaranteeing it operates at peak performance and providing you with complete control.",
-  },
+  { icon: DraftingCompass, title: "1. Consultation & Design", description: "We start by understanding your unique needs to design the most efficient and cost-effective HVAC solution." },
+  { icon: HardHat, title: "2. Precision Installation", description: "Our certified technicians handle everything with meticulous attention to detail, ensuring perfect integration." },
+  { icon: Wind, title: "3. System Commissioning", description: "We thoroughly test and calibrate your new system, guaranteeing it operates at peak performance." },
 ];
 
+const services = [
+    {
+        id: "sourcing",
+        type: 'video' as const,
+        icon: Package,
+        title: "Equipment Sourcing & Supply",
+        description: "As official partners with leading manufacturers like GREE, we procure world-class HVAC systems at unbeatable prices. We have the expertise to recommend and deploy the perfect equipment for any requirement.",
+        videoSrc: "https://www.youtube.com/embed/your-sourcing-video-id",
+        imageSrc: "https://images.unsplash.com/photo-1588675646184-f5b0b0b0b2de?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200",
+        features: [
+            { icon: CheckCircle2, title: "Official GREE Partners", description: "Since 2012, offering premier, eco-friendly air conditioning solutions." },
+            { icon: CheckCircle2, title: "All Popular Brands", description: "We are equipped to supply and install any major HVAC brand specified by our clients." },
+            { icon: CheckCircle2, title: "Cost-Effective Procurement", description: "Our relationships ensure you get top-tier equipment without breaking the bank." }
+        ],
+    },
+    {
+        id: "maintenance",
+        type: 'interactive_cards' as const,
+        icon: Wrench,
+        title: "Maintenance & Repairs",
+        description: "We offer flexible maintenance plans and expert repair services to keep your systems running smoothly, stocking all critical parts to ensure fast, effective solutions.",
+        plans: [
+            { title: "Pay As You Go", description: "On-demand routine servicing, including cleaning of indoor/outdoor units. You're billed per unit serviced—perfect for flexible maintenance needs." },
+            { title: "Annual Service Contract", description: "For complete peace of mind, we take full responsibility for servicing your units every three months for a full year." },
+        ],
+        note: "In all cases, if a fault is found, we provide a detailed estimate and only proceed with repairs upon your approval."
+    }
+];
+
+// --- The Main Component ---
 export function ServicesDetailed() {
+    const [videoModal, setVideoModal] = useState({ isOpen: false, src: '' });
+    const sectionsRef = useRef<Array<HTMLElement | null>>([]);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            { threshold: 0.15 }
+        );
+
+        const currentSections = sectionsRef.current.filter(ref => ref);
+        currentSections.forEach(section => {
+            if (section) observer.observe(section);
+        });
+
+        return () => {
+            currentSections.forEach(section => {
+                if (section) observer.unobserve(section);
+            });
+        };
+    }, []);
+
+    const openVideoModal = (src: string) => {
+        setVideoModal({ isOpen: true, src });
+        document.body.style.overflow = 'hidden';
+    };
+
+    const closeVideoModal = () => {
+        setVideoModal({ isOpen: false, src: '' });
+        document.body.style.overflow = '';
+    };
+    
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') closeVideoModal();
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
+
   return (
-    <div id="services" className="bg-white text-gray-800">
-      {/* Page Header */}
-      <header className="bg-gradient-to-b from-primary/5 to-white py-16 md:py-24 text-center">
-        <div className="container max-w-4xl mx-auto px-4">
-          <p className="flex items-center justify-center text-sm font-bold tracking-wider text-muted-foreground uppercase mb-4">
-            <span className="text-lg font-bold text-primary mr-2">•</span>OUR SERVICES
-          </p>
-          <h1 className="text-4xl md:text-5xl font-bold leading-tight text-primary mb-4">Total Climate Control, End-to-End</h1>
-          <p className="text-lg text-muted-foreground leading-relaxed">
-            We provide a complete suite of professional HVAC services. From sourcing the best equipment to expert installation and reliable maintenance, we are your trusted partner for comfort.
-          </p>
-        </div>
-      </header>
-
-      <main className="container max-w-7xl mx-auto px-4 py-16">
-        {/* Service 1: Equipment Sourcing */}
-        <section id="sourcing" className="mb-24">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="animate-fade-in-slide">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="flex-shrink-0 w-14 h-14 rounded-xl flex items-center justify-center bg-primary/10 text-primary">
-                  <Package className="w-8 h-8" />
-                </div>
-                <h2 className="text-3xl font-bold text-primary">Equipment Sourcing & Supply</h2>
-              </div>
-              <p className="text-muted-foreground mb-6 text-lg leading-relaxed">
-                As official partners with leading manufacturers like GREE, we procure world-class HVAC systems at unbeatable prices. We have the expertise to recommend and deploy the perfect equipment for any requirement.
-              </p>
-              <ul className="space-y-4">
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="w-6 h-6 text-accent flex-shrink-0 mt-1" />
-                  <div>
-                    <h4 className="font-semibold">Official GREE Partners</h4>
-                    <p className="text-muted-foreground text-sm">Since 2012, offering premier, eco-friendly air conditioning solutions.</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="w-6 h-6 text-accent flex-shrink-0 mt-1" />
-                  <div>
-                    <h4 className="font-semibold">All Popular Brands</h4>
-                    <p className="text-muted-foreground text-sm">We are equipped to supply and install any major HVAC brand specified by our clients.</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="w-6 h-6 text-accent flex-shrink-0 mt-1" />
-                  <div>
-                    <h4 className="font-semibold">Cost-Effective Procurement</h4>
-                    <p className="text-muted-foreground text-sm">Our long-standing relationships ensure you get top-tier equipment without breaking the bank.</p>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div className="relative h-80 md:h-full rounded-2xl overflow-hidden shadow-xl animate-fade-in-slide [animation-delay:200ms]">
-                <Image
-                  src="https://placehold.co/600x800.png"
-                  alt="Warehouse with HVAC units"
-                  width={600}
-                  height={800}
-                  data-ai-hint="air conditioner units"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-transparent"></div>
-            </div>
+    <>
+      <style jsx>{`
+        /* All styles remain the same */
+        .services-detailed-page { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #111827; color: #e5e7eb; overflow-x: hidden; }
+        .container { width: 100%; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
+        @media (min-width: 1024px) { .container { max-width: 1200px; } }
+        .page-header { padding: 6rem 0 7rem 0; text-align: center; position: relative; }
+        .page-header::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 50%; height: 400px; background: radial-gradient(circle, rgba(93, 153, 247, 0.15), transparent 70%); pointer-events: none; }
+        .header-badge { display: inline-flex; align-items: center; gap: 8px; color: #9ca3af; font-size: 12px; font-weight: 700; letter-spacing: 1px; margin-bottom: 1.5rem; text-transform: uppercase; border: 1px solid rgba(255, 255, 255, 0.1); padding: 6px 12px; border-radius: 9999px; background: rgba(255,255, 0.05); }
+        .header-badge .dot { width: 8px; height: 8px; background-color: #5d99f7; border-radius: 50%; box-shadow: 0 0 8px #5d99f7; }
+        .header-title { font-size: clamp(2.8rem, 6vw, 4rem); font-weight: 800; color: #ffffff; line-height: 1.1; margin: 0 0 1rem 0; text-shadow: 0 0 30px rgba(93, 153, 247, 0.2); }
+        .header-subtitle { font-size: 1.125rem; color: #d1d5db; max-width: 700px; line-height: 1.6; margin: 0 auto; }
+        .service-section { padding: 5rem 0; opacity: 0; transform: translateY(50px); transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .service-section.is-visible { opacity: 1; transform: translateY(0); }
+        .content-grid { display: grid; grid-template-columns: 1fr; gap: 3rem; align-items: center; }
+        @media (min-width: 992px) { .content-grid { grid-template-columns: repeat(2, 1fr); gap: 4rem;} }
+        .section-content, .feature-item, .step-card { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease 0.4s, transform 0.6s ease 0.4s; }
+        .is-visible .section-content, .is-visible .feature-item, .is-visible .step-card { opacity: 1; transform: translateY(0); }
+        .is-visible .feature-item:nth-child(2), .is-visible .step-card:nth-child(2) { transition-delay: 0.5s; }
+        .is-visible .feature-item:nth-child(3), .is-visible .step-card:nth-child(3) { transition-delay: 0.6s; }
+        .section-heading { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+        .section-title { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 700; color: #ffffff; }
+        .section-description { color: #d1d5db; font-size: 1.1rem; line-height: 1.7; margin-bottom: 2rem; }
+        .icon-wrapper { flex-shrink: 0; width: 56px; height: 56px; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; background-color: rgba(93, 153, 247, 0.1); color: #5d99f7; border: 1px solid rgba(93, 153, 247, 0.3); }
+        .icon-wrapper :global(svg) { width: 32px; height: 32px; }
+        .feature-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1.5rem; }
+        .feature-item { display: flex; align-items: flex-start; gap: 1rem; }
+        .feature-item :global(svg) { color: #5d99f7; flex-shrink: 0; margin-top: 3px; width: 24px; height: 24px;}
+        .feature-item h4 { font-weight: 600; margin: 0 0 0.25rem 0; color: #ffffff; }
+        .feature-item p { font-size: 0.9rem; color: #9ca3af; margin: 0; line-height: 1.5; }
+        .video-container { position: relative; border-radius: 1rem; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); cursor: pointer; aspect-ratio: 16 / 10; }
+        .video-container::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(17, 24, 39, 0.7), transparent 50%); transition: background 0.3s ease; }
+        .video-container:hover::after { background: linear-gradient(to top, rgba(17, 24, 39, 0.5), transparent 70%); }
+        .video-container :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+        .video-container:hover :global(img) { transform: scale(1.05); }
+        .play-button { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(1); width: 80px; height: 80px; background-color: rgba(255, 255, 255, 0.1); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; transition: all 0.3s ease; box-shadow: 0 0 0 0 rgba(93, 153, 247, 0.5); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(93, 153, 247, 0.5); } 70% { box-shadow: 0 0 0 20px rgba(93, 153, 247, 0); } 100% { box-shadow: 0 0 0 0 rgba(93, 153, 247, 0); } }
+        .video-container:hover .play-button { transform: translate(-50%, -50%) scale(1.1); background-color: rgba(93, 153, 247, 0.8); animation: none; }
+        .play-button :global(svg) { width: 40px; height: 40px; }
+        .installation-section { background: rgba(93, 153, 247, 0.05); padding: 5rem 0; border-radius: 1.5rem; }
+        .installation-section .section-heading { justify-content: center; }
+        .installation-section .section-description { max-width: 800px; margin-left: auto; margin-right: auto; margin-bottom: 3rem; text-align: center; }
+        .steps-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+        @media (min-width: 768px) { .steps-grid { grid-template-columns: repeat(3, 1fr); } }
+        .step-card { background-color: rgba(255, 255, 255, 0.05); padding: 2rem; border-radius: 1rem; border: 1px solid rgba(255, 255, 255, 0.1); text-align: center; }
+        .step-card .icon-wrapper { margin: 0 auto 1rem auto; }
+        .step-card h3 { font-size: 1.25rem; font-weight: 700; margin: 0 0 0.5rem 0; color: #fff; }
+        .step-card p { font-size: 0.9rem; color: #d1d5db; line-height: 1.6; margin: 0; }
+        .note { font-size: 0.9rem; font-style: italic; color: #9ca3af; margin-top: 2rem; }
+        .grid-order-first { order: -1; }
+        @media (min-width: 992px) { .grid-order-first { order: 0; } }
+        .final-cta { text-align: center; margin-top: 6rem; padding: 5rem 1rem; background: linear-gradient(45deg, #5d99f7, #4a7fd6); color: #ffffff; border-radius: 1.5rem; }
+        .final-cta h3 { font-size: 2.5rem; font-weight: 700; margin: 0 0 1rem 0; }
+        .final-cta p { font-size: 1.125rem; color: rgba(255, 255, 255, 0.9); margin: 0 auto 2rem auto; max-width: 600px; line-height: 1.6; }
+        .cta-button { display: inline-block; background-color: #ffffff; color: #5d99f7; font-size: 1rem; font-weight: 600; padding: 14px 28px; border-radius: 8px; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(255,255,255,0.2); }
+        .cta-button:hover { background-color: #111827; color: #ffffff; transform: translateY(-3px) scale(1.05); box-shadow: 0 8px 25px rgba(255,255,255,0.2); }
+        .video-modal-backdrop { position: fixed; inset: 0; background-color: rgba(17, 24, 39, 0.8); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); z-index: 50; display: flex; align-items: center; justify-content: center; animation: fadeIn 0.3s ease; }
+        .video-modal-content { position: relative; width: 90%; max-width: 1100px; aspect-ratio: 16 / 9; background-color: #000; border-radius: 1rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7); animation: scaleIn 0.3s ease; }
+        .video-modal-content iframe { width: 100%; height: 100%; border: 0; border-radius: 1rem; }
+        .close-modal-button { position: absolute; top: -40px; right: 0; background: none; border: none; color: #fff; cursor: pointer; padding: 8px; }
+        .close-modal-button :global(svg) { width: 32px; height: 32px; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .interactive-cards-container { position: relative; min-height: 400px; display: flex; align-items: center; justify-content: center; perspective: 1000px; }
+        .plan-card-interactive { position: absolute; width: 80%; max-width: 400px; padding: 2rem; background: rgba(255, 255, 255, 0.05); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.5s ease; cursor: pointer; }
+        .plan-card-interactive h4 { color: #fff; font-size: 1.25rem; margin: 0 0 0.75rem 0; font-weight: 700; }
+        .plan-card-interactive p { color: #d1d5db; line-height: 1.6; margin: 0; }
+        .plan-card-interactive:first-child { transform: rotate(-5deg) translateX(-15%) scale(0.95); z-index: 1; }
+        .plan-card-interactive:last-child { transform: rotate(5deg) translateX(15%) scale(0.95); z-index: 2; }
+        .interactive-cards-container:hover .plan-card-interactive { transform: rotate(0) translateX(0) scale(1); }
+        .plan-card-interactive:hover { transform: rotate(0) scale(1.05) !important; z-index: 3; box-shadow: 0 0 40px rgba(93, 153, 247, 0.3), 0 0 0 1px #5d99f7; }
+      `}</style>
+      
+      <div className="services-detailed-page">
+        <header className="page-header">
+          <div className="container">
+            <p className="header-badge"><span className="dot"></span>OUR SERVICES</p>
+            <h1 className="header-title">Total Climate Control, End-to-End</h1>
+            <p className="header-subtitle">We provide a complete suite of professional HVAC services. From sourcing the best equipment to expert installation and reliable maintenance, we are your trusted partner for comfort.</p>
           </div>
-        </section>
+        </header>
 
-        {/* Service 2: Installation */}
-        <section id="installation" className="mb-24 py-16 bg-secondary/20 rounded-3xl">
-          <div className="container max-w-5xl mx-auto text-center">
-            <div className="flex justify-center items-center gap-4 mb-4">
-              <div className="flex-shrink-0 w-14 h-14 rounded-xl flex items-center justify-center bg-primary/10 text-primary">
-                <HardHat className="w-8 h-8" />
+        <main className="container">
+          <section id={services[0].id} className="service-section" ref={el => { sectionsRef.current[0] = el; }}>
+            <div className="content-grid">
+              <div className="section-content">
+                <div className="section-heading">
+                  <div className="icon-wrapper"><services[0].icon /></div>
+                  <h2 className="section-title">{services[0].title}</h2>
+                </div>
+                <p className="section-description">{services[0].description}</p>
+                <ul className="feature-list">
+                  {services[0].features?.map((feature, index) => (
+                    <li key={index} className="feature-item">
+                      <feature.icon />
+                      <div><h4>{feature.title}</h4><p>{feature.description}</p></div>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <h2 className="text-3xl font-bold text-primary">Professional Installation</h2>
+              <div className="video-container" onClick={() => openVideoModal(services[0].videoSrc!)}>
+                <Image src={services[0].imageSrc!} alt={services[0].title} fill style={{ objectFit: 'cover' }} />
+                <div className="play-button"><Play /></div>
+              </div>
             </div>
-            <p className="text-muted-foreground text-lg max-w-3xl mx-auto mb-12">
-              Our installation process is designed for flawless execution across residential, commercial, and industrial projects, ensuring your system is perfectly tailored to your needs for optimal performance.
-            </p>
-            <div className="grid md:grid-cols-3 gap-8">
-              {installationSteps.map((step, index) => (
-                <div key={index} className="bg-white p-8 rounded-2xl shadow-lg border border-gray-200/60 animate-fade-in-slide" style={{animationDelay: `${index * 150}ms`}}>
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center bg-accent/10 text-accent mx-auto mb-4">
-                    <step.icon className="w-6 h-6" />
+          </section>
+
+          <section id="installation" className="service-section installation-section" ref={el => { sectionsRef.current[1] = el; }}>
+            <div className="container">
+              <div className="section-content">
+                <div className="section-heading">
+                  <div className="icon-wrapper"><HardHat /></div>
+                  <h2 className="section-title">Professional Installation</h2>
+                </div>
+                <p className="section-description">Our installation process is designed for flawless execution across residential, commercial, and industrial projects, ensuring your system is perfectly tailored to your needs for optimal performance.</p>
+              </div>
+              <div className="steps-grid">
+                {installationSteps.map((step, index) => (
+                  <div key={index} className="step-card">
+                    <div className="icon-wrapper"><step.icon /></div>
+                    <h3>{step.title}</h3>
+                    <p>{step.description}</p>
                   </div>
-                  <h3 className="font-bold text-xl mb-2 text-primary">{step.title}</h3>
-                  <p className="text-muted-foreground text-sm">{step.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Service 3: Maintenance */}
-        <section id="maintenance" className="mb-16">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="relative h-80 md:h-full rounded-2xl overflow-hidden shadow-xl animate-fade-in-slide [animation-delay:200ms]">
-              <Image
-                src="https://placehold.co/600x800.png"
-                alt="Technician performing HVAC maintenance"
-                width={600}
-                height={800}
-                data-ai-hint="hvac maintenance"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-transparent"></div>
-            </div>
-            <div className="animate-fade-in-slide">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="flex-shrink-0 w-14 h-14 rounded-xl flex items-center justify-center bg-primary/10 text-primary">
-                  <Wrench className="w-8 h-8" />
-                </div>
-                <h2 className="text-3xl font-bold text-primary">Maintenance & Repairs</h2>
+                ))}
               </div>
-              <p className="text-muted-foreground mb-8 text-lg leading-relaxed">
-                We offer flexible maintenance plans and expert repair services to keep your systems running smoothly, stocking all critical parts to ensure fast, effective solutions.
-              </p>
-              <div className="space-y-6">
-                <div className="bg-secondary/30 p-6 rounded-xl border border-gray-200/50">
-                  <h4 className="font-bold text-lg text-primary">Pay As You Go</h4>
-                  <p className="text-muted-foreground text-sm">On-demand routine servicing, including cleaning of indoor/outdoor units. You're billed per unit serviced—perfect for flexible maintenance needs.</p>
-                </div>
-                <div className="bg-secondary/30 p-6 rounded-xl border border-gray-200/50">
-                  <h4 className="font-bold text-lg text-primary">Annual Service Contract</h4>
-                  <p className="text-muted-foreground text-sm">For complete peace of mind, we take full responsibility for servicing your units every three months for a full year, prompting you for appointments based on our schedule.</p>
-                </div>
-              </div>
-               <p className="text-sm text-muted-foreground mt-6 italic">
-                In all cases, if a fault is found, we provide a detailed estimate and only proceed with repairs upon your approval.
-              </p>
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* Final CTA */}
-        <div className="text-center mt-24 py-16 bg-gradient-to-r from-primary to-blue-800 text-white rounded-3xl">
-          <div className="container max-w-3xl mx-auto px-4">
-            <h3 className="text-3xl font-bold mb-4">Ready to Upgrade Your Comfort?</h3>
-            <p className="text-lg text-primary-foreground/80 mb-8">
-                Let our experts provide a tailored solution for your home or business. Get in touch for a free, no-obligation consultation.
-            </p>
-            <Button asChild size="lg" variant="secondary" className="bg-white text-primary hover:bg-white/90">
-                <Link href="/#contact">Request a Quote</Link>
-            </Button>
+          <section id={services[1].id} className="service-section" ref={el => { sectionsRef.current[2] = el; }}>
+            <div className="content-grid">
+              <div className="interactive-cards-container grid-order-first">
+                {services[1].plans?.map((plan, index) => (
+                  <div key={index} className="plan-card-interactive">
+                    <h4>{plan.title}</h4>
+                    <p>{plan.description}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="section-content">
+                <div className="section-heading">
+                  <div className="icon-wrapper"><services[1].icon /></div>
+                  <h2 className="section-title">{services[1].title}</h2>
+                </div>
+                <p className="section-description">{services[1].description}</p>
+                <p className="note">{services[1].note}</p>
+              </div>
+            </div>
+          </section>
+
+          <div className="final-cta">
+            <h3>Ready to Upgrade Your Comfort?</h3>
+            <p>Let our experts provide a tailored solution for your home or business. Get in touch for a free, no-obligation consultation.</p>
+            <Link href="/contact" className="cta-button">Request a Quote</Link>
           </div>
-        </div>
-      </main>
-    </div>
+        </main>
+
+        {videoModal.isOpen && (
+            <div className="video-modal-backdrop" onClick={closeVideoModal}>
+                <div className="video-modal-content" onClick={(e) => e.stopPropagation()}>
+                    <button className="close-modal-button" onClick={closeVideoModal} aria-label="Close video player"><X /></button>
+                    <iframe src={`${videoModal.src}?autoplay=1&rel=0`} title="Service Explainer Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                </div>
+            </div>
+        )}
+      </div>
+    </>
   );
 }
