@@ -1,6 +1,6 @@
 export function AboutHero() {
   return (
-    <div className="relative h-[50vh] min-h-[400px] bg-cover bg-center text-white flex items-center justify-center" style={{backgroundImage: "url('https://images.unsplash.com/photo-1558002038-1055907df827?q=80&w=2070&auto=format&fit=crop')"}}>
+    <div className="relative h-[50vh] min-h-[400px] bg-cover bg-center text-white flex items-center justify-center" style={{backgroundImage: "url('https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/5-1.jpg')"}}>
       <div className="absolute inset-0 bg-primary/70"></div>
       <div className="relative z-10 text-center px-4">
         <p className="flex items-center justify-center text-sm font-bold tracking-widest text-white/80 uppercase mb-4">

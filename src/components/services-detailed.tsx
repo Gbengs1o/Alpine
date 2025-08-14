@@ -3,13 +3,13 @@
 import { Wrench, Package, HardHat, ShieldCheck, CheckCircle2, DraftingCompass, Wind, X, Play } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 // --- Data & Types ---
 const installationSteps = [
-  { icon: DraftingCompass, title: "1. Consultation & Design", description: "We start by understanding your unique needs to design the most efficient and cost-effective HVAC solution." },
-  { icon: HardHat, title: "2. Precision Installation", description: "Our certified technicians handle everything with meticulous attention to detail, ensuring perfect integration." },
-  { icon: Wind, title: "3. System Commissioning", description: "We thoroughly test and calibrate your new system, guaranteeing it operates at peak performance." },
+    { icon: DraftingCompass, title: "1. Consultation & Design", description: "We start by understanding your unique needs to design the most efficient and cost-effective HVAC solution." },
+    { icon: HardHat, title: "2. Precision Installation", description: "Our certified technicians handle everything with meticulous attention to detail, ensuring perfect integration." },
+    { icon: Wind, title: "3. System Commissioning", description: "We thoroughly test and calibrate your new system, guaranteeing it operates at peak performance." },
 ];
 
 const services = [
@@ -19,7 +19,7 @@ const services = [
         title: "Equipment Sourcing & Supply",
         description: "As official partners with leading manufacturers like GREE, we procure world-class HVAC systems at unbeatable prices. We have the expertise to recommend and deploy the perfect equipment for any requirement.",
         videoSrc: "https://www.youtube.com/embed/AkllempJ1Wo",
-        imageSrc: "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/service1.png", // UPDATED IMAGE
+        imageSrc: "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/service1.png",
         features: [
             { icon: CheckCircle2, title: "Official GREE Partners", description: "Since 2012, offering premier, eco-friendly air conditioning solutions." },
             { icon: CheckCircle2, title: "All Popular Brands", description: "We are equipped to supply and install any major HVAC brand specified by our clients." },
@@ -32,7 +32,7 @@ const services = [
         title: "Professional Installation",
         description: "Our installation process is designed for flawless execution across residential, commercial, and industrial projects, ensuring your system is perfectly tailored to your needs for optimal performance.",
         videoSrc: "https://www.youtube.com/embed/zuRVnD8XPLM",
-        imageSrc: "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/service2.png", // UPDATED IMAGE
+        imageSrc: "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/service2.png",
         steps: installationSteps
     },
     {
@@ -41,7 +41,7 @@ const services = [
         title: "Maintenance & Repairs",
         description: "We offer flexible maintenance plans and expert repair services to keep your systems running smoothly, stocking all critical parts to ensure fast, effective solutions.",
         videoSrc: "https://www.youtube.com/embed/saIJ0OAbJjA",
-        imageSrc: "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/service3.png", // UPDATED IMAGE
+        imageSrc: "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/service3.png",
         plans: [
             { title: "Pay As You Go", description: "On-demand routine servicing, including cleaning of indoor/outdoor units. You're billed per unit serviced—perfect for flexible maintenance needs." },
             { title: "Annual Service Contract", description: "For complete peace of mind, we take full responsibility for servicing your units every three months for a full year." }
@@ -49,12 +49,13 @@ const services = [
     }
 ];
 
-// --- The Main Component ---
+
+// --- THE MAIN COMPONENT ---
 export function ServicesDetailed() {
+    // ... (The rest of the component remains exactly the same as before) ...
     const [videoModal, setVideoModal] = useState({ isOpen: false, src: '' });
     const sectionsRef = useRef<Array<HTMLElement | null>>([]);
 
-    // Intersection Observer for scroll animations
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
@@ -68,11 +69,19 @@ export function ServicesDetailed() {
             { threshold: 0.15 }
         );
 
-        const currentSections = sectionsRef.current.filter(ref => ref);
-        currentSections.forEach(section => observer.observe(section));
+        const currentSections = sectionsRef.current;
+        currentSections.forEach(section => {
+            if (section) {
+                observer.observe(section);
+            }
+        });
 
         return () => {
-            currentSections.forEach(section => observer.unobserve(section));
+            currentSections.forEach(section => {
+                if (section) {
+                    observer.unobserve(section);
+                }
+            });
         };
     }, []);
 
@@ -86,7 +95,6 @@ export function ServicesDetailed() {
         document.body.style.overflow = '';
     };
     
-    // Handle closing modal with Escape key
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
@@ -100,9 +108,10 @@ export function ServicesDetailed() {
   return (
     <>
       <style jsx>{`
+        /* ... (all the existing styles for ServicesDetailed remain here) ... */
         .services-detailed-page {
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-          background-color: #111827; /* Epic dark theme */
+          background-color: #111827;
           color: #e5e7eb;
           overflow-x: hidden;
         }
@@ -114,8 +123,6 @@ export function ServicesDetailed() {
           padding-right: 1rem;
         }
         @media (min-width: 1024px) { .container { max-width: 1200px; } }
-
-        /* --- Page Header --- */
         .page-header {
           padding: 6rem 0 7rem 0;
           text-align: center;
@@ -168,8 +175,6 @@ export function ServicesDetailed() {
           line-height: 1.6;
           margin: 0 auto;
         }
-        
-        /* --- Main Content Sections --- */
         .service-section {
             padding: 5rem 0;
             opacity: 0;
@@ -180,7 +185,6 @@ export function ServicesDetailed() {
             opacity: 1;
             transform: translateY(0);
         }
-
         .content-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -190,9 +194,7 @@ export function ServicesDetailed() {
         @media (min-width: 992px) {
             .content-grid { grid-template-columns: repeat(2, 1fr); gap: 4rem;}
         }
-
         .section-content, .feature-item, .step-card, .plan-card {
-            /* Staggered animation for child elements */
             opacity: 0;
             transform: translateY(20px);
             transition: opacity 0.6s ease 0.4s, transform 0.6s ease 0.4s;
@@ -203,7 +205,6 @@ export function ServicesDetailed() {
         }
         .is-visible .feature-item:nth-child(2), .is-visible .step-card:nth-child(2), .is-visible .plan-card:nth-child(2) { transition-delay: 0.5s; }
         .is-visible .feature-item:nth-child(3), .is-visible .step-card:nth-child(3) { transition-delay: 0.6s; }
-        
         .section-heading {
             display: flex;
             align-items: center;
@@ -233,15 +234,11 @@ export function ServicesDetailed() {
             border: 1px solid rgba(93, 153, 247, 0.3);
         }
         .icon-wrapper :global(svg) { width: 32px; height: 32px; }
-
-        /* Feature List (Sourcing Section) */
         .feature-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1.5rem; }
         .feature-item { display: flex; align-items: flex-start; gap: 1rem; }
         .feature-item :global(svg) { color: #5d99f7; flex-shrink: 0; margin-top: 3px; width: 24px; height: 24px;}
         .feature-item h4 { font-weight: 600; margin: 0 0 0.25rem 0; color: #ffffff; }
         .feature-item p { font-size: 0.9rem; color: #9ca3af; margin: 0; line-height: 1.5; }
-
-        /* Video/Image Container */
         .video-container {
             position: relative;
             border-radius: 1rem;
@@ -262,7 +259,6 @@ export function ServicesDetailed() {
         }
         .video-container :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
         .video-container:hover :global(img) { transform: scale(1.05); }
-
         .play-button {
             position: absolute;
             top: 50%; left: 50%;
@@ -292,8 +288,6 @@ export function ServicesDetailed() {
             animation: none;
         }
         .play-button :global(svg) { width: 40px; height: 40px; }
-
-        /* Installation Section */
         .installation-section { background: rgba(93, 153, 247, 0.05); padding: 5rem 0; border-radius: 1.5rem; }
         .installation-section .section-heading { justify-content: center; }
         .installation-section .section-description { max-width: 800px; margin-left: auto; margin-right: auto; margin-bottom: 3rem; text-align: center; }
@@ -309,9 +303,7 @@ export function ServicesDetailed() {
         .step-card .icon-wrapper { margin: 0 auto 1rem auto; }
         .step-card h3 { font-size: 1.25rem; font-weight: 700; margin: 0 0 0.5rem 0; color: #fff; }
         .step-card p { font-size: 0.9rem; color: #d1d5db; line-height: 1.6; margin: 0; }
-        .installation-video { margin-top: 3rem; } /* Added class for spacing */
-
-        /* Maintenance Section */
+        .installation-video { margin-top: 3rem; }
         .maintenance-plans { display: flex; flex-direction: column; gap: 1.5rem; }
         .plan-card {
             background-color: rgba(255, 255, 255, 0.05);
@@ -324,38 +316,6 @@ export function ServicesDetailed() {
         .note { font-size: 0.9rem; font-style: italic; color: #9ca3af; margin-top: 1.5rem; }
         .grid-order-first { order: -1; }
         @media (min-width: 992px) { .grid-order-first { order: 0; } }
-
-        /* Final CTA */
-        .final-cta {
-            text-align: center;
-            margin-top: 6rem;
-            padding: 5rem 1rem;
-            background: linear-gradient(45deg, #5d99f7, #4a7fd6);
-            color: #ffffff;
-            border-radius: 1.5rem;
-        }
-        .final-cta h3 { font-size: 2.5rem; font-weight: 700; margin: 0 0 1rem 0; }
-        .final-cta p { font-size: 1.125rem; color: rgba(255, 255, 255, 0.9); margin: 0 auto 2rem auto; max-width: 600px; line-height: 1.6; }
-        .cta-button {
-            display: inline-block;
-            background-color: #ffffff;
-            color: #5d99f7;
-            font-size: 1rem;
-            font-weight: 600;
-            padding: 14px 28px;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255,255,255,0.2);
-        }
-        .cta-button:hover {
-            background-color: #111827;
-            color: #ffffff;
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 8px 25px rgba(255,255,255,0.2);
-        }
-
-        /* Video Modal */
         .video-modal-backdrop {
             position: fixed;
             inset: 0;
@@ -411,26 +371,18 @@ export function ServicesDetailed() {
         </header>
 
         <main className="container">
-          {/* Service 1: Equipment Sourcing */}
-          <section id="sourcing" className="service-section" ref={el => sectionsRef.current[0] = el}>
+            {/* Service Sections remain the same */}
+            <section id="sourcing" className="service-section" ref={(el) => { sectionsRef.current[0] = el; }}>
             <div className="content-grid">
               <div className="section-content">
                 <div className="section-heading">
                   <div className="icon-wrapper"><Package /></div>
                   <h2 className="section-title">{services[0].title}</h2>
                 </div>
-                <p className="section-description">
-                  {services[0].description}
-                </p>
+                <p className="section-description">{services[0].description}</p>
                 <ul className="feature-list">
                   {services[0].features!.map((feature, index) => (
-                    <li key={index} className="feature-item">
-                      <feature.icon />
-                      <div>
-                        <h4>{feature.title}</h4>
-                        <p>{feature.description}</p>
-                      </div>
-                    </li>
+                    <li key={index} className="feature-item"><feature.icon /><div><h4>{feature.title}</h4><p>{feature.description}</p></div></li>
                   ))}
                 </ul>
               </div>
@@ -441,25 +393,15 @@ export function ServicesDetailed() {
             </div>
           </section>
 
-          {/* Service 2: Installation */}
-          <section id="installation" className="service-section installation-section" ref={el => sectionsRef.current[1] = el}>
+          <section id="installation" className="service-section installation-section" ref={(el) => { sectionsRef.current[1] = el; }}>
             <div className="container">
               <div className="section-content">
-                  <div className="section-heading">
-                    <div className="icon-wrapper"><HardHat /></div>
-                    <h2 className="section-title">{services[1].title}</h2>
-                  </div>
-                  <p className="section-description">
-                    {services[1].description}
-                  </p>
+                  <div className="section-heading"><div className="icon-wrapper"><HardHat /></div><h2 className="section-title">{services[1].title}</h2></div>
+                  <p className="section-description">{services[1].description}</p>
               </div>
               <div className="steps-grid">
                 {services[1].steps!.map((step, index) => (
-                  <div key={index} className="step-card">
-                    <div className="icon-wrapper"><step.icon /></div>
-                    <h3>{step.title}</h3>
-                    <p>{step.description}</p>
-                  </div>
+                  <div key={index} className="step-card"><div className="icon-wrapper"><step.icon /></div><h3>{step.title}</h3><p>{step.description}</p></div>
                 ))}
               </div>
               <div className="video-container installation-video" onClick={() => openVideoModal(services[1].videoSrc)}>
@@ -469,61 +411,32 @@ export function ServicesDetailed() {
             </div>
           </section>
 
-          {/* Service 3: Maintenance */}
-          <section id="maintenance" className="service-section" ref={el => sectionsRef.current[2] = el}>
+          <section id="maintenance" className="service-section" ref={(el) => { sectionsRef.current[2] = el; }}>
             <div className="content-grid">
               <div className="video-container grid-order-first" onClick={() => openVideoModal(services[2].videoSrc)}>
                 <Image src={services[2].imageSrc} alt={services[2].title} fill style={{ objectFit: 'cover' }} />
                 <div className="play-button"><Play /></div>
               </div>
               <div className="section-content">
-                <div className="section-heading">
-                  <div className="icon-wrapper"><Wrench /></div>
-                  <h2 className="section-title">{services[2].title}</h2>
-                </div>
-                <p className="section-description">
-                  {services[2].description}
-                </p>
+                <div className="section-heading"><div className="icon-wrapper"><Wrench /></div><h2 className="section-title">{services[2].title}</h2></div>
+                <p className="section-description">{services[2].description}</p>
                 <div className="maintenance-plans">
-                  {services[2].plans!.map((plan, index) => (
-                     <div key={index} className="plan-card">
-                       <h4>{plan.title}</h4>
-                       <p>{plan.description}</p>
-                     </div>
-                  ))}
+                  {services[2].plans!.map((plan, index) => (<div key={index} className="plan-card"><h4>{plan.title}</h4><p>{plan.description}</p></div>))}
                 </div>
-                <p className="note">
-                  If a fault is found, we provide a detailed estimate and only proceed with repairs upon your approval.
-                </p>
+                <p className="note">If a fault is found, we provide a detailed estimate and only proceed with repairs upon your approval.</p>
               </div>
             </div>
           </section>
-
-          {/* Final CTA */}
-          <div className="final-cta">
-            <h3>Ready to Upgrade Your Comfort?</h3>
-            <p>
-                Let our experts provide a tailored solution for your home or business. Get in touch for a free, no-obligation consultation.
-            </p>
-            <Link href="/#contact" className="cta-button">Request a Quote</Link>
-          </div>
         </main>
-
-        {/* --- Video Modal --- */}
+        
         {videoModal.isOpen && (
             <div className="video-modal-backdrop" onClick={closeVideoModal}>
                 <div className="video-modal-content" onClick={(e) => e.stopPropagation()}>
                     <button className="close-modal-button" onClick={closeVideoModal} aria-label="Close video player"><X /></button>
-                    <iframe 
-                        src={`${videoModal.src}?autoplay=1&rel=0`}
-                        title="Service Explainer Video" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowFullScreen
-                    ></iframe>
+                    <iframe src={`${videoModal.src}?autoplay=1&rel=0`} title="Service Explainer Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
                 </div>
             </div>
         )}
-
       </div>
     </>
   );
