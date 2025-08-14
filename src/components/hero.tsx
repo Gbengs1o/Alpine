@@ -163,7 +163,6 @@ export function Hero() {
       <style jsx>{`
         :root {
             --background-color: #ffffff;
-            --text-color: #eef2f9;
             --highlight-color: #63a4ff;
             --panel-bg-color: rgba(10, 20, 35, 0.25); 
         }
@@ -228,7 +227,6 @@ export function Hero() {
 
         .panel-content {
             z-index: 1; max-width: 800px; text-align: center;
-            color: var(--text-color);
             opacity: 0;
             transform: translateY(30px);
             transition: opacity 0.8s ease-out 0.3s, transform 0.8s ease-out 0.3s;
@@ -240,8 +238,26 @@ export function Hero() {
             transform: translateY(0);
         }
         
-        .panel-title { font-size: clamp(3rem, 7vw, 6rem); font-weight: 900; text-transform: uppercase; line-height: 1.1; margin: 0 0 1rem; text-shadow: 0 4px 25px rgba(0,0,0,0.6); }
-        .panel-subtitle { font-size: clamp(1.1rem, 2vw, 1.4rem); font-weight: 400; line-height: 1.6; margin: 0 0 2rem; max-width: 600px; margin-left: auto; margin-right: auto; text-shadow: 0 2px 10px rgba(0,0,0,0.7); }
+        .panel-title { 
+            color: #ffffff;
+            font-size: clamp(3rem, 7vw, 6rem); 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            line-height: 1.1; 
+            margin: 0 0 1rem; 
+            text-shadow: 0 4px 25px rgba(0,0,0,0.6); 
+        }
+        .panel-subtitle { 
+            color: #ffffff;
+            font-size: clamp(1.1rem, 2vw, 1.4rem); 
+            font-weight: 400; 
+            line-height: 1.6; 
+            margin: 0 0 2rem; 
+            max-width: 600px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            text-shadow: 0 2px 10px rgba(0,0,0,0.7); 
+        }
         
         .cta-button {
             position: relative; overflow: hidden;
