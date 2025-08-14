@@ -38,7 +38,7 @@ export function Faq() {
       <style jsx>{`
         :root {
             --brand-blue: #5d99f7;
-            --dark-bg: #0d1117;
+            --dark-bg: #000000;
             --light-text: #8b949e;
             --white-text: #f0f6fc;
             --border-color: #30363d;
@@ -51,11 +51,6 @@ export function Faq() {
             color: var(--white-text);
             padding: 80px 20px;
             position: relative;
-            /* A subtle, professional background image */
-            background-image: url('https://i.imgur.com/L7E1tne.png'); 
-            background-repeat: no-repeat;
-            background-position: bottom left;
-            background-size: contain;
         }
 
         .container {
