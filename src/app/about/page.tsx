@@ -3,6 +3,7 @@ import { Footer } from '@/components/layout/footer';
 import { About } from '@/components/about';
 import { Advantages } from '@/components/advantages';
 import CoreValues from '@/components/core-values';
+import { Faq } from '@/components/faq';
 
 export default function AboutPage() {
   return (
@@ -12,6 +13,7 @@ export default function AboutPage() {
         <About />
         <Advantages />
         <CoreValues />
+        <Faq />
       </main>
       <Footer />
     </div>
