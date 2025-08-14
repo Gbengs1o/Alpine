@@ -170,7 +170,6 @@ export function Hero() {
         
         .hero-section-wrapper {
             background-color: var(--background-color);
-            color: var(--text-color);
         }
         
         #pin-container {
@@ -229,6 +228,7 @@ export function Hero() {
 
         .panel-content {
             z-index: 1; max-width: 800px; text-align: center;
+            color: var(--text-color);
             opacity: 0;
             transform: translateY(30px);
             transition: opacity 0.8s ease-out 0.3s, transform 0.8s ease-out 0.3s;
