@@ -1,10 +1,11 @@
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Faq } from '@/components/faq';
+import { PortfolioGallery } from '@/components/portfolio-gallery';
 
 export default function PortfolioPage() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1">
         {/* The CSS parallax container */}
@@ -24,11 +25,7 @@ export default function PortfolioPage() {
           </div>
         </div>
         
-        {/* The portfolio gallery will be added here in a future step */}
-        <div className="py-24 bg-background text-center">
-            <h2 className="text-2xl font-bold text-primary mb-4">Our Projects Are Coming Soon</h2>
-            <p className="text-muted-foreground">We are currently curating a gallery of our best work. Please check back later!</p>
-        </div>
+        <PortfolioGallery />
 
         <Faq />
       </main>
