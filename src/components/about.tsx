@@ -67,20 +67,23 @@ export function About() {
   }, []);
 
   return (
-    <section id="about" className="bg-[#f0f4f8] relative">
-      <div className="container max-w-7xl mx-auto">
-        {/* Hero Section */}
-        <div className="relative overflow-hidden border-b border-blue-500/10 bg-gradient-to-br from-white to-[#f8fbff] text-center py-20 px-4 md:py-28">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] h-[200%] bg-[radial-gradient(circle,rgba(91,157,255,0.05)_0%,transparent_70%)] animate-spin" style={{animationDuration: '20s'}}></div>
-            <div className="relative z-10 max-w-3xl mx-auto">
-                <p className="flex items-center justify-center text-xs md:text-sm font-bold tracking-widest text-gray-700 uppercase mb-5">
-                    <span className="text-lg md:text-xl font-bold text-blue-500 mr-2">•</span>WHO WE ARE
-                </p>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 leading-tight tracking-tight mb-6">Delivering Comfort, Built on Trust</h1>
-                <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">Professional HVAC solutions with over 13 years of excellence in Lagos</p>
-            </div>
-        </div>
+    <section id="about" className="bg-[#f0f4f8]">
 
+      {/* Hero Section */}
+      <div className="relative h-[50vh] min-h-[400px] bg-cover bg-center text-white flex items-center justify-center" style={{backgroundImage: "url('https://images.unsplash.com/photo-1558002038-1055907df827?q=80&w=2070&auto=format&fit=crop')"}}>
+        <div className="absolute inset-0 bg-primary/70"></div>
+        <div className="relative z-10 text-center px-4">
+          <p className="flex items-center justify-center text-sm font-bold tracking-widest text-white/80 uppercase mb-4">
+            <span className="text-lg font-bold text-accent mr-2">•</span>Who We Are
+          </p>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight mb-4">About Alpine Tech</h1>
+          <p className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto">
+            Your peak of home comfort, built on over a decade of trust, professionalism, and unwavering quality.
+          </p>
+        </div>
+      </div>
+      
+      <div className="container max-w-7xl mx-auto">
         {/* Company Overview */}
         <div className="bg-white py-16 px-4 md:py-20 lg:py-24 border-b border-blue-500/10">
             <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-20 items-center">
@@ -104,9 +107,9 @@ export function About() {
                     </div>
                 </div>
                 <div className="lg:col-span-2 lg:pl-10 lg:border-l-4 lg:border-blue-500">
-                     <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">About Alpine Tech</h2>
+                     <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">Our Story</h2>
                      <p className="text-base md:text-lg text-gray-600 leading-relaxed mb-8">
-                        <Link href="#" className="text-blue-500 font-semibold hover:text-gray-800 transition-colors">Alpine</Link> Tech is a professional company offering dependable residential and commercial <Link href="#" className="text-blue-500 font-semibold hover:text-gray-800 transition-colors">HVAC</Link> services. We handle everything from supply and installation to repair and maintenance, all backed by exceptional customer service.
+                        <Link href="/" className="text-blue-500 font-semibold hover:text-gray-800 transition-colors">Alpine</Link> Tech is a professional company offering dependable residential and commercial <Link href="/services" className="text-blue-500 font-semibold hover:text-gray-800 transition-colors">HVAC</Link> services. We handle everything from supply and installation to repair and maintenance, all backed by exceptional customer service.
                     </p>
                     <ul className="space-y-3">
                         <li className="flex items-start"><span className="text-blue-500 font-bold mr-3 mt-1">✓</span> Residential & Commercial HVAC Solutions</li>
@@ -153,19 +156,6 @@ export function About() {
           </div>
         </div>
 
-
-        {/* CTA Section */}
-        <div className="bg-gradient-to-t from-[#f8fbff] to-[#f0f4f8] text-center py-16 px-4 md:py-24">
-            <div className="max-w-2xl mx-auto">
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">Ready to Experience Alpine Tech Excellence?</h2>
-                <p className="text-base md:text-lg text-gray-600 mb-8">Discover how our 13 years of expertise can transform your comfort experience</p>
-                <Link href="/about" className="group inline-flex items-center gap-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold px-8 py-4 rounded-lg shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden">
-                    Learn Our Full Story
-                    <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
-                    <span className="absolute top-0 left-[-100%] w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-all duration-500 group-hover:left-full"></span>
-                </Link>
-            </div>
-        </div>
       </div>
     </section>
   );
