@@ -1,200 +1,34 @@
-"use client";
+"use client"
 
-import { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { cn } from '@/lib/utils';
-import { MapPin, Phone, Mail } from 'lucide-react';
-
-const timelineData = [
-  {
-    year: '2011',
-    title: 'Our Foundation',
-    description:
-      'With 13 years of practice, Alpine Tech was founded on a mission to deliver affordable, high-quality air conditioning solutions across Lagos.',
-  },
-  {
-    year: '2012',
-    title: 'Strategic Partnership',
-    description:
-      'We became official partners with the GREE brand, allowing us to procure and deploy world-class, eco-friendly HVAC equipment for our clients.',
-  },
-  {
-    year: '2024',
-    title: 'Industry Leader',
-    description:
-      'Now a dedicated team of over 12 experienced technicians, we are a trusted name for residential and commercial HVAC services, committed to 100% customer satisfaction.',
-  },
-];
-
-const stats = [
-    { value: '13+', label: 'Years' },
-    { value: '12+', label: 'Technicians' },
-    { value: '100%', label: 'Satisfaction' },
-]
+import Image from "next/image"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 export function About() {
-  const timelineRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('animate-fade-in-slide');
-          } else {
-            entry.target.classList.remove('animate-fade-in-slide');
-          }
-        });
-      },
-      {
-        threshold: 0.1,
-      }
-    );
-
-    timelineRefs.current.forEach((ref) => {
-      if (ref) {
-        observer.observe(ref);
-      }
-    });
-
-    return () => {
-      timelineRefs.current.forEach((ref) => {
-        if (ref) {
-          observer.unobserve(ref);
-        }
-      });
-    };
-  }, []);
-
   return (
-    <section id="about" className="bg-[#f0f4f8]">
-
-      {/* Hero Section */}
-      <div className="relative h-[50vh] min-h-[400px] bg-cover bg-center text-white flex items-center justify-center" style={{backgroundImage: "url('https://images.unsplash.com/photo-1558002038-1055907df827?q=80&w=2070&auto=format&fit=crop')"}}>
-        <div className="absolute inset-0 bg-primary/70"></div>
-        <div className="relative z-10 text-center px-4">
-          <p className="flex items-center justify-center text-sm font-bold tracking-widest text-white/80 uppercase mb-4">
-            <span className="text-lg font-bold text-accent mr-2">•</span>Who We Are
-          </p>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight mb-4">About Alpine Tech</h1>
-          <p className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto">
-            Your peak of home comfort, built on over a decade of trust, professionalism, and unwavering quality.
-          </p>
-        </div>
-      </div>
-      
-      <div className="container max-w-7xl mx-auto">
-
-        {/* Mission & Contact Section */}
-        <div className="bg-white rounded-lg shadow-lg -mt-16 relative z-20 p-8 md:p-12">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2">
-                    <h2 className="text-2xl font-bold text-primary mb-4">Our Mission</h2>
-                    <blockquote className="border-l-4 border-accent pl-6 text-lg text-muted-foreground italic">
-                    Delivering affordable air conditioning solutions for both residential and commercial spaces, employing top-tier systems and adhering strictly to industry standards to establish a comfortable living and working environment.
-                    </blockquote>
-                </div>
-                <div className="lg:col-span-1 space-y-4">
-                    <h2 className="text-2xl font-bold text-primary mb-4">Contact Us</h2>
-                    <div className="flex items-start gap-4">
-                        <MapPin className="w-6 h-6 text-accent flex-shrink-0 mt-1" />
-                        <div>
-                            <h4 className="font-semibold">Office Address</h4>
-                            <p className="text-muted-foreground">35 Aladelola Street, Ikosi, Ketu, LAGOS</p>
-                        </div>
-                    </div>
-                    <div className="flex items-start gap-4">
-                        <Phone className="w-6 h-6 text-accent flex-shrink-0 mt-1" />
-                        <div>
-                            <h4 className="font-semibold">Phone</h4>
-                            <p className="text-muted-foreground">234 909 090 4363<br/>234 816 203 8620</p>
-                        </div>
-                    </div>
-                     <div className="flex items-start gap-4">
-                        <Mail className="w-6 h-6 text-accent flex-shrink-0 mt-1" />
-                        <div>
-                            <h4 className="font-semibold">Email</h4>
-                            <a href="mailto:alpinetechhvac@gmail.com" className="text-muted-foreground hover:text-primary transition-colors">alpinetechhvac@gmail.com</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {/* Company Overview */}
-        <div className="bg-white py-16 px-4 md:py-20 lg:py-24 border-b border-blue-500/10">
-            <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-20 items-center">
-                <div className="lg:col-span-1 text-center">
-                    <span className="inline-block bg-gradient-to-r from-blue-500 to-blue-400 text-white text-sm font-semibold px-5 py-2 rounded-full mb-4">Est. 2011</span>
-                    <Image
-                        src="https://placehold.co/180x180.png"
-                        data-ai-hint="company building"
-                        alt="Alpine Tech Office"
-                        width={180}
-                        height={180}
-                        className="rounded-2xl object-cover mx-auto mb-8 shadow-lg shadow-blue-500/10 hover:shadow-xl hover:shadow-blue-500/20 hover:-translate-y-1 transition-all duration-300"
-                    />
-                    <div className="flex justify-center gap-8">
-                        {stats.map(stat => (
-                            <div key={stat.label}>
-                                <span className="text-3xl font-bold text-blue-500 block">{stat.value}</span>
-                                <span className="text-xs text-gray-500 uppercase tracking-wider">{stat.label}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-                <div className="lg:col-span-2 lg:pl-10 lg:border-l-4 lg:border-blue-500">
-                     <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">Our Story</h2>
-                     <p className="text-base md:text-lg text-gray-600 leading-relaxed mb-8">
-                        <Link href="/" className="text-blue-500 font-semibold hover:text-gray-800 transition-colors">Alpine</Link> Tech is a professional company offering dependable residential and commercial <Link href="/services" className="text-blue-500 font-semibold hover:text-gray-800 transition-colors">HVAC</Link> services. We handle everything from supply and installation to repair and maintenance, all backed by exceptional customer service.
-                    </p>
-                    <ul className="space-y-3">
-                        <li className="flex items-start"><span className="text-blue-500 font-bold mr-3 mt-1">✓</span> Residential & Commercial HVAC Solutions</li>
-                        <li className="flex items-start"><span className="text-blue-500 font-bold mr-3 mt-1">✓</span> Official GREE Brand Partnership</li>
-                        <li className="flex items-start"><span className="text-blue-500 font-bold mr-3 mt-1">✓</span> Expert Installation & Maintenance</li>
-                        <li className="flex items-start"><span className="text-blue-500 font-bold mr-3 mt-1">✓</span> 24/7 Emergency Service Available</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        {/* Timeline Section */}
-        <div className="bg-gradient-to-b from-[#f8fbff] to-[#f0f4f8] py-16 px-4 md:py-24">
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Our Journey</h2>
-              <p className="text-lg text-gray-600">Building excellence through innovation and dedication</p>
-            </div>
-
-            <div className="relative">
-              {/* This is the line for the timeline */}
-              <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 via-blue-300 to-blue-500/30 transform md:-translate-x-1/2"></div>
-              
-              {timelineData.map((item, index) => (
-                <div key={item.year} ref={el => timelineRefs.current[index] = el} className="relative mb-12 last:mb-0 opacity-0">
-                  <div className="md:hidden absolute top-1 left-4 -translate-x-1/2 w-5 h-5 bg-gradient-to-br from-blue-500 to-blue-400 rounded-full shadow-md ring-8 ring-white z-10"></div>
-                  <div className="hidden md:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 bg-gradient-to-br from-blue-500 to-blue-400 rounded-full shadow-md ring-8 ring-white z-10"></div>
-                  
-                  <div className={cn(
-                      "flex flex-col md:flex-row items-center",
-                      index % 2 === 0 ? 'md:flex-row-reverse' : ''
-                  )}>
-                    <div className="md:w-5/12"></div>
-                    <div className="md:w-2/12"></div>
-                    <div className={cn("w-full md:w-5/12 p-6 bg-white rounded-xl shadow-lg border border-gray-200/80 transition-all duration-500 ml-12 md:ml-0")}>
-                      <span className="inline-block bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-3">{item.year}</span>
-                      <h3 className="text-xl font-bold text-gray-800 mb-2">{item.title}</h3>
-                      <p className="text-sm text-gray-600 leading-relaxed">{item.description}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+    <section id="about" className="w-full py-12 md:py-24 lg:py-32 bg-white">
+      <div className="container px-4 md:px-6">
+        <div className="grid items-center gap-6 lg:grid-cols-2 lg:gap-12">
+          <div className="space-y-4">
+            <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm">About Us</div>
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Your Peak of Home Comfort</h2>
+            <p className="max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+              For over a decade, Alpine Tech has been the trusted name in residential and commercial HVAC services. We are dedicated to providing reliable, top-tier solutions that guarantee your comfort and satisfaction.
+            </p>
+            <Button asChild>
+              <Link href="/about">Learn Our Full Story</Link>
+            </Button>
           </div>
+          <Image
+            src="https://placehold.co/600x400.png"
+            data-ai-hint="team portrait"
+            width={600}
+            height={400}
+            alt="About"
+            className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full"
+          />
         </div>
-
       </div>
     </section>
-  );
+  )
 }

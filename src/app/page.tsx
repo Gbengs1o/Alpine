@@ -19,8 +19,6 @@ export default function Page() {
         <Services />
         <CoreValues />
         <Faq />
-        
-        
       </main>
       <Footer />
     </div>
