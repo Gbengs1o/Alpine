@@ -109,15 +109,15 @@ export default function About() {
                     
                     <div className="h-full w-full">
                         <div className="sticky top-28">
-                             <div className={`relative group w-full max-w-lg mx-auto ${getAnimClass('')}`} style={{transitionDelay: `300ms`}}>
-                                <div className="absolute -inset-2.5 bg-gradient-to-r from-[#5d99f7] to-blue-400 rounded-2xl opacity-20 blur-xl group-hover:opacity-40 transition-opacity duration-500" />
+                             <div className={`relative w-full max-w-lg mx-auto ${getAnimClass('')}`} style={{transitionDelay: `300ms`}}>
+                                <div className="absolute -inset-2.5 bg-gradient-to-r from-[#5d99f7] to-blue-400 rounded-2xl opacity-20 blur-xl transition-opacity duration-500" />
                                 <Image
-                                    src="https://placehold.co/600x450.png"
+                                    src="https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/3-1.jpg"
                                     data-ai-hint="professional hvac technician smiling at a worksite"
                                     width={600}
                                     height={450}
                                     alt="A smiling, professional technician from the Alpine Tech HVAC Team"
-                                    className="relative z-10 aspect-[4/3] w-full overflow-hidden rounded-2xl object-cover object-center shadow-xl border-4 border-white transition-transform duration-500 ease-out group-hover:scale-105"
+                                    className="relative z-10 aspect-[4/3] w-full overflow-hidden rounded-2xl object-cover object-center shadow-xl border-4 border-white transition-transform duration-500 ease-out"
                                 />
                                 <div className="absolute bottom-5 right-5 z-20 bg-white/90 backdrop-blur-sm rounded-lg px-4 py-3 shadow-lg text-right transition-all duration-500 opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0">
                                     <div className="font-bold text-lg text-[#212529]">Alpine Tech</div>

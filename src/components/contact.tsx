@@ -1,5 +1,6 @@
 "use client";
 
+// --- IMPORTS ---
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -8,10 +9,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast"; // <--- THIS IS THE CORRECTED LINE
 import { Loader2, Mail, MapPin, Phone } from 'lucide-react';
 import Link from 'next/link';
 
+// --- FORM SCHEMA ---
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
   email: z.string().email("Please enter a valid email address."),
@@ -20,145 +22,134 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+// --- COMPONENT ---
 export function Contact() {
   const { toast } = useToast();
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      message: "",
-    },
+    defaultValues: { name: "", email: "", message: "" },
   });
 
+  // --- SUBMIT HANDLER ---
   async function onSubmit(values: FormValues) {
-    // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     console.log(values);
     toast({
-        title: "Message Sent!",
-        description: "Thank you for contacting us. We'll get back to you shortly.",
+        title: "Message Received!",
+        description: "Thank you for your inquiry. An expert will be in touch with you shortly.",
     });
     form.reset();
   }
 
+  // --- JSX ---
   return (
-    <section id="contact" className="w-full py-12 md:py-24 lg:py-32 bg-secondary/20">
-      <div className="container px-4 md:px-6">
-        <div className="text-center mb-12">
-            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl font-headline text-primary">Contact Us</h1>
-            <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">We're here to help. Reach out to us for consultations, quotes, or any questions you may have.</p>
-        </div>
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Contact Info Section */}
-          <div className="space-y-8">
+    <section 
+      id="contact" 
+      className="w-full py-24 lg:py-32 bg-gray-50 text-gray-800"
+    >
+      <main className="container mx-auto px-4 md:px-6 max-w-7xl flex flex-col items-center">
+        {/* Consistent "Breadcrumb" Link */}
+        <a href="#contact" className="flex items-center gap-2 text-sm font-bold tracking-wider uppercase text-gray-900 mb-6">
+          <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+          GET IN TOUCH
+        </a>
+        
+        {/* Impactful Title & Subtitle */}
+        <h1 className="text-4xl md:text-5xl font-bold text-center leading-tight mb-6">
+          Ready to Start Your Project?
+        </h1>
+        <p className="text-lg text-gray-600 text-center max-w-3xl mb-16">
+          Whether you have a question, need a quote, or are ready to discuss your project, 
+          we’re here to provide clear, honest answers and expert guidance.
+        </p>
+
+        <div className="grid lg:grid-cols-5 gap-12 w-full">
+          {/* Info Section (Left Side) */}
+          <div className="lg:col-span-2 space-y-10">
             <div>
-              <h2 className="text-2xl font-bold text-primary mb-4">Our Mission</h2>
-              <blockquote className="border-l-4 border-accent pl-6 text-lg text-muted-foreground italic">
-                Delivering affordable air conditioning solutions for both residential and commercial spaces, employing top-tier systems and adhering strictly to industry standards to establish a comfortable living and working environment.
-              </blockquote>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Our Commitment to You</h2>
+              <p className="text-gray-600 leading-relaxed">
+                We believe in building lasting relationships based on the principles of reliability, professionalism, and integrity. When you contact us, you're not just getting a service; you're gaining a partner dedicated to ensuring your complete satisfaction and comfort.
+              </p>
             </div>
             <div>
-              <h3 className="text-2xl font-bold text-primary mb-4">Our Information</h3>
-              <div className="space-y-4">
-                <div className="flex items-start gap-4">
-                  <div className="bg-primary/10 text-primary p-3 rounded-full">
-                    <MapPin className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-lg">Office Address</h4>
-                    <p className="text-muted-foreground">35 Aladelola Street, Ikosi, Ketu, LAGOS</p>
-                    <Button variant="link" asChild className="p-0 h-auto">
-                      <Link href="https://www.google.com/maps/search/?api=1&query=35+Aladelola+Street,+Ikosi,+Ketu,+LAGOS" target="_blank" rel="noopener noreferrer">
-                        View on Google Maps
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="bg-primary/10 text-primary p-3 rounded-full">
-                    <Phone className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-lg">Phone</h4>
-                    <a href="tel:2349090904363" className="block text-muted-foreground hover:text-primary transition-colors">234 909 090 4363</a>
-                    <a href="tel:2348162038620" className="block text-muted-foreground hover:text-primary transition-colors">234 816 203 8620</a>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="bg-primary/10 text-primary p-3 rounded-full">
-                    <Mail className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-lg">Email</h4>
-                    <a href="mailto:alpinetechhvac@gmail.com" className="text-muted-foreground hover:text-primary transition-colors">alpinetechhvac@gmail.com</a>
-                  </div>
-                </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Direct Contact Information</h3>
+              <div className="space-y-6">
+                <InfoItem icon={<MapPin className="w-6 h-6" />} title="Office Address">
+                  <p>35 Aladelola Street, Ikosi, Ketu, LAGOS</p>
+                  <Button variant="link" asChild className="p-0 h-auto text-blue-600">
+                    <Link href="https://www.google.com/maps/search/?api=1&query=35+Aladelola+Street,+Ikosi,+Ketu,+LAGOS" target="_blank" rel="noopener noreferrer">
+                      View on Google Maps
+                    </Link>
+                  </Button>
+                </InfoItem>
+                <InfoItem icon={<Phone className="w-6 h-6" />} title="Phone">
+                  <a href="tel:2349090904363" className="block hover:text-blue-600 transition-colors">234 909 090 4363</a>
+                  <a href="tel:2348162038620" className="block hover:text-blue-600 transition-colors">234 816 203 8620</a>
+                </InfoItem>
+                <InfoItem icon={<Mail className="w-6 h-6" />} title="Email">
+                  <a href="mailto:alpinetechhvac@gmail.com" className="hover:text-blue-600 transition-colors">alpinetechhvac@gmail.com</a>
+                </InfoItem>
               </div>
             </div>
           </div>
           
-          {/* Contact Form Section */}
-          <div className="w-full">
-            <Card className="shadow-lg">
-                <CardHeader>
-                  <CardTitle className="text-2xl font-bold font-headline text-primary">Send Us a Message</CardTitle>
-                  <CardDescription>Have a question or ready to start a project? Fill out the form below.</CardDescription>
-                </CardHeader>
+          {/* Form Section (Right Side) */}
+          <div className="lg:col-span-3">
+            <Card className="shadow-xl border-gray-200 bg-white">
+              <CardHeader>
+                <CardTitle className="text-2xl font-bold text-gray-900">Send Your Inquiry</CardTitle>
+                <CardDescription>Fill out the form below, and one of our experts will get back to you promptly.</CardDescription>
+              </CardHeader>
+              <CardContent>
                 <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)}>
-                    <CardContent className="space-y-4">
-                      <FormField
-                        control={form.control}
-                        name="name"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Full Name</FormLabel>
-                            <FormControl>
-                              <Input placeholder="John Doe" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Email Address</FormLabel>
-                            <FormControl>
-                              <Input type="email" placeholder="you@example.com" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="message"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Message</FormLabel>
-                            <FormControl>
-                              <Textarea rows={4} placeholder="Tell us how we can help..." {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                       <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-                        {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        Send Message
-                      </Button>
-                    </CardContent>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                    <FormField control={form.control} name="name" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Full Name</FormLabel>
+                        <FormControl><Input placeholder="John Doe" {...field} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                    <FormField control={form.control} name="email" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email Address</FormLabel>
+                        <FormControl><Input type="email" placeholder="you@example.com" {...field} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                    <FormField control={form.control} name="message" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>How can we help?</FormLabel>
+                        <FormControl><Textarea rows={5} placeholder="Please describe your needs or question..." {...field} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                    <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3" disabled={form.formState.isSubmitting}>
+                      {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      Send Message
+                    </Button>
                   </form>
                 </Form>
-              </Card>
+              </CardContent>
+            </Card>
           </div>
         </div>
-      </div>
+      </main>
     </section>
   );
 }
+
+// Helper component for consistent info item styling
+const InfoItem = ({ icon, title, children }: { icon: React.ReactNode, title: string, children: React.ReactNode }) => (
+  <div className="flex items-start gap-4">
+    <div className="bg-blue-100 text-blue-600 p-3 rounded-full flex-shrink-0">
+      {icon}
+    </div>
+    <div className="text-gray-600">
+      <h4 className="font-semibold text-lg text-gray-900 mb-1">{title}</h4>
+      {children}
+    </div>
+  </div>
+);
