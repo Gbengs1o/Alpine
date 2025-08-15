@@ -95,7 +95,7 @@ export function OurStory() {
                 <div className="lg:col-span-2 lg:pl-10 lg:border-l-4 lg:border-blue-500">
                      <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">Our Story</h2>
                      <p className="text-base md:text-lg text-gray-600 leading-relaxed mb-8">
-                        <Link href="/" className="text-blue-500 font-semibold hover:text-gray-800 transition-colors">Alpine</Link> Tech is a professional company offering dependable residential and commercial <Link href="/hvac" className="text-blue-500 font-semibold hover:text-gray-800 transition-colors">HVAC</Link> services. We handle everything from supply and installation to repair and maintenance, all backed by exceptional customer service.
+                        <Link href="/mountain" className="text-blue-500 font-semibold hover:text-gray-800 transition-colors">Alpine</Link> Tech is a professional company offering dependable residential and commercial <Link href="/hvac" className="text-blue-500 font-semibold hover:text-gray-800 transition-colors">HVAC</Link> services. We handle everything from supply and installation to repair and maintenance, all backed by exceptional customer service.
                     </p>
                     <ul className="space-y-3">
                         <li className="flex items-start"><span className="text-blue-500 font-bold mr-3 mt-1">✓</span> Residential & Commercial HVAC Solutions</li>
