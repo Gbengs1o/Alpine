@@ -9,7 +9,7 @@ export default function PortfolioPage() {
       <Header />
       <main className="flex-1">
         {/* The CSS parallax container */}
-        <div className="relative h-[60vh] min-h-[500px] bg-cover bg-center bg-fixed bg-[url('https://images.unsplash.com/photo-1594909122845-11baa439b7bf?q=80&w=2070&auto=format&fit=crop')]">
+        <div className="relative h-[60vh] min-h-[500px] bg-cover bg-center bg-fixed bg-[url('https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/11-1.jpg')]">
           <div className="absolute inset-0 bg-primary/70" />
           <div className="relative z-10 h-full flex flex-col items-center justify-center text-white text-center p-4">
             <p className="flex items-center justify-center text-sm font-bold tracking-widest text-white/80 uppercase mb-4 animate-fade-in-slide [animation-delay:200ms]">

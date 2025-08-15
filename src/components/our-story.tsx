@@ -51,14 +51,15 @@ export function OurStory() {
       }
     );
 
-    timelineRefs.current.forEach((ref) => {
+    const refs = timelineRefs.current;
+    refs.forEach((ref) => {
       if (ref) {
         observer.observe(ref);
       }
     });
 
     return () => {
-      timelineRefs.current.forEach((ref) => {
+      refs.forEach((ref) => {
         if (ref) {
           observer.unobserve(ref);
         }
@@ -75,7 +76,7 @@ export function OurStory() {
                 <div className="lg:col-span-1 text-center">
                     <span className="inline-block bg-gradient-to-r from-blue-500 to-blue-400 text-white text-sm font-semibold px-5 py-2 rounded-full mb-4">Est. 2011</span>
                     <Image
-                        src="https://placehold.co/180x180.png"
+                        src="https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/3-1.jpg"
                         data-ai-hint="company building"
                         alt="Alpine Tech Office"
                         width={180}
@@ -119,7 +120,11 @@ export function OurStory() {
               <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 via-blue-300 to-blue-500/30 transform md:-translate-x-1/2"></div>
               
               {timelineData.map((item, index) => (
-                <div key={item.year} ref={el => timelineRefs.current[index] = el} className="relative mb-12 last:mb-0 opacity-0">
+                <div 
+                  key={item.year} 
+                  ref={(el) => { timelineRefs.current[index] = el; }} // <-- FIX IS HERE
+                  className="relative mb-12 last:mb-0 opacity-0"
+                >
                   <div className="md:hidden absolute top-1 left-4 -translate-x-1/2 w-5 h-5 bg-gradient-to-br from-blue-500 to-blue-400 rounded-full shadow-md ring-8 ring-white z-10"></div>
                   <div className="hidden md:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 bg-gradient-to-br from-blue-500 to-blue-400 rounded-full shadow-md ring-8 ring-white z-10"></div>
                   
