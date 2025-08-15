@@ -71,7 +71,7 @@ export default function About() {
                         
                         <p className={`max-w-[600px] text-[#6c757d] text-lg leading-relaxed ${getAnimClass('')}`} style={{transitionDelay: `200ms`}}>
                             <span className="relative group">
-                                <Link href="/about" className="font-bold text-[#5d99f7] hover:underline underline-offset-4 decoration-2">
+                                <Link href="/mountain" className="font-bold text-[#5d99f7] hover:underline underline-offset-4 decoration-2">
                                     Alpine
                                 </Link>
                                 <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max bg-[#212529] text-white text-xs font-semibold rounded-md px-3 py-1 opacity-0 group-hover:opacity-100 scale-95 group-hover:scale-100 transition-all duration-300 ease-out pointer-events-none invisible group-hover:visible">
@@ -117,7 +117,7 @@ export default function About() {
                                     width={600}
                                     height={450}
                                     alt="A smiling, professional technician from the Alpine Tech HVAC Team"
-                                    className="relative z-10 aspect-[4/3] w-full overflow-hidden rounded-2xl object-cover object-center shadow-xl border-4 border-white transition-transform duration-500 ease-out"
+                                    className="relative z-10 aspect-[4/3] w-full overflow-hidden rounded-2xl object-cover object-center shadow-xl border-4 border-white"
                                 />
                                 <div className="absolute bottom-5 right-5 z-20 bg-white/90 backdrop-blur-sm rounded-lg px-4 py-3 shadow-lg text-right transition-all duration-500 opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0">
                                     <div className="font-bold text-lg text-[#212529]">Alpine Tech</div>

@@ -33,7 +33,14 @@ export default function CoreValues() {
     const stepsContainerRef = useRef<HTMLElement | null>(null);
     const [isIntroFinished, setIntroFinished] = useState(false);
     const [activeIndex, setActiveIndex] = useState(0);
+    const hoverAudioRef = useRef<HTMLAudioElement | null>(null); // Ref for the hover sound
 
+    // Effect to initialize the hover sound audio object once
+    useEffect(() => {
+        hoverAudioRef.current = new Audio('/media/mouse1.mp3');
+    }, []);
+
+    // This effect handles the intro animation logic
     useEffect(() => {
         const stepsContainer = stepsContainerRef.current;
         if (!stepsContainer) return;
@@ -75,6 +82,14 @@ export default function CoreValues() {
             }
         };
     }, [isIntroFinished]);
+
+    // Function to play the sound on hover
+    const handlePanelHover = () => {
+        if (hoverAudioRef.current) {
+            hoverAudioRef.current.currentTime = 0;
+            hoverAudioRef.current.play().catch(error => console.warn("Hover sound playback failed:", error));
+        }
+    };
 
 
     return (
@@ -141,7 +156,12 @@ export default function CoreValues() {
                         aria-labelledby="values-section-title"
                     >
                     {coreValuesData.map((value, index) => (
-                        <article key={value.id} className={cn('step-panel', { 'active': !isIntroFinished && index === activeIndex })} id={value.id}>
+                        <article 
+                            key={value.id} 
+                            className={cn('step-panel', { 'active': !isIntroFinished && index === activeIndex })} 
+                            id={value.id}
+                            onMouseEnter={handlePanelHover} // Play sound on mouse enter
+                        >
                             <div className="panel-header"><span className="step-title">{value.title}</span></div>
                             <div className="panel-content">
                                 <h3>{value.headline}</h3>
