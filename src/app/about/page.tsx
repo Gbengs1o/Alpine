@@ -1,7 +1,7 @@
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { AboutHero } from '@/components/about-hero';
-import { MissionStatement } from '@/components/mission-statement';
+import  MissionStatement  from '@/components/mission-statement';
 import { OurStory } from '@/components/our-story';
 import { Advantages } from '@/components/advantages';
 import CoreValues from '@/components/core-values';
