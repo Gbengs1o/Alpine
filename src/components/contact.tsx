@@ -9,9 +9,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast"; // <--- THIS IS THE CORRECTED LINE
+import { useToast } from "@/hooks/use-toast";
 import { Loader2, Mail, MapPin, Phone } from 'lucide-react';
 import Link from 'next/link';
+import { sendEmail } from '@/ai/flows/send-email-flow';
 
 // --- FORM SCHEMA ---
 const formSchema = z.object({
@@ -33,13 +34,33 @@ export function Contact() {
 
   // --- SUBMIT HANDLER ---
   async function onSubmit(values: FormValues) {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log(values);
-    toast({
-        title: "Message Received!",
-        description: "Thank you for your inquiry. An expert will be in touch with you shortly.",
-    });
-    form.reset();
+    try {
+      const response = await sendEmail({
+        from: 'Website Contact Form <onboarding@resend.dev>',
+        to: ['alpinetechhvac@gmail.com'],
+        subject: `New Message from ${values.name} (from site)`,
+        html: `
+          <p>You have received a new message from your website contact form.</p>
+          <p><strong>Name:</strong> ${values.name}</p>
+          <p><strong>Email:</strong> ${values.email}</p>
+          <p><strong>Message:</strong></p>
+          <p>${values.message}</p>
+        `,
+      });
+      console.log(response);
+      toast({
+          title: "Message Sent!",
+          description: "Thank you for your inquiry. An expert will be in touch with you shortly.",
+      });
+      form.reset();
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Error",
+        description: "There was a problem sending your message. Please try again later.",
+        variant: "destructive",
+      });
+    }
   }
 
   // --- JSX ---
