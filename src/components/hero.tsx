@@ -90,6 +90,7 @@ export function Hero() {
   const [experienceState, setExperienceState] = useState<'animating' | 'static'>('animating');
   const [isClient, setIsClient] = useState(false);
   const [activePanelIndex, setActivePanelIndex] = useState(0);
+  const [typingPermanentlyDisabled, setTypingPermanentlyDisabled] = useState(false);
 
   const typewriterText = useTypewriter(
     experienceState === 'animating' ? ['Anywhere', 'Anytime'] : [],
@@ -97,7 +98,7 @@ export function Hero() {
     100,
     3000,
     experienceState === 'animating' ? '/media/typing.mp3' : null,
-    activePanelIndex === 0 && experienceState === 'animating'
+    !typingPermanentlyDisabled && activePanelIndex === 0 && experienceState === 'animating'
   );
   
   const pinContainerRef = useRef<HTMLDivElement>(null);
@@ -109,6 +110,8 @@ export function Hero() {
   const lastPanelRef = useRef<HTMLElement | null>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
   const slideAudioRef = useRef<HTMLAudioElement | null>(null);
+  const windAudioRef = useRef<HTMLAudioElement | null>(null);
+  const hasPlayedWindSoundRef = useRef(false);
 
   useEffect(() => {
     setIsClient(true);
@@ -123,6 +126,9 @@ export function Hero() {
     
     if (!slideAudioRef.current) {
         slideAudioRef.current = new Audio('/media/slide.mp3');
+    }
+    if (!windAudioRef.current) {
+        windAudioRef.current = new Audio('/media/wind.mp3');
     }
 
     if (experienceState === 'static') {
@@ -159,6 +165,11 @@ export function Hero() {
         const totalPinDuration = pinContainer.offsetHeight - window.innerHeight;
         const horizontalPhaseEnd = (window.innerWidth / 100) * 300; 
 
+        // --- CHANGE: Stop wind sound when hero animation is fully scrolled past ---
+        if (scrollTop > totalPinDuration && windAudioRef.current && !windAudioRef.current.paused) {
+          windAudioRef.current.pause();
+        }
+
         if (scrollTop > horizontalPhaseEnd) video.classList.remove('is-blurred');
         else video.classList.add('is-blurred');
 
@@ -177,6 +188,7 @@ export function Hero() {
               if (scrollTop > 1 && slideAudioRef.current) {
                   slideAudioRef.current.currentTime = 0;
                   slideAudioRef.current.play().catch(e => console.warn("Slide audio playback failed:", e));
+                  setTypingPermanentlyDisabled(true);
               }
             }
             
@@ -200,6 +212,13 @@ export function Hero() {
             const exitProgress = (scrollTop - horizontalPhaseEnd) / exitSequenceDuration;
 
             lastPanel.style.opacity = (exitProgress <= revealEnd) ? `${1 - (exitProgress / revealEnd)}` : '0';
+
+            if (exitProgress > revealEnd && !hasPlayedWindSoundRef.current) {
+                if(windAudioRef.current) {
+                    windAudioRef.current.play().catch(e => console.warn("Wind audio playback failed:", e));
+                }
+                hasPlayedWindSoundRef.current = true;
+            }
 
             if (exitProgress > revealEnd && exitProgress <= zoomEnd) {
                 const zoomProgress = (exitProgress - revealEnd) / (zoomEnd - revealEnd);

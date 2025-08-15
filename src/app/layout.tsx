@@ -1,6 +1,7 @@
 import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
+import { SplashScreen } from '@/components/splash-screen';
 
 export const metadata: Metadata = {
   title: 'Alpine Tech',
@@ -18,6 +19,7 @@ export default function RootLayout({
         <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module" async></script>
       </head>
       <body className="font-eras antialiased bg-background text-foreground">
+        <SplashScreen />
         {children}
         <Toaster />
       </body>

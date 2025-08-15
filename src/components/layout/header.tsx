@@ -45,9 +45,15 @@ export function Header() {
   const telLink = `tel:${phoneNumber}`;
 
   const headerBaseClasses = 'sticky top-0 z-50 transition-all duration-300 ease-in-out';
-  const headerScrolledClasses = 'bg-black/50 backdrop-blur-lg';
+  // CHANGE: `mix-blend-difference` is now applied to the header on desktop (`md:`) when scrolled.
+  // This is the key change that makes the content inside adapt to the background.
+  const headerScrolledClasses = 'bg-black/50 backdrop-blur-lg md:bg-transparent md:backdrop-blur-none md:mix-blend-difference';
   const headerTopClasses = 'bg-[#4a7aa2]';
   const buttonPillClasses = 'flex items-center justify-center rounded-full bg-white/10 px-4 h-10 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/20';
+
+  // CHANGE: The glassy button style is back!
+  const glassyButtonClasses = 'rounded-full bg-white/10 backdrop-blur-sm border border-white/20 shadow-lg transition-all hover:bg-white/20';
+
 
   return (
     <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
@@ -57,11 +63,8 @@ export function Header() {
           <div className="flex flex-1 items-center justify-start">
             {isScrolled ? (
               // --- SCROLLED STATE: Alpine Logo ---
-              <Link href="/" className="flex items-center gap-2 text-white" aria-label="Return to homepage">
-                {/* 
-                  CHANGE MADE HERE: 
-                  Increased animation duration from 5s to 20s to slow down the spin.
-                */}
+              // CHANGE: Re-applied the glassy button styles. Text is forced to white to work with the parent's blend mode.
+              <Link href="/" className={`flex items-center gap-2 px-4 py-1 text-white ${glassyButtonClasses}`} aria-label="Return to homepage">
                 <Snowflake className="h-7 w-7 animate-spin [animation-duration:20s]" />
                 <span className="text-2xl font-bold">Alpine</span>
               </Link>
@@ -99,9 +102,10 @@ export function Header() {
           <div className="flex flex-1 items-center justify-end">
             {isScrolled ? (
               // --- SCROLLED STATE: Hamburger Menu ---
+              // CHANGE: Re-applied the glassy button styles here as well.
                <SheetTrigger asChild>
-                  <button aria-label="Open menu" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 transition-colors hover:bg-white/30">
-                    <Menu className="h-5 w-5 text-white" />
+                  <button aria-label="Open menu" className={`flex h-10 w-10 items-center justify-center text-white ${glassyButtonClasses}`}>
+                    <Menu className="h-5 w-5" />
                   </button>
                 </SheetTrigger>
             ) : (
