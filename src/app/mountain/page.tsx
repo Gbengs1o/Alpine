@@ -1,11 +1,43 @@
 "use client";
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
+import Script from 'next/script';
 
 export default function WhyAlpinePage() {
+  const router = useRouter();
+
   return (
     <>
+      <Script 
+        src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" 
+        type="module" 
+        strategy="lazyOnload" 
+      />
+
       <style jsx>{`
+        /* --- Keyframes for subtle animations --- */
+        @keyframes fadeInZoom {
+          from {
+            opacity: 0;
+            transform: scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
         .why-alpine-section {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: #f8f9fa;
@@ -15,124 +47,178 @@ export default function WhyAlpinePage() {
             align-items: center;
             min-height: 100vh;
             width: 100%;
-            padding: 4rem 1rem;
+            padding: 5rem 1rem;
             box-sizing: border-box;
+            overflow-x: hidden;
         }
         .main-container {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1100px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        .section-link {
+
+        /* --- 1. Split Hero Section --- */
+        .split-hero-container {
             display: flex;
             align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            color: #212529;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin-bottom: 24px;
-            align-self: flex-start;
+            gap: 48px;
+            width: 100%;
+            margin-bottom: 80px;
+        }
+        .hero-text-content {
+            flex: 1.2;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        .section-link {
+            display: flex; align-items: center; gap: 8px; text-decoration: none; color: #212529;
+            font-size: 12px; font-weight: 700; letter-spacing: 1px; margin-bottom: 24px;
         }
         .section-link .dot {
-            width: 8px;
-            height: 8px;
-            background-color: #5d99f7;
-            border-radius: 50%;
+            width: 8px; height: 8px; background-color: #5d99f7; border-radius: 50%;
         }
         .main-title {
-            font-size: clamp(2.5rem, 5vw, 3.5rem);
-            font-weight: 700;
-            color: #212529;
-            text-align: center;
-            line-height: 1.1;
-            margin: 0 0 24px 0;
+            font-size: clamp(2.8rem, 5vw, 3.8rem); font-weight: 700; color: #212529;
+            text-align: left; line-height: 1.1; margin: 0 0 24px 0;
         }
         .subtitle {
-            font-size: 18px;
-            color: #6c757d;
-            text-align: center;
-            max-width: 600px;
-            line-height: 1.6;
-            margin-bottom: 64px; /* Increased margin for more space */
+            font-size: 18px; color: #6c757d; text-align: left;
+            line-height: 1.6; margin: 0;
         }
-        
-        /* New styles for the content layout */
-        .content-wrapper {
-            display: flex;
-            flex-wrap: wrap; /* Allows stacking on smaller screens */
-            gap: 48px;
-            align-items: center;
-            width: 100%;
-        }
-        .image-container {
+        .hero-image-container {
             flex: 1;
             min-width: 300px;
+            animation: fadeInZoom 0.8s ease-out;
         }
-        .image-container img {
+        .hero-image-container img {
             width: 100%;
             height: auto;
-            border-radius: 8px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
             object-fit: cover;
+            display: block;
         }
-        .text-container {
-            flex: 1.2; /* Give text slightly more space */
-            min-width: 300px;
+
+        /* --- 2. Story Explanation Section --- */
+        .story-container {
+            text-align: center;
+            max-width: 700px;
+            margin-bottom: 80px;
+            animation: fadeInUp 0.8s 0.2s ease-out backwards;
         }
-        .text-container h2 {
-            font-size: 28px;
-            font-weight: 700;
-            color: #212529;
-            margin-bottom: 16px;
+        .story-container h2 {
+            font-size: 28px; font-weight: 700; color: #212529; margin-bottom: 24px;
         }
-        .text-container p {
-            font-size: 16px;
-            color: #6c757d;
-            line-height: 1.7;
-            margin-bottom: 24px;
+        .story-container p {
+            font-size: 17px; color: #495057;
+            line-height: 1.8; margin: 0;
         }
-        .text-container p:last-child {
-            margin-bottom: 0;
+
+        /* --- 3. Immersive Animation Section --- */
+        .immersive-animation-section {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 64px;
+            animation: fadeInUp 0.8s 0.4s ease-out backwards;
+        }
+        .animation-wrapper {
+            max-width: 600px; /* Much larger! */
+            margin: 16px auto 0;
+        }
+
+        /* --- 4. Navigation Button Group --- */
+        .button-group-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+            animation: fadeInUp 0.8s 0.6s ease-out backwards;
+        }
+        .button {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 24px; font-size: 14px; font-weight: 600;
+            border-radius: 50px; cursor: pointer; text-decoration: none;
+            transition: all 0.3s ease; border: 1px solid transparent;
+        }
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .primary-button {
+            background-color: #5d99f7; color: white; border-color: #5d99f7;
+        }
+        .secondary-button {
+            background-color: #ffffff; color: #212529; border-color: #dee2e6;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 900px) {
+            .split-hero-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            .main-title, .subtitle {
+                text-align: center;
+            }
+            .section-link {
+                align-self: center;
+            }
         }
       `}</style>
       
-      <section className="why-alpine-section" id="our-philosophy">
+      <section className="why-alpine-section">
         <main className="main-container">
-          <a href="#our-philosophy" className="section-link">
-            <span className="dot"></span>
-            OUR NAME & PHILOSOPHY
-          </a>
-          <h1 className="main-title">Bringing the Mountain's<br/>Freshness to You</h1>
-          <p className="subtitle">
-            Our name is inspired by the crisp, cool, and invigorating air of the alpine mountains.
-            It's not just a name—it's the standard of comfort we promise to deliver.
-          </p>
 
-          <div className="content-wrapper">
-            <div className="image-container">
-                {/* IMPORTANT: Replace this src with an actual path to your image */}
-                <img 
-                    src="/images/alpine-mountain-scenery.jpg" 
-                    alt="A serene and cool alpine mountain landscape" 
-                />
+          <div className="split-hero-container">
+            <div className="hero-text-content">
+              <div className="section-link">
+                <span className="dot"></span>
+                OUR CORE PHILOSOPHY
+              </div>
+              <h1 className="main-title">More Than a Name,<br/>It's a Feeling.</h1>
+              <p className="subtitle">
+                Our name is inspired by the pure, crisp, and invigorating comfort of a cool mountain breeze. It’s the standard of experience we promise to deliver.
+              </p>
             </div>
-            <div className="text-container">
-                <h2>The Alpine Standard</h2>
-                <p>
-                    "Alpine" refers to the climate above the treeline in high mountains—an environment known for its purity, tranquility, and refreshingly cool air. It's a place of natural perfection and serene comfort.
-                </p>
-                <p>
-                    We chose this name because it perfectly encapsulates our mission: to replicate that ideal atmosphere inside your home or office. We don't just install air conditioners; we engineer environments where you can feel perfectly comfortable, productive, and at ease.
-                </p>
-                <p>
-                    When you choose <strong>Alpine Tech HVAC</strong>, you're choosing that unwavering commitment to creating your personal oasis of cool, fresh, alpine-quality air.
-                </p>
+            <div className="hero-image-container">
+              <img 
+                  src="https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/Google_AI_Studio_2025-08-15T20_57_22.292Z.png" 
+                  alt="A serene alpine mountain landscape with a clear lake" 
+              />
             </div>
           </div>
+
+          <div className="story-container">
+            <h2>The Alpine Standard of Comfort</h2>
+            <p>
+              Imagine the oppressive heat of a Lagos summer day. The air is heavy, thick, and drains your energy. Now, picture a high mountain peak, where the air is so <strong>crisp, cool, and pure</strong> it feels like a drink of cold, fresh water. That is the feeling of "Alpine." This is the standard we bring into your home and office.
+            </p>
+          </div>
+
+          <div className="immersive-animation-section">
+            <h2>Your Personal Oasis</h2>
+            <div className="animation-wrapper">
+              <dotlottie-wc
+                  key="lottie-animation"
+                  src="https://lottie.host/e91a8d4c-b485-45b7-9663-a70d019409d6/wptT1bJBpq.lottie"
+                  style={{ width: '100%', height: 'auto' }}
+                  speed="1"
+                  autoplay
+                  loop
+              ></dotlottie-wc>
+            </div>
+          </div>
+          
+          <div className="button-group-container">
+            <button onClick={() => router.back()} className="button secondary-button">
+              <span>&larr;</span> Go Back
+            </button>
+            <button onClick={() => router.push('/')} className="button primary-button">
+              Return to Home Page
+            </button>
+          </div>
+
         </main>
       </section>
     </>
