@@ -38,7 +38,7 @@ const chatFlow = ai.defineFlow(
   async (input) => {
     const { text } = await ai.generate({
       model: 'googleai/gemini-2.0-flash',
-      prompt: input.history.map((msg) => ({
+      messages: input.history.map((msg) => ({
         role: msg.role,
         content: [{ text: msg.content }],
       })),
