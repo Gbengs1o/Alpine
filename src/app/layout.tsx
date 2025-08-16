@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { SplashScreen } from '@/components/splash-screen';
+import { AiChat } from '@/components/ai-chat';
 
 export const metadata: Metadata = {
   title: 'Alpine Tech',
@@ -21,6 +22,7 @@ export default function RootLayout({
       <body className="font-eras antialiased bg-background text-foreground">
         <SplashScreen />
         {children}
+        <AiChat />
         <Toaster />
       </body>
     </html>
