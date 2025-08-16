@@ -18,7 +18,7 @@ export function AskAiButton({ onClick }: AskAiButtonProps) {
     // Then, make it pop up every 5 seconds
     const interval = setInterval(() => {
       setVisible(false);
-      setTimeout(() => setVisible(true), 500); // Re-appear after a short delay for the animation
+      setTimeout(() => setVisible(true), 1000); // Re-appear after a short delay for the animation
     }, 5000);
 
     return () => {

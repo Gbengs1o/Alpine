@@ -36,16 +36,13 @@ const chatFlow = ai.defineFlow(
     outputSchema: ChatOutputSchema,
   },
   async (input) => {
-    // Generate a response based on the conversation history
     const { text } = await ai.generate({
-      prompt: `You are a friendly and helpful AI assistant for Alpine Comfort Solutions, an HVAC company. Your goal is to answer user questions about the company, its services (sourcing, installation, maintenance), and general HVAC topics. Be concise and helpful.
-
-      Here is the conversation history:`,
-      history: input.history.map((msg) => ({
+      model: 'googleai/gemini-2.0-flash',
+      prompt: input.history.map((msg) => ({
         role: msg.role,
         content: [{ text: msg.content }],
       })),
-      model: 'googleai/gemini-2.0-flash'
+      system: `You are a friendly and helpful AI assistant for Alpine Comfort Solutions, an HVAC company. Your goal is to answer user questions about the company, its services (sourcing, installation, maintenance), and general HVAC topics. Be concise and helpful.`,
     });
 
     return text;
