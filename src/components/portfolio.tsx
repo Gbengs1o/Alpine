@@ -15,37 +15,37 @@ const projects: Project[] = [
         title: "Braithwaite Memorial Hospital",
         category: "Commercial / VRF",
         description: "Complete supply and installation of a state-of-the-art VRF system for a critical healthcare environment.",
-        image: "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?q=80&w=2073&auto=format&fit=crop"
+        image: "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/Generate-an-image-offff.png"
     },
     {
         title: "Ashaka Cement, Gombe",
         category: "Industrial / VRF",
         description: "Installation of a robust VRF unit system to ensure climate control in a demanding industrial facility.",
-        image: "https://images.unsplash.com/photo-1583522246938-34a8b7593853?q=80&w=1974&auto=format&fit=crop"
+        image: "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/27.jpg"
     },
     {
         title: "BABCOCK University MRI Room",
         category: "Specialized / Concealed Units",
         description: "Precision supply and installation of ceiling concealed units for a temperature-sensitive MRI room.",
-        image: "https://images.unsplash.com/photo-1629904853716-f0bc64219b1b?q=80&w=2070&auto=format&fit=crop"
+        image: "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/22.jpg"
     },
     {
         title: "Eko Theater Project",
         category: "Commercial",
         description: "Multi-location deployment for Eko Theater branches in Oregun, Igando, Epe, and Badagry.",
-        image: "https://images.unsplash.com/photo-1594909122845-11baa439b7bf?q=80&w=2070&auto=format&fit=crop"
+        image: "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/18.jpg"
     },
     {
         title: "The AHI Residence",
         category: "Residential",
         description: "High-end residential air conditioning solution, focusing on comfort, efficiency, and aesthetics.",
-        image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop"
+        image: "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/36.jpg"
     },
     {
-        title: "BUA Cement, Edo State",
+        title: "KAPHUB",
         category: "Industrial",
-        description: "Large-scale HVAC system implementation for one of the nation's leading cement producers.",
-        image: "https://images.unsplash.com/photo-1617066969893-1b72a6b57ac3?q=80&w=2070&auto=format&fit=crop"
+        description: "Large-scale HVAC system implementation.",
+        image: "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/17.jpg"
     }
 ];
 

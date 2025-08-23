@@ -15,7 +15,7 @@ const projects = [
   {
     title: "Braithwaite Memorial Hospital, PHC",
     category: "VRF",
-    image: "https://placehold.co/600x400.png",
+    image: "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/Generate-an-image-offff.png",
     hint: "hospital exterior"
   },
   {
@@ -27,13 +27,13 @@ const projects = [
   {
     title: "BABCOCK University MRI Room",
     category: "Installation",
-    image: "https://placehold.co/600x400.png",
+    image: "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/22.jpg",
     hint: "university building"
   },
   {
     title: "Ashaka Cement, Gombe",
     category: "VRF",
-    image: "https://placehold.co/600x400.png",
+    image: "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/27.jpg",
     hint: "industrial factory"
   },
   {
@@ -57,7 +57,7 @@ const projects = [
   {
     title: "Eko Theater (Multiple Locations)",
     category: "Commercial",
-    image: "https://placehold.co/600x400.png",
+    image: "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/18.jpg",
     hint: "movie theater"
   },
   {
@@ -87,7 +87,7 @@ const projects = [
   {
     title: "The AHI Residence",
     category: "Residential",
-    image: "https://placehold.co/600x400.png",
+    image: "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/36.jpg",
     hint: "apartment building"
   },
   {
