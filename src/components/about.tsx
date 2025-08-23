@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -46,17 +45,12 @@ const useScrollAnimation = (options?: IntersectionObserverInit) => {
 };
 
 const carouselImages = [
-    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/IMG-20250820-WA0022.jpg",
-    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/IMG-20250820-WA0013.jpg",
-    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/IMG-20250820-WA0014.jpg",
-    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/IMG-20250820-WA0015.jpg",
-    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/IMG-20250820-WA0016.jpg",
-    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/IMG-20250820-WA0017.jpg",
-    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/IMG-20250820-WA0018.jpg",
-    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/IMG-20250820-WA0019.jpg",
-    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/IMG-20250820-WA0020.jpg",
-    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/IMG-20250820-WA0012.jpg",
-    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/IMG-20250820-WA0006.jpg"
+    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/35.jpg",
+    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/34.jpg",
+    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/31.jpg",
+    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/10.jpg",
+    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/good-image-with-flash-logo.png",
+    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/good-image-4.png"
 ];
 
 export default function About() {
