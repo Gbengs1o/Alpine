@@ -24,6 +24,12 @@ const services = [
             { icon: CheckCircle2, title: "Official GREE Partners", description: "Since 2012, offering premier, eco-friendly air conditioning solutions." },
             { icon: CheckCircle2, title: "All Popular Brands", description: "We are equipped to supply and install any major HVAC brand specified by our clients." },
             { icon: CheckCircle2, title: "Cost-Effective Procurement", description: "Our relationships ensure you get top-tier equipment without breaking the bank." }
+        ],
+        marqueeImages: [
+            'https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/29.jpg',
+            'https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/18.jpg',
+            'https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/17.jpg',
+            'https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/IMG-20250819-WA0042.jpg'
         ]
     },
     {
@@ -33,7 +39,13 @@ const services = [
         description: "Our installation process is designed for flawless execution across residential, commercial, and industrial projects, ensuring your system is perfectly tailored to your needs for optimal performance.",
         videoSrc: "https://www.youtube.com/embed/zuRVnD8XPLM",
         imageSrc: "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/service2.png",
-        steps: installationSteps
+        steps: installationSteps,
+        marqueeImages: [
+            'https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/42.jpg',
+            'https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/35.jpg',
+            'https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/33.jpg',
+            'https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/29.jpg'
+        ]
     },
     {
         id: "maintenance",
@@ -45,14 +57,43 @@ const services = [
         plans: [
             { title: "Pay As You Go", description: "On-demand routine servicing, including cleaning of indoor/outdoor units. You're billed per unit serviced—perfect for flexible maintenance needs." },
             { title: "Annual Service Contract", description: "For complete peace of mind, we take full responsibility for servicing your units every three months for a full year." }
+        ],
+        marqueeImages: [
+            'https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/good-image-4.png',
+            'https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/good-image-3.png',
+            'https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/good-image-2.png',
+            'https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/good-image-1.png'
         ]
     }
 ];
 
+// --- NEW REUSABLE IMAGE MARQUEE COMPONENT ---
+const ImageMarquee = ({ images }: { images: string[] }) => {
+    // Duplicate the images to create a seamless looping effect
+    const duplicatedImages = [...images, ...images];
+
+    return (
+        <div className="marquee-container">
+            <div className="marquee-track">
+                {duplicatedImages.map((src, index) => (
+                    <div className="marquee-image-wrapper" key={index}>
+                        <Image 
+                            src={src} 
+                            alt={`Service showcase image ${index + 1}`} 
+                            width={400} 
+                            height={250} 
+                            className="marquee-image" 
+                        />
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
 
 // --- THE MAIN COMPONENT ---
 export function ServicesDetailed() {
-    // ... (The rest of the component remains exactly the same as before) ...
     const [videoModal, setVideoModal] = useState({ isOpen: false, src: '' });
     const sectionsRef = useRef<Array<HTMLElement | null>>([]);
 
@@ -108,7 +149,41 @@ export function ServicesDetailed() {
   return (
     <>
       <style jsx>{`
-        /* ... (all the existing styles for ServicesDetailed remain here) ... */
+        /* --- Styles for Image Marquee --- */
+        @keyframes scroll {
+          from { transform: translateX(0); }
+          to { transform: translateX(-50%); }
+        }
+        .marquee-container {
+          width: 100%;
+          overflow: hidden;
+          position: relative;
+          margin-bottom: 4rem;
+          -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+          mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+        }
+        .marquee-track {
+          display: flex;
+          width: max-content;
+          animation: scroll 40s linear infinite;
+        }
+        .marquee-track:hover {
+          animation-play-state: paused;
+        }
+        .marquee-image-wrapper {
+          flex-shrink: 0;
+          width: 400px;
+          padding: 0 12px;
+        }
+        .marquee-image {
+          border-radius: 1rem;
+          height: 250px;
+          width: 100%;
+          object-fit: cover;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- Existing Styles --- */
         .services-detailed-page {
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
           background-color: #111827;
@@ -371,62 +446,64 @@ export function ServicesDetailed() {
         </header>
 
         <main className="container">
-            {/* Service Sections remain the same */}
             <section id="sourcing" className="service-section" ref={(el) => { sectionsRef.current[0] = el; }}>
-            <div className="content-grid">
-              <div className="section-content">
-                <div className="section-heading">
-                  <div className="icon-wrapper"><Package /></div>
-                  <h2 className="section-title">{services[0].title}</h2>
+                <ImageMarquee images={services[0].marqueeImages} />
+                <div className="content-grid">
+                  <div className="section-content">
+                    <div className="section-heading">
+                      <div className="icon-wrapper"><Package /></div>
+                      <h2 className="section-title">{services[0].title}</h2>
+                    </div>
+                    <p className="section-description">{services[0].description}</p>
+                    <ul className="feature-list">
+                      {services[0].features!.map((feature, index) => (
+                        <li key={index} className="feature-item"><feature.icon /><div><h4>{feature.title}</h4><p>{feature.description}</p></div></li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="video-container" onClick={() => openVideoModal(services[0].videoSrc)}>
+                    <Image src={services[0].imageSrc} alt={services[0].title} fill style={{ objectFit: 'cover' }} />
+                    <div className="play-button"><Play /></div>
+                  </div>
                 </div>
-                <p className="section-description">{services[0].description}</p>
-                <ul className="feature-list">
-                  {services[0].features!.map((feature, index) => (
-                    <li key={index} className="feature-item"><feature.icon /><div><h4>{feature.title}</h4><p>{feature.description}</p></div></li>
-                  ))}
-                </ul>
-              </div>
-              <div className="video-container" onClick={() => openVideoModal(services[0].videoSrc)}>
-                <Image src={services[0].imageSrc} alt={services[0].title} fill style={{ objectFit: 'cover' }} />
-                <div className="play-button"><Play /></div>
-              </div>
-            </div>
-          </section>
+            </section>
 
-          <section id="installation" className="service-section installation-section" ref={(el) => { sectionsRef.current[1] = el; }}>
-            <div className="container">
-              <div className="section-content">
-                  <div className="section-heading"><div className="icon-wrapper"><HardHat /></div><h2 className="section-title">{services[1].title}</h2></div>
-                  <p className="section-description">{services[1].description}</p>
-              </div>
-              <div className="steps-grid">
-                {services[1].steps!.map((step, index) => (
-                  <div key={index} className="step-card"><div className="icon-wrapper"><step.icon /></div><h3>{step.title}</h3><p>{step.description}</p></div>
-                ))}
-              </div>
-              <div className="video-container installation-video" onClick={() => openVideoModal(services[1].videoSrc)}>
-                <Image src={services[1].imageSrc} alt={services[1].title} fill style={{ objectFit: 'cover' }} />
-                <div className="play-button"><Play /></div>
-              </div>
-            </div>
-          </section>
-
-          <section id="maintenance" className="service-section" ref={(el) => { sectionsRef.current[2] = el; }}>
-            <div className="content-grid">
-              <div className="video-container grid-order-first" onClick={() => openVideoModal(services[2].videoSrc)}>
-                <Image src={services[2].imageSrc} alt={services[2].title} fill style={{ objectFit: 'cover' }} />
-                <div className="play-button"><Play /></div>
-              </div>
-              <div className="section-content">
-                <div className="section-heading"><div className="icon-wrapper"><Wrench /></div><h2 className="section-title">{services[2].title}</h2></div>
-                <p className="section-description">{services[2].description}</p>
-                <div className="maintenance-plans">
-                  {services[2].plans!.map((plan, index) => (<div key={index} className="plan-card"><h4>{plan.title}</h4><p>{plan.description}</p></div>))}
+            <section id="installation" className="service-section installation-section" ref={(el) => { sectionsRef.current[1] = el; }}>
+                <div className="container">
+                    <ImageMarquee images={services[1].marqueeImages} />
+                    <div className="section-content">
+                        <div className="section-heading"><div className="icon-wrapper"><HardHat /></div><h2 className="section-title">{services[1].title}</h2></div>
+                        <p className="section-description">{services[1].description}</p>
+                    </div>
+                    <div className="steps-grid">
+                        {services[1].steps!.map((step, index) => (
+                        <div key={index} className="step-card"><div className="icon-wrapper"><step.icon /></div><h3>{step.title}</h3><p>{step.description}</p></div>
+                        ))}
+                    </div>
+                    <div className="video-container installation-video" onClick={() => openVideoModal(services[1].videoSrc)}>
+                        <Image src={services[1].imageSrc} alt={services[1].title} fill style={{ objectFit: 'cover' }} />
+                        <div className="play-button"><Play /></div>
+                    </div>
                 </div>
-                <p className="note">If a fault is found, we provide a detailed estimate and only proceed with repairs upon your approval.</p>
-              </div>
-            </div>
-          </section>
+            </section>
+
+            <section id="maintenance" className="service-section" ref={(el) => { sectionsRef.current[2] = el; }}>
+                <ImageMarquee images={services[2].marqueeImages} />
+                <div className="content-grid">
+                  <div className="video-container grid-order-first" onClick={() => openVideoModal(services[2].videoSrc)}>
+                    <Image src={services[2].imageSrc} alt={services[2].title} fill style={{ objectFit: 'cover' }} />
+                    <div className="play-button"><Play /></div>
+                  </div>
+                  <div className="section-content">
+                    <div className="section-heading"><div className="icon-wrapper"><Wrench /></div><h2 className="section-title">{services[2].title}</h2></div>
+                    <p className="section-description">{services[2].description}</p>
+                    <div className="maintenance-plans">
+                      {services[2].plans!.map((plan, index) => (<div key={index} className="plan-card"><h4>{plan.title}</h4><p>{plan.description}</p></div>))}
+                    </div>
+                    <p className="note">If a fault is found, we provide a detailed estimate and only proceed with repairs upon your approval.</p>
+                  </div>
+                </div>
+            </section>
         </main>
         
         {videoModal.isOpen && (
