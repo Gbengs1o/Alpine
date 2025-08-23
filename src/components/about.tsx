@@ -1,16 +1,20 @@
 
 "use client";
 
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Users, Award, Leaf, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+import Autoplay from "embla-carousel-autoplay"
 
-/**
- * Custom hook to detect when an element is in the viewport.
- * Used for triggering scroll-based animations.
- */
 const useScrollAnimation = (options?: IntersectionObserverInit) => {
     const [isInView, setIsInView] = React.useState(false);
     const ref = React.useRef<HTMLElement | null>(null);
@@ -41,8 +45,25 @@ const useScrollAnimation = (options?: IntersectionObserverInit) => {
     return { ref, isInView };
 };
 
+const carouselImages = [
+    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/IMG-20250820-WA0022.jpg",
+    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/IMG-20250820-WA0013.jpg",
+    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/IMG-20250820-WA0014.jpg",
+    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/IMG-20250820-WA0015.jpg",
+    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/IMG-20250820-WA0016.jpg",
+    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/IMG-20250820-WA0017.jpg",
+    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/IMG-20250820-WA0018.jpg",
+    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/IMG-20250820-WA0019.jpg",
+    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/IMG-20250820-WA0020.jpg",
+    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/IMG-20250820-WA0012.jpg",
+    "https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/IMG-20250820-WA0006.jpg"
+];
+
 export default function About() {
     const { ref, isInView } = useScrollAnimation();
+    const autoplayPlugin = React.useRef(
+        Autoplay({ delay: 2000, stopOnInteraction: true })
+    );
 
     const getAnimClass = (baseClass: string = '') => {
       return `transition-all ease-out duration-1000 ${baseClass} ${isInView ? 'opacity-100 translate-y-0 blur-0' : 'opacity-0 translate-y-8 blur-sm'}`;
@@ -108,21 +129,32 @@ export default function About() {
                     </div>
                     
                     <div className="h-full w-full">
-                        <div className="sticky top-28">
+                         <div className="sticky top-28">
                              <div className={`relative w-full max-w-lg mx-auto ${getAnimClass('')}`} style={{transitionDelay: `300ms`}}>
                                 <div className="absolute -inset-2.5 bg-gradient-to-r from-[#5d99f7] to-blue-400 rounded-2xl opacity-20 blur-xl transition-opacity duration-500" />
-                                <Image
-                                    src="https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/3-1.jpg"
-                                    data-ai-hint="professional hvac technician smiling at a worksite"
-                                    width={600}
-                                    height={450}
-                                    alt="A smiling, professional technician from the Alpine Tech HVAC Team"
-                                    className="relative z-10 aspect-[4/3] w-full overflow-hidden rounded-2xl object-cover object-center shadow-xl border-4 border-white"
-                                />
-                                <div className="absolute bottom-5 right-5 z-20 bg-white/90 backdrop-blur-sm rounded-lg px-4 py-3 shadow-lg text-right transition-all duration-500 opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0">
-                                    <div className="font-bold text-lg text-[#212529]">Alpine Tech</div>
-                                    <div className="text-sm text-[#6c757d]">13 Years of Excellence</div>
-                                </div>
+                                <Carousel 
+                                    plugins={[autoplayPlugin.current]}
+                                    className="w-full"
+                                    onMouseEnter={autoplayPlugin.current.stop}
+                                    onMouseLeave={autoplayPlugin.current.reset}
+                                >
+                                    <CarouselContent>
+                                        {carouselImages.map((src, index) => (
+                                            <CarouselItem key={index}>
+                                                <Image
+                                                    src={src}
+                                                    data-ai-hint="professional hvac technician"
+                                                    width={600}
+                                                    height={450}
+                                                    alt={`Alpine Tech HVAC project showcase ${index + 1}`}
+                                                    className="relative z-10 aspect-[4/3] w-full overflow-hidden rounded-2xl object-cover object-center shadow-xl border-4 border-white"
+                                                />
+                                            </CarouselItem>
+                                        ))}
+                                    </CarouselContent>
+                                    <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-20" />
+                                    <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-20" />
+                                </Carousel>
                             </div>
                         </div>
                     </div>
