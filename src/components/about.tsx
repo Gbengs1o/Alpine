@@ -56,7 +56,7 @@ const carouselImages = [
 export default function About() {
     const { ref, isInView } = useScrollAnimation();
     const autoplayPlugin = React.useRef(
-        Autoplay({ delay: 2000, stopOnInteraction: true })
+        Autoplay({ delay: 2000, stopOnInteraction: false })
     );
 
     const getAnimClass = (baseClass: string = '') => {
@@ -129,8 +129,6 @@ export default function About() {
                                 <Carousel 
                                     plugins={[autoplayPlugin.current]}
                                     className="w-full"
-                                    onMouseEnter={autoplayPlugin.current.stop}
-                                    onMouseLeave={autoplayPlugin.current.reset}
                                 >
                                     <CarouselContent>
                                         {carouselImages.map((src, index) => (
