@@ -104,7 +104,7 @@ export default function About() {
                             </li>
                             <li className={`flex items-start gap-4 ${getAnimClass('')}`} style={{transitionDelay: `400ms`}}>
                                 <div className="mt-1 flex-shrink-0 rounded-full bg-blue-100 p-2"><Users className="h-5 w-5 text-[#5d99f7]" /></div>
-                                <div><strong className="font-semibold text-[#212529]">12+ Dedicated Technicians:</strong><span className="text-[#6c757d]"> A skilled, professional team ready to tackle any challenge.</span></div>
+                                <div><strong className="font-semibold text-[#212529]">Dedicated Technicians:</strong><span className="text-[#6c757d]"> A skilled, professional team ready to tackle any challenge.</span></div>
                             </li>
                             <li className={`flex items-start gap-4 ${getAnimClass('')}`} style={{transitionDelay: `500ms`}}>
                                 <div className="mt-1 flex-shrink-0 rounded-full bg-green-100 p-2"><Leaf className="h-5 w-5 text-green-600" /></div>

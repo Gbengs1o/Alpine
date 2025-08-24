@@ -259,7 +259,7 @@ export function Faq() {
                         <div className="item-icon"></div>
                     </button>
                     <div className="accordion-content">
-                        <p>Our office is located at 35 Aladelola Street, Ikosi, Ketu, LAGOS. We provide dependable services across Lagos and have a proven track record of delivering major projects in other states, including Port Harcourt, Gombe, Edo, and Ekiti.</p>
+                        <p>Our office is located at 35 Aladelola Street, Ikosi, Ketu, Lagos. We provide reliable services nationwide and have a proven track record of successfully delivering major projects in Abuja, Port Harcourt, Gombe, Edo, Ondo, Benue, Abeokuta, Osun, and Ekiti.</p>
                     </div>
                 </div>
             </div>

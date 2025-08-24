@@ -1,67 +1,40 @@
 "use client";
 
 // --- IMPORTS ---
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { useState } from 'react'; // We only need useState
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
-import { Loader2, Mail, MapPin, Phone } from 'lucide-react';
+import { Mail, MapPin, Phone } from 'lucide-react';
 import Link from 'next/link';
-import { sendEmail } from '@/ai/flows/send-email-flow';
-
-// --- FORM SCHEMA ---
-const formSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters."),
-  email: z.string().email("Please enter a valid email address."),
-  message: z.string().min(10, "Message must be at least 10 characters."),
-});
-
-type FormValues = z.infer<typeof formSchema>;
 
 // --- COMPONENT ---
 export function Contact() {
-  const { toast } = useToast();
-  
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: { name: "", email: "", message: "" },
-  });
+  // State for each form field
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
 
-  // --- SUBMIT HANDLER ---
-  async function onSubmit(values: FormValues) {
-    try {
-      const response = await sendEmail({
-        from: 'Website Contact Form <onboarding@resend.dev>',
-        to: ['alpinetechhvac@gmail.com'],
-        subject: `New Message from ${values.name} (from site)`,
-        html: `
-          <p>You have received a new message from your website contact form.</p>
-          <p><strong>Name:</strong> ${values.name}</p>
-          <p><strong>Email:</strong> ${values.email}</p>
-          <p><strong>Message:</strong></p>
-          <p>${values.message}</p>
-        `,
-      });
-      console.log(response);
-      toast({
-          title: "Message Sent!",
-          description: "Thank you for your inquiry. An expert will be in touch with you shortly.",
-      });
-      form.reset();
-    } catch (error) {
-      console.error(error);
-      toast({
-        title: "Error",
-        description: "There was a problem sending your message. Please try again later.",
-        variant: "destructive",
-      });
-    }
-  }
+  // The email address where you want to receive messages
+  const recipientEmail = "alpinetechhvac@gmail.com";
+
+  // Create the subject line for the email
+  const subject = `New Message from ${name} (from your website)`;
+
+  // Create the body of the email
+  const body = `
+You have received a new message from your website contact form.
+-------------------------------------------------------------
+Name: ${name}
+Email: ${email}
+-------------------------------------------------------------
+Message:
+${message}
+  `;
+
+  // Create the full mailto link, ensuring the content is properly encoded
+  const mailtoLink = `mailto:${recipientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
   // --- JSX ---
   return (
@@ -70,13 +43,11 @@ export function Contact() {
       className="w-full py-24 lg:py-32 bg-gray-50 text-gray-800"
     >
       <main className="container mx-auto px-4 md:px-6 max-w-7xl flex flex-col items-center">
-        {/* Consistent "Breadcrumb" Link */}
+        {/* ... Intro JSX ... */}
         <a href="#contact" className="flex items-center gap-2 text-sm font-bold tracking-wider uppercase text-gray-900 mb-6">
           <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
           GET IN TOUCH
         </a>
-        
-        {/* Impactful Title & Subtitle */}
         <h1 className="text-4xl md:text-5xl font-bold text-center leading-tight mb-6">
           Ready to Start Your Project?
         </h1>
@@ -86,7 +57,7 @@ export function Contact() {
         </p>
 
         <div className="grid lg:grid-cols-5 gap-12 w-full">
-          {/* Info Section (Left Side) */}
+          {/* ... Info Section (Left Side) is unchanged ... */}
           <div className="lg:col-span-2 space-y-10">
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Our Commitment to You</h2>
@@ -106,8 +77,8 @@ export function Contact() {
                   </Button>
                 </InfoItem>
                 <InfoItem icon={<Phone className="w-6 h-6" />} title="Phone">
-                  <a href="tel:2349090904363" className="block hover:text-blue-600 transition-colors">234 909 090 4363</a>
-                  <a href="tel:2348162038620" className="block hover:text-blue-600 transition-colors">234 816 203 8620</a>
+                  <a href="tel:2348162038620" className="block hover:text-blue-600 transition-colors">234 909 090 4363</a>
+                  <a href="tel:2349090904363" className="block hover:text-blue-600 transition-colors">234 816 203 8620</a>
                 </InfoItem>
                 <InfoItem icon={<Mail className="w-6 h-6" />} title="Email">
                   <a href="mailto:alpinetechhvac@gmail.com" className="hover:text-blue-600 transition-colors">alpinetechhvac@gmail.com</a>
@@ -121,38 +92,29 @@ export function Contact() {
             <Card className="shadow-xl border-gray-200 bg-white">
               <CardHeader>
                 <CardTitle className="text-2xl font-bold text-gray-900">Send Your Inquiry</CardTitle>
-                <CardDescription>Fill out the form below, and one of our experts will get back to you promptly.</CardDescription>
+                <CardDescription>Fill out the form below. Clicking "Send" will open your email app to send the message.</CardDescription>
               </CardHeader>
               <CardContent>
-                <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                    <FormField control={form.control} name="name" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Full Name</FormLabel>
-                        <FormControl><Input placeholder="John Doe" {...field} /></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
-                    <FormField control={form.control} name="email" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email Address</FormLabel>
-                        <FormControl><Input type="email" placeholder="you@example.com" {...field} /></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
-                    <FormField control={form.control} name="message" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>How can we help?</FormLabel>
-                        <FormControl><Textarea rows={5} placeholder="Please describe your needs or question..." {...field} /></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
-                    <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3" disabled={form.formState.isSubmitting}>
-                      {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                      Send Message
-                    </Button>
-                  </form>
-                </Form>
+                <div className="space-y-6">
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                    <Input id="name" placeholder="John Doe" value={name} onChange={(e) => setName(e.target.value)} />
+                  </div>
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                    <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+                  </div>
+                  <div>
+                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">How can we help?</label>
+                    <Textarea id="message" rows={5} placeholder="Please describe your needs or question..." value={message} onChange={(e) => setMessage(e.target.value)} />
+                  </div>
+                  {/* The button is now a Link */}
+                  <Button asChild className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3">
+                    <a href={mailtoLink}>
+                      Open Email & Send
+                    </a>
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>

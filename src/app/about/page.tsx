@@ -5,6 +5,7 @@ import  MissionStatement  from '@/components/mission-statement';
 import { OurStory } from '@/components/our-story';
 import { Advantages } from '@/components/advantages';
 import CoreValues from '@/components/core-values';
+import Portfolio from '@/components/portfolio';
 import { Faq } from '@/components/faq';
 
 export default function AboutPage() {
@@ -17,6 +18,7 @@ export default function AboutPage() {
         <OurStory />
         <Advantages />
         <CoreValues />
+        <Portfolio />
         <Faq />
       </main>
       <Footer />

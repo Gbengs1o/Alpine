@@ -6,6 +6,7 @@ import { Advantages } from '@/components/advantages';
 import CoreValues from '@/components/core-values';
 import { Services } from '@/components/services';
 import Portfolio from '@/components/portfolio';
+import servicegalary from '@/components/servicegalary'
 import { Faq } from '@/components/faq';
 
 
@@ -19,6 +20,7 @@ export default function Page() {
         <Advantages />
         <Services />
         <CoreValues />
+        <servicegalary />
         <Portfolio />
         <Faq />
       </main>

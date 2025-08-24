@@ -16,19 +16,19 @@ const timelineData = [
     year: '2012',
     title: 'Strategic Partnership',
     description:
-      'We became official partners with the GREE brand, allowing us to procure and deploy world-class, eco-friendly HVAC equipment for our clients.',
+      'We became official partners with the GREE brand and other highly respected brands, allowing us to procure and deploy world-class, eco-friendly HVAC equipment for our clients.',
   },
   {
     year: '2024',
     title: 'Industry Leader',
     description:
-      'Now a dedicated team of over 12 experienced technicians, we are a trusted name for residential and commercial HVAC services, committed to 100% customer satisfaction.',
+      'Now a dedicated team of experienced technicians, we are a trusted name for residential and commercial HVAC services, committed to 100% customer satisfaction.',
   },
 ];
 
 const stats = [
     { value: '13+', label: 'Years' },
-    { value: '12+', label: 'Technicians' },
+    { value: '500+', label: 'Installations' },
     { value: '100%', label: 'Satisfaction' },
 ]
 
@@ -76,7 +76,7 @@ export function OurStory() {
                 <div className="lg:col-span-1 text-center">
                     <span className="inline-block bg-gradient-to-r from-blue-500 to-blue-400 text-white text-sm font-semibold px-5 py-2 rounded-full mb-4">Est. 2011</span>
                     <Image
-                        src="https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/3-1.jpg"
+                        src="https://violet-finch-601645.hostingersite.com/wp-content/uploads/2025/08/good-image-3.png"
                         data-ai-hint="company building"
                         alt="Alpine Tech Office"
                         width={180}
@@ -99,7 +99,7 @@ export function OurStory() {
                     </p>
                     <ul className="space-y-3">
                         <li className="flex items-start"><span className="text-blue-500 font-bold mr-3 mt-1">✓</span> Residential & Commercial HVAC Solutions</li>
-                        <li className="flex items-start"><span className="text-blue-500 font-bold mr-3 mt-1">✓</span> Official GREE Brand Partnership</li>
+                        <li className="flex items-start"><span className="text-blue-500 font-bold mr-3 mt-1">✓</span> Official GREE and other highly respected Brand Partnership</li>
                         <li className="flex items-start"><span className="text-blue-500 font-bold mr-3 mt-1">✓</span> Expert Installation & Maintenance</li>
                         <li className="flex items-start"><span className="text-blue-500 font-bold mr-3 mt-1">✓</span> 24/7 Emergency Service Available</li>
                     </ul>

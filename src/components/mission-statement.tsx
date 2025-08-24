@@ -165,9 +165,9 @@ export default function MissionStatement() {
                             <div>
                                 <h4>Phone</h4>
                                 {/* UPDATED: Each phone number is now a clickable "tel:" link */}
-                                <a href="tel:+2349090904363">234 909 090 4363</a>
-                                <br/>
                                 <a href="tel:+2348162038620">234 816 203 8620</a>
+                                <br/>
+                                <a href="tel:+2349090904363">234 909 090 4363</a>
                             </div>
                         </div>
                          <div className="contact-item">
